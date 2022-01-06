@@ -58,7 +58,7 @@ public interface Enclave {
 
     /**
      * Returns all providers which implement service interface. It's similar to SPI
-     * ServiceLoader mechanism. It returns proxy providers which are mirrors to real
+     * ServiceLoader mechanism. It returns proxy providers which are handlers to real
      * services loaded in enclave.
      * <p>
      *
@@ -66,7 +66,7 @@ public interface Enclave {
      * @param service Must be a service interface
      * @return An iterator of providers were discovered.
      * @throws ServicesLoadingException {@link ServicesLoadingException} If proxy providers created
-     *                                  failed or mirrors services loaded failed in enclave.
+     *                                  failed or service handlers loaded failed in enclave.
      */
     <T> Iterator<T> load(Class<T> service) throws ServicesLoadingException;
 

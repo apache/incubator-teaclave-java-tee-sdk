@@ -10,13 +10,21 @@ public class EnclaveCreatingException extends ConfidentialComputingException {
      * @param info exception information.
      */
     public EnclaveCreatingException(String info) {
-        super(info);
+        super(EnclaveNativeInvokingException.ENCLAVE_CREATING_ERROR.buildExceptionMessage(info));
     }
 
     /**
      * @param e exception.
      */
     public EnclaveCreatingException(Throwable e) {
-        super(e);
+        super(EnclaveNativeInvokingException.ENCLAVE_CREATING_ERROR.toString(), e);
+    }
+
+    /**
+     * @param info exception message.
+     * @param e    exception.
+     */
+    public EnclaveCreatingException(String info, Throwable e) {
+        super(EnclaveNativeInvokingException.ENCLAVE_CREATING_ERROR.buildExceptionMessage(info), e);
     }
 }

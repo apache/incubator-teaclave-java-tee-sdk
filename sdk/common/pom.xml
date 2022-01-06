@@ -8,9 +8,9 @@
         <artifactId>JavaEnclave</artifactId>
         <version>0.1.0</version>
     </parent>
-    <artifactId>enclave</artifactId>
+    <artifactId>common</artifactId>
     <packaging>jar</packaging>
-    <name>JavaEnclave-Enclave</name>
+    <name>JavaEnclave-Common</name>
     <url></url>
     <build>
         <plugins>
@@ -20,7 +20,7 @@
                 <version>0.8.3</version>
                 <configuration>
                     <includes>
-                        <include>com/alibaba/confidentialcomputing/enclave/**/*</include>
+                        <include>com/alibaba/confidentialcomputing/common/*</include>
                     </includes>
                 </configuration>
                 <executions>
@@ -56,10 +56,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.confidentialcomputing</groupId>
-            <artifactId>common</artifactId>
         </dependency>
     </dependencies>
 </project>

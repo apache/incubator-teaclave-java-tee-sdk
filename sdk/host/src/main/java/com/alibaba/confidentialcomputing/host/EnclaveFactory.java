@@ -33,7 +33,7 @@ public final class EnclaveFactory {
      *                                  create failed.
      */
     public static Enclave create() throws EnclaveCreatingException {
-        return null;
+        return EnclaveConfigure.create();
     }
 
     /**
@@ -43,6 +43,6 @@ public final class EnclaveFactory {
      *                                  create failed.
      */
     public static Enclave create(EnclaveType type) throws EnclaveCreatingException {
-        return null;
+        return EnclaveConfigure.create(type);
     }
 }

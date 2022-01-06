@@ -20,4 +20,12 @@ public class ConfidentialComputingException extends Exception {
     public ConfidentialComputingException(Throwable e) {
         super(e);
     }
+
+    /**
+     * @param info exception information.
+     * @param e    exception.
+     */
+    public ConfidentialComputingException(String info, Throwable e) {
+        super(info, e);
+    }
 }

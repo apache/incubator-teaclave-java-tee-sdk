@@ -10,13 +10,21 @@ public class ServicesLoadingException extends ConfidentialComputingException {
      * @param info exception information.
      */
     public ServicesLoadingException(String info) {
-        super(info);
+        super(EnclaveNativeInvokingException.SERVICES_LOADING_ERROR.buildExceptionMessage(info));
     }
 
     /**
      * @param e exception.
      */
     public ServicesLoadingException(Throwable e) {
-        super(e);
+        super(EnclaveNativeInvokingException.SERVICES_LOADING_ERROR.toString(), e);
+    }
+
+    /**
+     * @param info exception info.
+     * @param e    exception.
+     */
+    public ServicesLoadingException(String info, Throwable e) {
+        super(EnclaveNativeInvokingException.SERVICES_LOADING_ERROR.buildExceptionMessage(info), e);
     }
 }
