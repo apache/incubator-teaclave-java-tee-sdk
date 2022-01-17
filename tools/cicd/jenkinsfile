@@ -1,0 +1,16 @@
+pipeline {
+         agent {
+             node {
+                 label 'javaenclave_ci_server'
+                 customWorkspace '/home/ci/jenkins/javaenclave'
+             }
+         }
+         stages {
+                 stage('Test and Build JavaEnclave SDK') {
+                 steps {
+                     echo 'Build JavaEnclave SDK:'
+                     sh "./tools/cicd/make.sh"
+                 }
+                 }
+         }
+}

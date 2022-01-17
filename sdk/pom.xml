@@ -38,7 +38,6 @@
         </dependencies>
     </dependencyManagement>
     <modules>
-        <module>log</module>
         <module>enclave</module>
         <module>host</module>
     </modules>
