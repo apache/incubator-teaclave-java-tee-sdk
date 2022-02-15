@@ -11,6 +11,16 @@ pipeline {
                      echo 'Build JavaEnclave SDK:'
                      sh "./tools/cicd/make.sh"
                  }
+                 post {
+                     success {
+                         jacoco (
+                             execPattern: 'sdk/**/target/jacoco.exec',
+                             classPattern: 'sdk/**/target/classes',
+                             sourcePattern: 'sdk/**/src/main/java',
+                             sourceInclusionPattern: 'com/alibaba/confidentialcomputing/**/*.java,com/alibaba/confidentialcomputing/**/**/*.java',
+                          )
+                     }
+                 }
                  }
          }
 }
