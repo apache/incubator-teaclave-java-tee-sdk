@@ -2,6 +2,7 @@ package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingException;
+import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 
 import java.io.IOException;
 
@@ -61,6 +62,15 @@ class MockInSvmEnclave extends AbstractEnclave {
         if (ret != 0) {
             throw new EnclaveCreatingException("create svm isolate by native calling failed.");
         }
+    }
+
+    @Override
+    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+        throw new RemoteAttestationException("MOCK_IN_SVM enclave doesn't support remote attestation generation.");
+    }
+
+    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
+        throw new RemoteAttestationException("MOCK_IN_SVM enclave doesn't support remote attestation verification.");
     }
 
     @Override

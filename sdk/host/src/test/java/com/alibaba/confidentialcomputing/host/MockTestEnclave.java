@@ -2,6 +2,7 @@ package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.common.*;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
+import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,6 +61,15 @@ class MockTestEnclave extends AbstractEnclave {
             }
         }
         return Class.forName(name);
+    }
+
+    @Override
+    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+        throw new RemoteAttestationException("MockTestEnclave enclave doesn't support remote attestation generation.");
+    }
+
+    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
+        throw new RemoteAttestationException("MockTestEnclave enclave doesn't support remote attestation verification.");
     }
 
     @Override

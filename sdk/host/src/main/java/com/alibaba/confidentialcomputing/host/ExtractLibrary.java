@@ -1,6 +1,10 @@
 package com.alibaba.confidentialcomputing.host;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * JavaEnclave building tool will put native .so files into a java .jar file,

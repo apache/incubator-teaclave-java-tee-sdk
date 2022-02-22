@@ -13,8 +13,10 @@ import com.alibaba.confidentialcomputing.common.SerializationHelper;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveMethodInvokingException;
+import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 import com.alibaba.confidentialcomputing.host.exception.ServicesLoadingException;
 import com.alibaba.confidentialcomputing.host.exception.ServicesUnloadingException;
+
 
 /**
  * AbstractEnclave implements all kinds of enclave platform's common operation.
@@ -162,6 +164,8 @@ abstract class AbstractEnclave implements Enclave {
             getEnclaveContext().getEnclaveToken().restoreToken();
         }
     }
+
+    abstract AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException;
 
     @Override
     public <T> Iterator<T> load(Class<T> service) throws ServicesLoadingException {

@@ -49,7 +49,9 @@ public class ConfidentialComputingException extends Exception {
         // Services unloading failed.
         SERVICES_UNLOADING_ERROR("A0004", "service unloading failed in enclave"),
         // Service method invoking failed.
-        SERVICE_METHOD_INVOKING_ERROR("A0005", "service method invoking failed");
+        SERVICE_METHOD_INVOKING_ERROR("A0005", "service method invoking failed"),
+        // Enclave remote attestation exception.
+        ENCLAVE_REMOTE_ATTESTATION_ERROR("A0006", "tee remote attestation failed");
 
         private final String errorCode;
         private final String errorMessage;

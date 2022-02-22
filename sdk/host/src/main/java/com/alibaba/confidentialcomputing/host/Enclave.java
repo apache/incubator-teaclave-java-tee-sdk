@@ -42,6 +42,11 @@ import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingExcepti
  * <pre>
  *    try {
  *        Enclave enclave = EnclaveFactory.create();
+ *        AttestationReport report = RemoteAttestation.generateAttestationReport(enclave, new byte[64]);
+ *        int valid = RemoteAttestation.verifyAttestationReport(report);
+ *        if (valid == 0) {
+ *            ... ... ...
+ *        }
  *        ... ... ...
  *        Service provider = enclave.load(Service.class);
  *        ... ... ...
@@ -55,7 +60,6 @@ import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingExcepti
  * </pre>
  */
 public interface Enclave {
-
     /**
      * Returns all providers which implement service interface. It's similar to SPI
      * ServiceLoader mechanism. It returns proxy providers which are handlers to real

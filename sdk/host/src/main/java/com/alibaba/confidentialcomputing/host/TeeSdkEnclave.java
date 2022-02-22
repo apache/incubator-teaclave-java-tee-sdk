@@ -1,6 +1,8 @@
 package com.alibaba.confidentialcomputing.host;
 
-import com.alibaba.confidentialcomputing.host.exception.*;
+import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
+import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingException;
+import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 
 import java.io.IOException;
 
@@ -53,6 +55,10 @@ class TeeSdkEnclave extends AbstractEnclave {
 
     private native int nativeCreateEnclave(int mode, String path);
 
+    private native InnerNativeInvocationResult nativeGenerateAttestationReport(byte[] userData);
+
+    private static native InnerNativeInvocationResult nativeVerifyAttestationReport(byte[] report);
+
     private native int nativeSvmAttachIsolate(long enclaveHandler);
 
     private native InnerNativeInvocationResult nativeLoadService(
@@ -67,6 +73,26 @@ class TeeSdkEnclave extends AbstractEnclave {
     private native int nativeSvmDetachIsolate(long enclaveHandler, long isolateThreadHandler);
 
     private native int nativeDestroyEnclave(long enclaveHandler);
+
+    @Override
+    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+        InnerNativeInvocationResult result = nativeGenerateAttestationReport(userData);
+        if (result.getRet() != 0) {
+            throw new RemoteAttestationException("TEE_SDK's attestation report generation native call error code: " + result.getRet());
+        }
+        return new AttestationReport(EnclaveType.TEE_SDK, result.getPayload());
+    }
+
+    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
+        InnerNativeInvocationResult result = nativeVerifyAttestationReport(report);
+        if (result.getRet() != 0) {
+            throw new RemoteAttestationException("TEE_SDK's attestation verification native call error code: " + result.getRet());
+        }
+        if (result.getPayload() == null) {
+            return 0;  // Remote Attestation Verification result is succeed.
+        }
+        return 1; // Remote Attestation Verification result is failed.
+    }
 
     @Override
     InnerNativeInvocationResult loadServiceNative(byte[] payload) {
