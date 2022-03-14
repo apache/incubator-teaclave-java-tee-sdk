@@ -1,0 +1,3 @@
+com.alibaba.confidentialcomputing.enclave.testservice.NumericMath
+com.alibaba.confidentialcomputing.enclave.testservice.PointMath
+com.alibaba.confidentialcomputing.enclave.testservice.IntegerMath

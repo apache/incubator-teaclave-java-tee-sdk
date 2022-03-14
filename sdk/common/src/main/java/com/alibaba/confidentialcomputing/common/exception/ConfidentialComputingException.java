@@ -1,4 +1,4 @@
-package com.alibaba.confidentialcomputing.enclave.exception;
+package com.alibaba.confidentialcomputing.common.exception;
 
 /**
  * ConfidentialComputingException {@link ConfidentialComputingException} is base exception in
@@ -7,6 +7,9 @@ package com.alibaba.confidentialcomputing.enclave.exception;
  * Programmers need to handle ConfidentialComputingException seriously.
  */
 public class ConfidentialComputingException extends Exception {
+
+    private static final long serialVersionUID = 5964126736764332957L;
+
     /**
      * @param info exception information.
      */

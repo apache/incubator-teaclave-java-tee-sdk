@@ -3,9 +3,9 @@ package com.alibaba.confidentialcomputing.common;
 import java.io.Serializable;
 
 /**
- * EnclaveInvocationInputMeta stores a method's necessary information for reflection
- * call, include object's unique instanceIdentity、interface name、class name、method
- * signature name, and its parameters.
+ * This class stores a method's necessary information for reflection
+ * call, including the service instance's unique instanceIdentity, interface name, class name,
+ * method name and its parameters.
  */
 public final class EnclaveInvocationContext implements Serializable {
     private static final long serialVersionUID = 6878585714134748604L;
