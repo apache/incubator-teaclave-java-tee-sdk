@@ -12,6 +12,57 @@
     <packaging>jar</packaging>
     <name>JavaEnclave-Enclave</name>
     <url></url>
+    <properties>
+        <graal.version>enclave-22.0.0</graal.version>
+        <svm.maven.version>0.9.10</svm.maven.version>
+    </properties>
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>${svm.maven.version}</version>
+                        <extensions>true</extensions>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <configuration>
+                                    <imageName>libsvm_enclave_sdk</imageName>
+                                    <buildArgs>
+                                        <buildArg>--shared</buildArg>
+                                        <buildArg>--no-fallback</buildArg>
+                                        <buildArg>-H:+RunInEnclave</buildArg>
+                                        <buildArg>-H:OutputRelocatableImage=.</buildArg>
+                                        <buildArg>-H:Path=svm-output</buildArg>
+                                    </buildArgs>
+                                </configuration>
+                                <phase>package</phase>
+                            </execution>
+                            <execution>
+                                <id>test-native</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <buildArgs>
+                                        <buildArg>--no-fallback</buildArg>
+                                        <buildArg>-H:+RunInEnclave</buildArg>
+                                    </buildArgs>
+                                </configuration>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -27,6 +78,17 @@
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</arg>
                     </compilerArgs>
+                    <!--OptionProcessor can automatically generate OptionDescriptor classes at javac time-->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.graalvm.compiler</groupId>
+                            <artifactId>graal-processor</artifactId>
+                            <version>${graal.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <annotationProcessors>
+                        <annotationProcessor>org.graalvm.compiler.options.processor.OptionProcessor</annotationProcessor>
+                    </annotationProcessors>
                 </configuration>
             </plugin>
             <plugin>
@@ -94,15 +156,46 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>preTest</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.alibaba.confidentialcomputing.enclave.AroundNativeTest$PreTest</mainClass>
+                            <classpathScope>test</classpathScope>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>postTest</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.alibaba.confidentialcomputing.enclave.AroundNativeTest$PostTest</mainClass>
+                            <classpathScope>test</classpathScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <environmentVariables>
+                        <LD_LIBRARY_PATH>/tmp/javaenclavetest-native-libs</LD_LIBRARY_PATH>
+                    </environmentVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <graal.version>enclave-22.0.0</graal.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
@@ -127,6 +220,12 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>junit-platform-native</artifactId>
+            <version>${svm.maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

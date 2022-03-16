@@ -6,6 +6,7 @@ import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
 import com.alibaba.confidentialcomputing.enclave.testservice.MathService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +15,12 @@ import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.EMPTY_
 import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.MATH_ADD_PARAM_TYPES;
 import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.MATH_SERVICE;
 import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.NUMERIC_MATH;
+import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.isInNativeImage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -25,6 +28,11 @@ public class ServiceMethodInvokerTest {
 
     private static ServiceMethodInvoker serviceMethodInvoker = new ServiceMethodInvoker();
     private ServiceHandler[] services;
+
+    @BeforeAll
+    public static void svmCheck(){
+        assumeFalse(isInNativeImage());
+    }
 
     @BeforeEach
     public void setup() {

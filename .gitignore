@@ -1,0 +1,19 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+
+# virtual machine crash logs
+hs_err_pid*
+
+# IDE config
+*.iml
+.idea/
+.classpath
+.project
+.settings/
+
+# Maven compiled directory
+target/

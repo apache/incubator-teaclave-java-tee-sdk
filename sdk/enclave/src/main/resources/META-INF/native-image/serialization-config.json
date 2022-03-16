@@ -1,0 +1,44 @@
+[
+  {
+  "name":"com.alibaba.confidentialcomputing.common.EnclaveInvocationContext"
+  },
+  {
+    "name":"com.alibaba.confidentialcomputing.common.EnclaveInvocationResult"
+  },
+  {
+  "name":"com.alibaba.confidentialcomputing.common.ServiceHandler"
+  },
+  {
+    "name": "[Lcom.alibaba.confidentialcomputing.common.ServiceHandler;"
+  },
+  {
+  "name":"java.lang.String"
+  },
+  {
+    "name":"java.util.ArrayList"
+  },
+  {
+    "name": "java.util.Arrays$ArrayList"
+  },
+  {
+  "name":"java.lang.Throwable"
+  },
+  {
+  "name":"java.lang.Exception"
+  },
+  {
+  "name":"java.io.IOException"
+  },
+  {
+  "name":"java.io.ObjectStreamException"
+  },
+  {
+  "name":"java.io.NotSerializableException"
+  },
+  {
+  "name":"java.lang.StackTraceElement"
+  },
+  {
+    "name":"[Ljava.lang.StackTraceElement;"
+  }
+]

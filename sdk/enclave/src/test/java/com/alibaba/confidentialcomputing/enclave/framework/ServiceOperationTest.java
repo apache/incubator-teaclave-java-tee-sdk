@@ -4,17 +4,25 @@ import com.alibaba.confidentialcomputing.common.EnclaveInvocationResult;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.enclave.testservice.NumericMath;
 import com.alibaba.confidentialcomputing.enclave.testservice.PointMath;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.MATH_SERVICE;
+import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.isInNativeImage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * This class tests loading and unloading service.
  */
 public class ServiceOperationTest {
+
+    @BeforeAll
+    public static void svmCheck(){
+        assumeFalse(isInNativeImage());
+    }
 
     @Test
     public void testLoadingAndUnloading() {

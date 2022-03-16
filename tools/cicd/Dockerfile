@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # install openjdk11 and maven.
 RUN apt-get update && \
-    echo -e 'yes\n' | apt-get install -y openjdk-11-jdk && \
     echo -e 'yes\n' | apt-get install -y maven && \
+    echo -e 'yes\n' | apt-get install -y build-essential libz-dev zlib1g-dev && \
     echo -e 'yes\n' | apt-get install -y wget
+ADD ["graalvm-enclave-22.0.0.tar", "/root/tools/"]
+ENV GRAALVM_HOME "/root/tools/graalvm-enclave-22.0.0"
+ENV JAVA_HOME "/root/tools/graalvm-enclave-22.0.0"
