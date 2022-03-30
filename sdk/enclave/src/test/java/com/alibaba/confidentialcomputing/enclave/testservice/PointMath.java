@@ -15,4 +15,5 @@ public class PointMath implements MathService<Point>{
     public Point div(Point x, Point y) {
         return new Point(x.x / y.x, x.y / y.y);
     }
+
 }

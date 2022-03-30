@@ -17,6 +17,17 @@ typedef int (*enclave_invoke)(graal_isolate_t* isolate, enc_data_t* input, enc_d
     return dest;
  }
 
+/*
+* Tested by RunWithNativeImageTest.testCallNativeGetRandomNumber.
+*/
+int get_native_random_number(void* data, long size){
+    char* tm = (char*)data;
+    for(int i=0;i<size;i++){
+        tm[i] = i%256;
+    }
+    return 0;
+}
+
 static graal_isolatethread_t *thread = NULL;
 static graal_isolate_t *isolate = NULL;
 
@@ -29,6 +40,7 @@ jboolean isCopy;
 
     callbacks_t callback_methods;
     callback_methods.memcpy_char_pointer=&memcpy_char_pointer;
+    callback_methods.get_random_number=&get_native_random_number;
     callback_methods.exception_handler=NULL; // Must explicitly set
 
     enc_data_t ret;

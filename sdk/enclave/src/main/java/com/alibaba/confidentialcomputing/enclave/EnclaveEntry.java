@@ -15,7 +15,11 @@ import org.graalvm.nativeimage.c.type.CTypeConversion;
  * This class defines the entry points for native image (shared library) deployed in TEE enclave.
  */
 public class EnclaveEntry {
-    private static CallBacks callBackMethods;
+    private static volatile CallBacks callBackMethods;
+
+    public static CallBacks getCallBackMethods() {
+        return callBackMethods;
+    }
 
     @SuppressWarnings("unused")
     @CEntryPoint(name = "java_loadservice_invoke")

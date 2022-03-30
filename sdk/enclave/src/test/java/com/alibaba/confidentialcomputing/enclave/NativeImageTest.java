@@ -166,12 +166,12 @@ public abstract class NativeImageTest implements NativeImageTestable {
             command.add("--libc=musl");
         }
         command.add("--no-fallback");
-       // command.add("-H:OutputRelocatableImage=.");
         command.add("-H:Path=" + SVM_OUT);
         command.add("-H:+AllowIncompleteClasspath");
         command.add("-H:+ReportExceptionStackTraces");
         command.add("-H:Name=lib" + SVM_ENCLAVE_LIB);
         command.add("-H:-DeleteLocalSymbols");
+        command.add("-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser");
         List<String> extraOptions = extraSVMOptions();
         if (extraOptions != null && !extraOptions.isEmpty()) {
             command.addAll(extraOptions);

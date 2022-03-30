@@ -13,7 +13,7 @@
     <name>JavaEnclave-Enclave</name>
     <url></url>
     <properties>
-        <graal.version>enclave-22.0.0</graal.version>
+        <graal.version>enclave-11-22.0.0-0.1.0</graal.version>
         <svm.maven.version>0.9.10</svm.maven.version>
     </properties>
     <profiles>
@@ -124,6 +124,8 @@
                         <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
                         <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</additionalJOption>
                     </additionalJOptions>
                 </configuration>
                 <version>3.2.0</version>

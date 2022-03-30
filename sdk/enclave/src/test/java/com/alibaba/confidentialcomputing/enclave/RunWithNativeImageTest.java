@@ -25,6 +25,7 @@ import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.NUMERI
 import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.POINT_MATH;
 import static com.alibaba.confidentialcomputing.enclave.EnclaveTestHelper.POINT_MATH_ADD_PARAM_TYPES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class RunWithNativeImageTest {
@@ -137,6 +138,21 @@ public class RunWithNativeImageTest {
                 new Object[]{new Point(1, 1), new Point(2, 2)});
         assertEquals(3, ret.x);
         assertEquals(3, ret.y);
+    }
+
+    /**
+     *  Test the {@code getRandomNumber} method actually calls the native method {@code int get_native_random_number(void* data, long size)}
+     *  in {@code enc_invoke_entry_test.c} file. It doesn't return a random value, but a fixed byte array.
+     */
+    @Test
+    public void testCallNativeGetRandomNumber() {
+        String identity = loadAndGetService(NUMERIC_MATH);
+        int size = 32;
+        byte[] ret = (byte[]) call(identity, NUMERIC_MATH, "getRandomNumber", new String[]{"int"}, new Object[]{size});
+        assertNotNull(ret);
+        for (int i = 0; i < size; i++) {
+            assertEquals(ret[i], i % 256);
+        }
     }
 
     private static String loadAndGetService(String implementation) {

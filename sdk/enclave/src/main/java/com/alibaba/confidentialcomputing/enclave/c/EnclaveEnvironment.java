@@ -35,6 +35,7 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.struct.CField;
 import org.graalvm.nativeimage.c.struct.CStruct;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.VoidPointer;
 import org.graalvm.word.PointerBase;
 
 import java.io.ByteArrayOutputStream;
@@ -112,6 +113,12 @@ public class EnclaveEnvironment {
 
         @CField("memcpy_char_pointer")
         void setMemCpyCCharPointerFunctionPointer(MemCpyCCharPointerFunctionPointer functionPointer);
+
+        @CField("get_random_number")
+        NativeGetRandomNumberFunctionPointer getRandomNumber();
+
+        @CField("get_random_number")
+        NativeGetRandomNumberFunctionPointer setRandomNumber();
     }
 
     public interface ExceptionHandleFunctionPointer extends CFunctionPointer {
@@ -122,5 +129,13 @@ public class EnclaveEnvironment {
     public interface MemCpyCCharPointerFunctionPointer extends CFunctionPointer {
         @InvokeCFunctionPointer
         CCharPointer invoke(CCharPointer source, int length);
+    }
+
+    /**
+     * A function pointer points to the native function that returns a pseudorandom number.
+     */
+    public interface NativeGetRandomNumberFunctionPointer extends CFunctionPointer {
+        @InvokeCFunctionPointer
+        int invoke(VoidPointer data, long size);
     }
 }

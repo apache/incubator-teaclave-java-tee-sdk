@@ -65,6 +65,7 @@ public class EnclaveTestHelper {
     private static EnclaveInvocationResult callEnclaveJNI(Object input, Function<byte[], byte[]> function) throws IOException, ClassNotFoundException {
         byte[] data = SerializationHelper.serialize(input);
         byte[] ret = function.apply(data);
+        assertNotNull(ret, "The returned value must not be null.");
         return (EnclaveInvocationResult) SerializationHelper.deserialize(ret);
     }
 

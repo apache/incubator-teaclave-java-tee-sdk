@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD_IMAGE=javaenclave_build
-BUILD_TAG=v0.1.2
+BUILD_TAG=v0.1.3
 
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 
@@ -16,6 +16,7 @@ if [[ "$(docker images -q ${BUILD_IMAGE}:${BUILD_TAG} 2> /dev/null)" == "" ]]; t
   wget https://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/JDK11-22.0.0/graalvm-enclave-22.0.0.tar
   wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/x86_64-linux-musl-native.tgz
   wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/zlib-1.2.12.tar.gz
+  wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/settings_taobao.xml -O settings.xml
   docker build -t ${BUILD_IMAGE}:${BUILD_TAG} .
   rm -f graalvm-enclave-22.0.0.tar
   rm -f x86_64-linux-musl-native.tgz

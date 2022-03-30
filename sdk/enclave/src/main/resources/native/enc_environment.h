@@ -14,4 +14,9 @@ typedef struct callback_functions_struct{
     void (*exception_handler)(char* err_msg, char* stack_trace, char* exception_name);
 
     char* (*memcpy_char_pointer)(char* src, int len);
+
+    /*
+    * Points to an available pseudorandom number generating function.
+    */
+    int (*get_random_number)(void* data, long size);
 }callbacks_t;
