@@ -7,10 +7,12 @@ import com.alibaba.confidentialcomputing.enclave.framework.LoadServiceInvoker;
 import com.alibaba.confidentialcomputing.enclave.framework.ServiceMethodInvoker;
 import com.alibaba.confidentialcomputing.enclave.framework.UnloadServiceInvoker;
 import com.oracle.svm.core.annotate.AutomaticFeature;
+import com.oracle.svm.core.c.libc.TemporaryBuildDirectoryProvider;
 import com.oracle.svm.core.jdk.resources.NativeImageResourceFileSystemUtil;
 import com.oracle.svm.core.util.VMError;
 import com.oracle.svm.hosted.FeatureImpl;
 import com.oracle.svm.hosted.ImageClassLoader;
+import com.oracle.svm.hosted.NativeImageGenerator;
 import com.oracle.svm.hosted.ServiceLoaderFeature;
 import com.oracle.svm.reflect.hosted.ReflectionFeature;
 import com.oracle.svm.reflect.serialize.hosted.SerializationFeature;
@@ -27,6 +29,12 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -96,6 +104,33 @@ public class EnclaveFeature implements Feature {
         }
     }
 
+    /**
+     * Copy the relocatable file and header file from temporary directory to output path.
+     */
+    @Override
+    public void afterImageWrite(AfterImageWriteAccess access) {
+        FeatureImpl.AfterImageWriteAccessImpl a = (FeatureImpl.AfterImageWriteAccessImpl) access;
+        Path outputDirectory = NativeImageGenerator.generatedFiles(a.getUniverse().getBigBang().getOptions());
+        Path tempDirectory = ImageSingletons.lookup(TemporaryBuildDirectoryProvider.class).getTemporaryBuildDirectory();
+        try {
+            if (Files.notExists(outputDirectory)) {
+                Files.createDirectory(outputDirectory);
+            }
+            Files.walkFileTree(tempDirectory, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    String fileName = file.getFileName().toString();
+                    if (fileName.endsWith(".o") || fileName.endsWith(".h")) {
+                        Path target = outputDirectory.resolve(fileName).toAbsolutePath();
+                        Files.copy(file, target, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            VMError.shouldNotReachHere("Fail to copy file from temporary", e);
+        }
+    }
 
     private void collectConfigs(Class<?> clazz, List<Method> methods) {
         reflectionCandidateTypes.putIfAbsent(clazz, false);

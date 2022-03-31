@@ -74,9 +74,13 @@
                     <target>11</target>
                     <compilerArgs>
                         <arg>--add-modules</arg>
-                        <arg>jdk.internal.vm.ci</arg>
+                        <arg>jdk.internal.vm.ci,jdk.internal.vm.compiler</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <!--OptionProcessor can automatically generate OptionDescriptor classes at javac time-->
                     <annotationProcessorPaths>
@@ -115,9 +119,11 @@
                     <doclint>none</doclint>
                     <additionalJOptions>
                         <additionalJOption>--add-modules</additionalJOption>
-                        <additionalJOption>jdk.internal.vm.ci</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.ci,jdk.internal.vm.compiler</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
                         <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</additionalJOption>
                     </additionalJOptions>
                 </configuration>
                 <version>3.2.0</version>
@@ -156,43 +162,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>preTest</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>com.alibaba.confidentialcomputing.enclave.AroundNativeTest$PreTest</mainClass>
-                            <classpathScope>test</classpathScope>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>postTest</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>com.alibaba.confidentialcomputing.enclave.AroundNativeTest$PostTest</mainClass>
-                            <classpathScope>test</classpathScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
-                <configuration>
-                    <environmentVariables>
-                        <LD_LIBRARY_PATH>/tmp/javaenclavetest-native-libs</LD_LIBRARY_PATH>
-                    </environmentVariables>
-                </configuration>
             </plugin>
         </plugins>
     </build>

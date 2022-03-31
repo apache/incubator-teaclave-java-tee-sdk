@@ -21,6 +21,9 @@ public abstract class NativeImageTest implements NativeImageTestable {
     private static final String SVM_OUT = "svm-out";
     private static final String SVM_ENCLAVE_LIB = "svm_enclave_sdk";
 
+    private static final boolean useStaticLink = true;
+    public static final String ENC_INVOKE_ENTRY_TEST_C = "enc_invoke_entry_test.c";
+
     static {
         if (!GRAALVM_HOME.toFile().exists()) {
             throw new RuntimeException("System environment variable GRAALVM_HOME is set to " + GRAALVM_HOME
@@ -99,11 +102,7 @@ public abstract class NativeImageTest implements NativeImageTestable {
         svmCompile();
         afterSVMCompile();
         compileJNILibrary();
-        Path so1 = workingDir.resolve("lib" + JNI_LIB_NAME + ".so");
-        Path so2 = workingDir.resolve("lib" + SVM_ENCLAVE_LIB + ".so");
-        copyFile(so1, AroundNativeTest.tmpTestNativeLibsDir.resolve(so1.getFileName()), null);
-        copyFile(so2, AroundNativeTest.tmpTestNativeLibsDir.resolve(so2.getFileName()), null);
-        System.loadLibrary(JNI_LIB_NAME);
+        System.load(workingDir.resolve("lib" + JNI_LIB_NAME + ".so").toAbsolutePath().toString());
     }
 
     private void collectSVMCompileItems() {
@@ -163,8 +162,11 @@ public abstract class NativeImageTest implements NativeImageTestable {
         });
         command.add(sb.deleteCharAt(sb.length() - 1).toString());
         command.add("--shared");
+        if (useStaticLink) {
+            command.add("--libc=musl");
+        }
         command.add("--no-fallback");
-        command.add("-H:OutputRelocatableImage=.");
+       // command.add("-H:OutputRelocatableImage=.");
         command.add("-H:Path=" + SVM_OUT);
         command.add("-H:+AllowIncompleteClasspath");
         command.add("-H:+ReportExceptionStackTraces");
@@ -185,15 +187,55 @@ public abstract class NativeImageTest implements NativeImageTestable {
         requiredFilePaths.add(svmOutputDir.resolve("lib" + SVM_ENCLAVE_LIB + ".h"));
         requiredFilePaths.add(svmOutputDir.resolve("graal_isolate.h"));
         requiredFilePaths.add(svmOutputDir.resolve("enc_environment.h"));
-        requiredFilePaths.add(svmOutputDir.resolve("lib" + SVM_ENCLAVE_LIB + ".so"));
+        if (useStaticLink) {
+            requiredFilePaths.add(svmOutputDir.resolve("lib" + SVM_ENCLAVE_LIB + ".o"));
+        } else {
+            requiredFilePaths.add(svmOutputDir.resolve("lib" + SVM_ENCLAVE_LIB + ".so"));
+        }
         requiredFilePaths.forEach(p -> copyFile(p, workingDir.resolve(p.getFileName()), null));
 
         List<String> command = new ArrayList<>();
+        if (useStaticLink) {
+            prepareStaticLinkingCommand(command);
+        } else {
+            prepareDynamicLinkingCommand(command);
+        }
+        executeNewProcess(command, workingDir);
+    }
+
+    private void prepareStaticLinkingCommand(List<String> command) {
+        Path graalvmHome = GRAALVM_HOME.toAbsolutePath();
+        command.add("gcc");
+        command.add("-z");
+        command.add("noexecstack");
+        command.add("-fPIC");
+        command.add("-I" + graalvmHome.resolve("include").toString());
+        command.add("-I" + graalvmHome.resolve("include/linux").toString());
+        command.add(ENC_INVOKE_ENTRY_TEST_C);
+        command.add("lib" + SVM_ENCLAVE_LIB + ".o");
+        command.add("-I.");
+        command.add("-L.");
+        command.add(graalvmHome.resolve("lib/svm/clibraries/linux-amd64/liblibchelper.a").toString());
+        command.add(graalvmHome.resolve("lib/svm/clibraries/linux-amd64/libjvm.a").toString());
+        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libnio.a").toString());
+        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libzip.a").toString());
+        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libnet.a").toString());
+        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libjava.a").toString());
+        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libsunec.a").toString());
+        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libfdlibm.a").toString());
+        command.add("-std=c99");
+        command.add("-lc");
+        command.add("-shared");
+        command.add("-o");
+        command.add("lib" + JNI_LIB_NAME + ".so");
+    }
+
+    private void prepareDynamicLinkingCommand(List<String> command) {
         command.add("gcc");
         command.add("-fPIC");
         command.add("-I" + GRAALVM_HOME.toAbsolutePath() + "/include");
         command.add("-I" + GRAALVM_HOME.toAbsolutePath() + "/include/linux");
-        command.add("enc_invoke_entry_test.c");
+        command.add(ENC_INVOKE_ENTRY_TEST_C);
         command.add("-I.");
         command.add("-L.");
         command.add("-std=c99");
@@ -202,7 +244,6 @@ public abstract class NativeImageTest implements NativeImageTestable {
         command.add("-shared");
         command.add("-o");
         command.add("lib" + JNI_LIB_NAME + ".so");
-        executeNewProcess(command, workingDir);
     }
 
     public static int executeNewProcess(List<String> command, Path workDir) {
