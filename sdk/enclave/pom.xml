@@ -81,6 +81,8 @@
                         <arg>jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.internal.vm.compiler/org.graalvm.compiler.word=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <!--OptionProcessor can automatically generate OptionDescriptor classes at javac time-->
                     <annotationProcessorPaths>
@@ -126,6 +128,8 @@
                         <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
                         <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.word=ALL-UNNAMED</additionalJOption>
                     </additionalJOptions>
                 </configuration>
                 <version>3.2.0</version>
@@ -167,6 +171,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
+                <configuration>
+                    <reuseForks>false</reuseForks>
+                </configuration>
             </plugin>
         </plugins>
     </build>

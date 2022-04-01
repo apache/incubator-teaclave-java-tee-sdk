@@ -30,6 +30,8 @@ import com.oracle.svm.core.c.libc.TemporaryBuildDirectoryProvider;
 import com.oracle.svm.core.util.VMError;
 import org.graalvm.nativeimage.ImageSingletons;
 import org.graalvm.nativeimage.c.CContext;
+import org.graalvm.nativeimage.c.function.CFunction;
+import org.graalvm.nativeimage.c.function.CFunction.Transition;
 import org.graalvm.nativeimage.c.function.CFunctionPointer;
 import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 import org.graalvm.nativeimage.c.struct.CField;
@@ -138,4 +140,13 @@ public class EnclaveEnvironment {
         @InvokeCFunctionPointer
         int invoke(VoidPointer data, long size);
     }
+
+    @CFunction(value = "physical_page_size")
+    public native static long getPhysicalPageSize();
+
+    @CFunction(value = "physical_page_number")
+    public native static long getPhysicalPageNumber();
+
+    @CFunction(value = "virtual_page_size", transition = Transition.NO_TRANSITION)
+    public native static long getVirtualPageSize();
 }

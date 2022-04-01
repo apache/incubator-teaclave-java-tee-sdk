@@ -10,6 +10,26 @@
 
 typedef int (*enclave_invoke)(graal_isolate_t* isolate, enc_data_t* input, enc_data_t* result, callbacks_t* callBacks);
 
+long physical_page_size(){
+#ifdef PAGE_SIZE
+    return PAGE_SIZE;
+#else
+    return 4096;
+#endif
+}
+
+long physical_page_number(){
+#ifdef HEAP_PAGES
+    return HEAP_PAGES;
+#else
+    return 24576;
+#endif
+}
+
+long virtual_page_size(){
+    return 4096;
+}
+
  char* memcpy_char_pointer(char* src, int len){
     int size = sizeof(char);
     char *dest = (char*)malloc(len*size);

@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class NativeImageTest implements NativeImageTestable {
@@ -171,7 +173,8 @@ public abstract class NativeImageTest implements NativeImageTestable {
         command.add("-H:+ReportExceptionStackTraces");
         command.add("-H:Name=lib" + SVM_ENCLAVE_LIB);
         command.add("-H:-DeleteLocalSymbols");
-        command.add("-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser");
+        command.add("-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser," +
+                "com.oracle.svm.core.posix.linux.LinuxPhysicalMemory$PhysicalMemoryFeature");
         List<String> extraOptions = extraSVMOptions();
         if (extraOptions != null && !extraOptions.isEmpty()) {
             command.addAll(extraOptions);
@@ -183,7 +186,7 @@ public abstract class NativeImageTest implements NativeImageTestable {
         System.out.println("###Prepare JNI library ...###");
         List<Path> requiredFilePaths = new ArrayList<>();
         requiredFilePaths.add(testClassesDir.resolve("native/com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper.h"));
-        requiredFilePaths.add(testClassesDir.resolve("native/enc_invoke_entry_test.c"));
+        requiredFilePaths.add(testClassesDir.resolve("native/" + ENC_INVOKE_ENTRY_TEST_C));
         requiredFilePaths.add(svmOutputDir.resolve("lib" + SVM_ENCLAVE_LIB + ".h"));
         requiredFilePaths.add(svmOutputDir.resolve("graal_isolate.h"));
         requiredFilePaths.add(svmOutputDir.resolve("enc_environment.h"));
@@ -200,7 +203,12 @@ public abstract class NativeImageTest implements NativeImageTestable {
         } else {
             prepareDynamicLinkingCommand(command);
         }
+        command.addAll(addMacros());
         executeNewProcess(command, workingDir);
+    }
+
+    protected Collection<String> addMacros(){
+        return Collections.EMPTY_LIST;
     }
 
     private void prepareStaticLinkingCommand(List<String> command) {
