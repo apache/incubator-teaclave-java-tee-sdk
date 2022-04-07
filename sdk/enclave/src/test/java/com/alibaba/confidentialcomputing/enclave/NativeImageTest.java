@@ -1,11 +1,7 @@
 package com.alibaba.confidentialcomputing.enclave;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.SequenceInputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,9 +12,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.alibaba.confidentialcomputing.enclave.NativeCommandUtil.GRAALVM_HOME;
+import static com.alibaba.confidentialcomputing.enclave.SUNECReplaceFeature.LIBENC_SUNEC_A;
+
 public abstract class NativeImageTest implements NativeImageTestable {
     private static final String JNI_LIB_NAME = "encinvokeentrytest";
-    public static final Path GRAALVM_HOME = Paths.get(System.getenv("GRAALVM_HOME"));
     public static final Path MVN_BUILD_DIR = Paths.get("target");
     private static final String SVM_OUT = "svm-out";
     private static final String SVM_ENCLAVE_LIB = "svm_enclave_sdk";
@@ -179,7 +177,7 @@ public abstract class NativeImageTest implements NativeImageTestable {
         if (extraOptions != null && !extraOptions.isEmpty()) {
             command.addAll(extraOptions);
         }
-        NativeImageTest.executeNewProcess(command, workingDir);
+        NativeCommandUtil.executeNewProcess(command, workingDir);
     }
 
     private void compileJNILibrary() {
@@ -204,7 +202,7 @@ public abstract class NativeImageTest implements NativeImageTestable {
             prepareDynamicLinkingCommand(command);
         }
         command.addAll(addMacros());
-        executeNewProcess(command, workingDir);
+        NativeCommandUtil.executeNewProcess(command, workingDir);
     }
 
     protected Collection<String> addMacros(){
@@ -229,7 +227,9 @@ public abstract class NativeImageTest implements NativeImageTestable {
         command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libzip.a").toString());
         command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libnet.a").toString());
         command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libjava.a").toString());
-        command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libsunec.a").toString());
+        if (Files.exists(svmOutputDir.toAbsolutePath().resolve(LIBENC_SUNEC_A))) {
+            command.add(svmOutputDir.toAbsolutePath().resolve(LIBENC_SUNEC_A).toString());
+        }
         command.add(graalvmHome.resolve("lib/static/linux-amd64/musl/libfdlibm.a").toString());
         command.add("-std=c99");
         command.add("-lc");
@@ -254,40 +254,6 @@ public abstract class NativeImageTest implements NativeImageTestable {
         command.add("lib" + JNI_LIB_NAME + ".so");
     }
 
-    public static int executeNewProcess(List<String> command, Path workDir) {
-        if (command == null || command.isEmpty()) {
-            throw new RuntimeException("Didn't provide any execution command.");
-        }
-        ProcessBuilder pb = new ProcessBuilder(command).directory(workDir.toFile());
-        String oneLineCommand = command.stream().reduce((e1, e2) -> e1 + " " + e2).orElse("");
-        System.out.println(oneLineCommand);
-        Process p = null;
-        try {
-            p = pb.start();
-            SequenceInputStream sis = new SequenceInputStream(p.getInputStream(), p.getErrorStream());
-            InputStreamReader inst = new InputStreamReader(sis, StandardCharsets.UTF_8);
-            StringBuilder sb = new StringBuilder();
-            try (BufferedReader br = new BufferedReader(inst)) {
-                String res;
-                while ((res = br.readLine()) != null) {
-                    sb.append(res).append("\n");
-                }
-            }
-            System.out.println(sb);
-            int exitCode = p.waitFor();
-            if (exitCode != 0) {
-                throw new RuntimeException("Failed to execute command:\n " + oneLineCommand +
-                        "\n Working directory is :" + workDir.toString() + "\n The exit code is " + exitCode);
-            }
-            return 0;
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Failed to execute command:\n " + oneLineCommand, e);
-        } finally {
-            if (p != null) {
-                p.destroy();
-            }
-        }
-    }
 
     public static void copyFile(Path source, Path dest, String errMSg) {
         try {

@@ -96,7 +96,7 @@
                     <target>11</target>
                     <compilerArgs>
                         <arg>--add-modules</arg>
-                        <arg>jdk.internal.vm.ci,jdk.internal.vm.compiler</arg>
+                        <arg>jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.crypto.ec</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</arg>
                         <arg>--add-exports</arg>
@@ -105,6 +105,8 @@
                         <arg>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.compiler/org.graalvm.compiler.word=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.crypto.ec/sun.security.ec=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <!--OptionProcessor can automatically generate OptionDescriptor classes at javac time-->
                     <annotationProcessorPaths>
@@ -143,7 +145,7 @@
                     <doclint>none</doclint>
                     <additionalJOptions>
                         <additionalJOption>--add-modules</additionalJOption>
-                        <additionalJOption>jdk.internal.vm.ci,jdk.internal.vm.compiler</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.crypto.ec</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
                         <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
@@ -152,6 +154,8 @@
                         <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
                         <additionalJOption>jdk.internal.vm.compiler/org.graalvm.compiler.word=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.crypto.ec/sun.security.ec=ALL-UNNAMED</additionalJOption>
                     </additionalJOptions>
                 </configuration>
                 <version>3.2.0</version>
