@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD_IMAGE=javaenclave_build
-BUILD_TAG=v0.1.0
+BUILD_TAG=v0.1.1
 
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 

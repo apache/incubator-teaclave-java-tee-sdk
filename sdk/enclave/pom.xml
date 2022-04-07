@@ -51,6 +51,12 @@
                 <configuration>
                     <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                     <doclint>none</doclint>
+                    <additionalJOptions>
+                        <additionalJOption>--add-modules</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.ci</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</additionalJOption>
+                    </additionalJOptions>
                 </configuration>
                 <version>3.2.0</version>
                 <executions>

@@ -8,4 +8,5 @@ ENV DEBIAN_FRONTEND noninteractive
 # install openjdk11 and maven.
 RUN apt-get update && \
     echo -e 'yes\n' | apt-get install -y openjdk-11-jdk && \
-    echo -e 'yes\n' | apt-get install -y maven
+    echo -e 'yes\n' | apt-get install -y maven && \
+    echo -e 'yes\n' | apt-get install -y wget
