@@ -1,5 +1,7 @@
 package com.alibaba.confidentialcomputing.host.exception;
 
+import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
+
 /**
  * ServicesLoadingException {@link ServicesLoadingException} is thrown when exception happen
  * during an enclave's service was loading.

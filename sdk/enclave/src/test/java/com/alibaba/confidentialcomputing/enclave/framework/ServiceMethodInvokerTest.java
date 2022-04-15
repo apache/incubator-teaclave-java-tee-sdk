@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class ServiceMethodInvokerTest {
 
     private static ServiceMethodInvoker serviceMethodInvoker = new ServiceMethodInvoker();
@@ -63,7 +65,8 @@ public class ServiceMethodInvokerTest {
         assertNull(wrappedResult, "Expect to have non-null result from invoking service method call.");
         Throwable e = result.getException();
         assertNotNull(e);
-        assertTrue(e instanceof ArithmeticException);
+        assertTrue(e instanceof InvocationTargetException);
+        assertTrue(((InvocationTargetException) e).getCause() instanceof ArithmeticException);
     }
 
     /**
@@ -125,7 +128,7 @@ public class ServiceMethodInvokerTest {
     }
 
     @Test
-    public void testDefaultMethod(){
+    public void testDefaultMethod() {
         EnclaveInvocationResult result = callServiceImplMethod(services[0],
                 "getConstant",
                 EMPTY_STRING_ARRAY,
@@ -138,7 +141,7 @@ public class ServiceMethodInvokerTest {
     }
 
     @Test
-    public void testGrandChildMethod(){
+    public void testGrandChildMethod() {
         EnclaveInvocationResult result = callNumericAdd(services[2], 1, 2);
         assertNotNull(result);
         Object wrappedResult = result.getResult();

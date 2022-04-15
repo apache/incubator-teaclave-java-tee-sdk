@@ -2,6 +2,7 @@ package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.common.EnclaveInvocationContext;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
+import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveMethodInvokingException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -49,9 +50,10 @@ class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
             result = enclave.InvokeEnclaveMethod(methodInvokeMetaWrapper);
         } catch (EnclaveMethodInvokingException e) {
             // Get cause exception if it has one.
-            Throwable cause = e.getCause();
+            ConfidentialComputingException enclaveException = (ConfidentialComputingException) e.getCause();
+            Throwable enclaveCauseException = enclaveException.getCause();
             Class<?>[] exceptionTypes = method.getExceptionTypes();
-            if (cause != null && cause instanceof InvocationTargetException) {
+            if (enclaveCauseException instanceof InvocationTargetException) {
                 // Check whether cause exception matches one of the method's exception declaration.
                 // If it's true, it illustrates that an exception happened in enclave when the service
                 // method was invoked in enclave, we should throw this exception directly and user will
@@ -59,9 +61,10 @@ class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
                 // If it's false, it illustrates that an exception happened in host side or enclave side,
                 // but the exception is not belong to the method's declaration. In the case we should throw
                 // EnclaveMethodInvokingException again.
+                Throwable rootCause = enclaveCauseException.getCause();
                 for (Class<?> exception : exceptionTypes) {
-                    if (exception == cause.getCause().getClass()) {
-                        throw cause.getCause();
+                    if (exception == rootCause.getClass()) {
+                        throw rootCause;
                     }
                 }
             }

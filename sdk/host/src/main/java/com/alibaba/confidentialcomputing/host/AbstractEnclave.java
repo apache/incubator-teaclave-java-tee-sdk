@@ -153,13 +153,12 @@ abstract class AbstractEnclave implements Enclave {
                 throw new EnclaveMethodInvokingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }
             Throwable exception = resultWrapper.getException();
-            Object result = resultWrapper.getResult();
             if (exception != null) {
                 EnclaveMethodInvokingException e = new EnclaveMethodInvokingException("method invoke exception happened in enclave.");
                 e.initCause(exception);
                 throw e;
             }
-            return result;
+            return resultWrapper.getResult();
         } finally {
             getEnclaveContext().getEnclaveToken().restoreToken();
         }

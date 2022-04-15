@@ -1,5 +1,7 @@
 package com.alibaba.confidentialcomputing.host.exception;
 
+import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
+
 /**
  * EnclaveMethodInvokingException {@link EnclaveMethodInvokingException} is thrown when exception happen
  * during an enclave's method was invoking.

@@ -1,6 +1,7 @@
 package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.common.*;
+import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
 import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 
@@ -145,7 +146,7 @@ class MockTestEnclave extends AbstractEnclave {
             method.setAccessible(true);
             invokeRet = method.invoke(instance, args);
         } catch (Throwable e) {
-            exception = e;
+            exception = new ConfidentialComputingException(e);
         } finally {
             result = new EnclaveInvocationResult(invokeRet, exception);
         }

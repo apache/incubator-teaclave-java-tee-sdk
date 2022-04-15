@@ -1,5 +1,7 @@
 package com.alibaba.confidentialcomputing.host.exception;
 
+import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
+
 /**
  * RemoteAttestationException {@link RemoteAttestationException} is thrown when an enclave generates remote
  * attestation report and returns an error value.

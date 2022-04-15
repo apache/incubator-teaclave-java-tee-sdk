@@ -59,7 +59,7 @@ public final class ServiceMethodInvoker implements EnclaveMethodInvoker<EnclaveI
                 returnedValue = method.invoke(receiverInstance, inputData.getArguments());
             } catch (InvocationTargetException e) {
                 // The exception happens in the vocation is the user's exception, it will be returned to the user.
-                throwable = e.getCause();
+                throwable = e;
             } catch (Throwable t) {
                 return new EnclaveInvocationResult(null, new ConfidentialComputingException(t));
             }

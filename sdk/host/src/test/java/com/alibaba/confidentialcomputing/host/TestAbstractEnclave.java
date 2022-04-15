@@ -35,12 +35,12 @@ class TestAbstractEnclave {
         assertEquals(1, queue.size());
         ((MockTestEnclave) enclave).unloadService((ServiceHandler) queue.poll());
         assertEquals(0, ((MockTestEnclave) enclave).getServicesNum());
-        enclave.destroy();
-        assertThrows(ServicesLoadingException.class, () -> enclave.load(Service.class));
         try {
             service.doNothing();
         } catch (UndeclaredThrowableException e) {
             assertEquals(e.getCause().getClass(), EnclaveMethodInvokingException.class);
         }
+        enclave.destroy();
+        assertThrows(ServicesLoadingException.class, () -> enclave.load(Service.class));
     }
 }

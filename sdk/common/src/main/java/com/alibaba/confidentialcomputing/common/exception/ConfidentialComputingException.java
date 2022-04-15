@@ -2,8 +2,7 @@ package com.alibaba.confidentialcomputing.common.exception;
 
 /**
  * ConfidentialComputingException {@link ConfidentialComputingException} is base exception in
- * JavaEnclave's enclave. All exceptions thrown in JavaEnclave enclave will inherit this
- * base exception.
+ * JavaEnclave. All exceptions thrown in JavaEnclave will inherit this base exception.
  * Programmers need to handle ConfidentialComputingException seriously.
  */
 public class ConfidentialComputingException extends Exception {
