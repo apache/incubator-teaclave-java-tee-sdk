@@ -84,7 +84,7 @@ public class EnclaveEnvironment {
         }
     }
 
-    @CStruct("enc_data")
+    @CStruct("enc_data_t")
     public interface EncData extends PointerBase {
         @CField("data_len")
         int getLen();
@@ -99,7 +99,7 @@ public class EnclaveEnvironment {
         void setData(CCharPointer data);
     }
 
-    @CStruct("callbacks")
+    @CStruct("callbacks_t")
     public interface CallBacks extends PointerBase {
         @CField("exception_handler")
         ExceptionHandleFunctionPointer getExceptionHandler();

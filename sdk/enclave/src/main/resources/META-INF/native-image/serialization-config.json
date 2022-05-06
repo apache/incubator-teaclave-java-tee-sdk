@@ -30,6 +30,15 @@
   "name":"java.io.IOException"
   },
   {
+    "name":"java.lang.ClassCastException"
+  },
+  {
+    "name":"java.lang.reflect.InvocationTargetException"
+  },
+  {
+    "name":"java.lang.NullPointerException"
+  },
+  {
   "name":"java.io.ObjectStreamException"
   },
   {

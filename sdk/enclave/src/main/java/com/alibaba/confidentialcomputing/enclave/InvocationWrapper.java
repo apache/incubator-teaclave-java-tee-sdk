@@ -46,7 +46,6 @@ public class InvocationWrapper {
             CCharPointer returned;
             if (callBacks.isNonNull() && callBacks.getMemCpyCCharPointerFunctionPointer().isNonNull()) {
                 returned = callBacks.getMemCpyCCharPointerFunctionPointer().invoke(byteHolder.get(), returnedValLen);
-
             } else {
                 returned = byteHolder.get();
                 System.out.println("Warning: Not calling call backs in native, there is memory leak risk.");

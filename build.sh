@@ -25,4 +25,5 @@ mvn install:install-file -Dfile=$GRAALVM_HOME/lib/svm/builder/native-image-base.
 popd > /dev/null
 rm -rf jartmp
 
-cd "${WORKDIR}"/sdk && mvn clean package
+cd "${WORKDIR}"/sdk && mvn clean install
+cd "${WORKDIR}"/test && mvn -Pnative -e clean package

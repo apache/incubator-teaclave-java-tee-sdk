@@ -75,13 +75,11 @@ class MockTestEnclave extends AbstractEnclave {
 
     @Override
     InnerNativeInvocationResult loadServiceNative(byte[] payload) {
-        EnclaveInvocationContext invocationContext;
         List<ServiceHandler> handlers = new ArrayList<>();
         Throwable exception = null;
         EnclaveInvocationResult result;
         try {
-            invocationContext = (EnclaveInvocationContext) SerializationHelper.deserialize(payload);
-            String interfaceName = invocationContext.getServiceHandler().getServiceInterfaceName();
+            String interfaceName = (String) SerializationHelper.deserialize(payload);
             Class<?> service = Class.forName(interfaceName);
             Iterator<?> services = ServiceLoader.load(service).iterator();
             while (services.hasNext()) {
@@ -107,12 +105,12 @@ class MockTestEnclave extends AbstractEnclave {
 
     @Override
     InnerNativeInvocationResult unloadServiceNative(byte[] payload) {
-        EnclaveInvocationContext invocationContext;
+        ServiceHandler serviceHandler;
         Throwable exception = null;
         EnclaveInvocationResult result;
         try {
-            invocationContext = (EnclaveInvocationContext) SerializationHelper.deserialize(payload);
-            instancesRegisterCenter.remove(invocationContext.getServiceHandler().getInstanceIdentity());
+            serviceHandler = (ServiceHandler) SerializationHelper.deserialize(payload);
+            instancesRegisterCenter.remove(serviceHandler.getInstanceIdentity());
         } catch (IOException | ClassNotFoundException e) {
             exception = e;
         } finally {

@@ -8,7 +8,7 @@
 #include "libsvm_enclave_sdk.h"
 #endif
 
-typedef int (*enclave_invoke)(graal_isolate_t* isolate, enc_data* input, enc_data* result, callbacks* callBacks);
+typedef int (*enclave_invoke)(graal_isolate_t* isolate, enc_data_t* input, enc_data_t* result, callbacks_t* callBacks);
 
  char* memcpy_char_pointer(char* src, int len){
     int size = sizeof(char);
@@ -23,15 +23,15 @@ static graal_isolate_t *isolate = NULL;
 jbyteArray enclave_call(JNIEnv* env, jclass clazz, jbyteArray data, enclave_invoke invoke){
 jboolean isCopy;
 	jbyte* a = (*env)->GetByteArrayElements(env, data, &isCopy);
-	enc_data invoke_data;
+	enc_data_t invoke_data;
 	invoke_data.data=(char*)a;
 	invoke_data.data_len=(*env)->GetArrayLength(env, data);
 
-    callbacks callback_methods;
+    callbacks_t callback_methods;
     callback_methods.memcpy_char_pointer=&memcpy_char_pointer;
     callback_methods.exception_handler=NULL; // Must explicitly set
 
-    enc_data ret;
+    enc_data_t ret;
     int exit_code = invoke(isolate, &invoke_data, &ret, &callback_methods);
     jbyteArray retVal;
     if(exit_code == 0 ){

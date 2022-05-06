@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba.confidentialcomputing</groupId>
-    <artifactId>JavaEnclave</artifactId>
+    <artifactId>test</artifactId>
     <packaging>pom</packaging>
     <version>0.1.0</version>
-    <name>JavaEnclave</name>
+    <name>test</name>
     <url></url>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -31,10 +32,19 @@
                 <version>0.1.0</version>
             </dependency>
             <dependency>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
-                <scope>test</scope>
+                <groupId>com.alibaba.confidentialcomputing.test</groupId>
+                <artifactId>common</artifactId>
+                <version>0.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.confidentialcomputing.test</groupId>
+                <artifactId>enclave</artifactId>
+                <version>0.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.confidentialcomputing.test</groupId>
+                <artifactId>host</artifactId>
+                <version>0.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -45,6 +55,12 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-engine</artifactId>
+                <version>1.8.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-launcher</artifactId>
                 <version>1.8.2</version>
                 <scope>test</scope>
             </dependency>

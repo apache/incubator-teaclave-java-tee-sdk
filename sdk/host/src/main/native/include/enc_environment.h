@@ -1,8 +1,15 @@
- typedef struct enc_data_struct{
+#ifndef __ENC_ENVIRONMENT_H
+#define __ENC_ENVIRONMENT_H
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+typedef struct enc_data_struct{
     //char array is used as byte array to store serialized data
     char* data;
     int data_len;
- }enc_data_t;
+}enc_data_t;
 
 typedef struct callback_functions_struct{
      /*
@@ -15,3 +22,8 @@ typedef struct callback_functions_struct{
 
     char* (*memcpy_char_pointer)(char* src, int len);
 }callbacks_t;
+
+#if defined(__cplusplus)
+}
+#endif
+#endif

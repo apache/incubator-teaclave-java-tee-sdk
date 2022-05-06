@@ -58,13 +58,11 @@ abstract class AbstractEnclave implements Enclave {
         try {
             // Only need to provide service's interface name is enough to load service
             // in enclave.
-            EnclaveInvocationContext parasWrapper = new EnclaveInvocationContext(
-                    new ServiceHandler(service.getName()));
             byte[] payload;
             try {
-                payload = SerializationHelper.serialize(parasWrapper);
+                payload = SerializationHelper.serialize(service.getName());
             } catch (IOException e) {
-                throw new ServicesLoadingException("EnclaveInvokeMetaWrapper serialization failed.", e);
+                throw new ServicesLoadingException("service name serialization failed.", e);
             }
             InnerNativeInvocationResult resultNativeWrapper = loadServiceNative(payload);
             // If loadServiceNative native call return value is error, an ServicesLoadingException exception
@@ -104,12 +102,11 @@ abstract class AbstractEnclave implements Enclave {
             throw new ServicesUnloadingException("enclave was destroyed.");
         }
         try {
-            EnclaveInvocationContext parasWrapper = new EnclaveInvocationContext(service);
             byte[] payload;
             try {
-                payload = SerializationHelper.serialize(parasWrapper);
+                payload = SerializationHelper.serialize(service);
             } catch (IOException e) {
-                throw new ServicesUnloadingException("EnclaveInvokeMetaWrapper serialization failed.", e);
+                throw new ServicesUnloadingException("unload service serialization failed.", e);
             }
             InnerNativeInvocationResult resultNativeWrapper = unloadServiceNative(payload);
             if (resultNativeWrapper.getRet() != 0) {
