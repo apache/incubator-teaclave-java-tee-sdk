@@ -105,6 +105,9 @@ public class EnclaveFeature implements Feature {
                         serializationCandidateTypes.putIfAbsent(pType, false);
                     }
                     serializationCandidateTypes.putIfAbsent(method.getReturnType(), false);
+                    for (Class<?> expType : method.getExceptionTypes()) {
+                        serializationCandidateTypes.putIfAbsent(expType, false);
+                    }
                     reflectionCandidateMethods.putIfAbsent(method, false);
                 }
         );

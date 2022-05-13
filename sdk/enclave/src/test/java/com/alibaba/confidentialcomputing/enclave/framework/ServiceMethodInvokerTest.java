@@ -30,7 +30,7 @@ public class ServiceMethodInvokerTest {
     private ServiceHandler[] services;
 
     @BeforeAll
-    public static void svmCheck(){
+    public static void svmCheck() {
         assumeFalse(isInNativeImage());
     }
 
@@ -71,7 +71,7 @@ public class ServiceMethodInvokerTest {
         assertNotNull(result);
         Object wrappedResult = result.getResult();
         assertNull(wrappedResult, "Expect to have non-null result from invoking service method call.");
-        Throwable e = result.getException();
+        Throwable e = result.getException().getCause();
         assertNotNull(e);
         assertTrue(e instanceof InvocationTargetException);
         assertTrue(((InvocationTargetException) e).getCause() instanceof ArithmeticException);
