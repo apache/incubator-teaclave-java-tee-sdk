@@ -18,6 +18,7 @@
                 <directory>${project.basedir}/../enclave/target/svm-output</directory>
                 <includes>
                     <include>**/*.so</include>
+                    <include>**/*.signed</include>
                 </includes>
             </resource>
         </resources>

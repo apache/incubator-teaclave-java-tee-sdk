@@ -96,14 +96,11 @@ class MockInSvmEnclave extends AbstractEnclave {
             // interrupt enclave services' recycler firstly.
             this.getEnclaveContext().getEnclaveServicesRecycler().interruptServiceRecycler();
             // destroy svm isolate.
-            int ret = nativeSvmDetachIsolate(
-                    enclaveSvmSdkHandle,
-                    isolateThreadHandle);
+            int ret = nativeSvmDetachIsolate(enclaveSvmSdkHandle, isolateThreadHandle);
             if (ret != 0) {
                 throw new EnclaveDestroyingException("isolate destroy native call failed.");
             }
-            ret = nativeDestroyEnclave(
-                    enclaveSvmSdkHandle);
+            ret = nativeDestroyEnclave(enclaveSvmSdkHandle);
             if (ret != 0) {
                 throw new EnclaveDestroyingException("enclave destroy native call failed.");
             }

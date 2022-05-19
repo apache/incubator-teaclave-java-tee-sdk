@@ -27,7 +27,7 @@
                         <configuration>
                             <executable>bash</executable>
                             <arguments>
-                                <argument>${project.basedir}/src/main/native/make.sh</argument>
+                                <argument>${project.basedir}/../native/script/build_host_sdk/make.sh</argument>
                                 <argument>${project.basedir}</argument>
                                 <argument>${com.alibaba.enclave.platform}</argument>
                                 <argument>build</argument>

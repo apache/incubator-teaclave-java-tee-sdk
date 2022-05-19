@@ -22,6 +22,7 @@ public class EnclaveEntry {
     }
 
     @SuppressWarnings("unused")
+    // Align with head define file enc_exported_symbol.h if it changes.
     @CEntryPoint(name = "java_loadservice_invoke")
     @CEntryPointOptions(prologue = EnclavePrologue.class)
     public static int loadService(Isolate isolate, EncData input, EncData result, CallBacks callBacks) {
@@ -36,6 +37,7 @@ public class EnclaveEntry {
     }
 
     @SuppressWarnings("unused")
+    // Align with head define file enc_exported_symbol.h if it changes.
     @CEntryPoint(name = "java_unloadservice_invoke")
     @CEntryPointOptions(prologue = EnclavePrologue.class)
     public static int unloadService(Isolate isolate, EncData input, EncData result, CallBacks callBacks) {
@@ -50,6 +52,7 @@ public class EnclaveEntry {
     }
 
     @SuppressWarnings("unused")
+    // Align with head define file enc_exported_symbol.h if it changes.
     @CEntryPoint(name = "java_enclave_invoke")
     @CEntryPointOptions(prologue = EnclavePrologue.class)
     public static int javaEnclaveInvoke(Isolate isolate, EncData input, EncData result, CallBacks callBacks) {

@@ -1,0 +1,27 @@
+enclave {
+    include "sgx_report.h"
+
+    from "sgx_tstdc.edl"                  import *;
+    from "sgx_pthread.edl"                import *;
+    from "openenclave/edl/syscall.edl"    import *;
+
+    trusted {
+        // create a graal isolate;
+        public int enclave_svm_isolate_create([out, size=8] void* isolate, [out, size=8] void* isolateThread);
+        // load enclave services instance;
+        public int load_enclave_svm_services(uint64_t isolate, [in, size=len0] void* input,  size_t len0, [out, size=8] void* output, [out, size=8] size_t* len1);
+        // invoke enclave instance's services;
+        public int invoke_enclave_svm_service(uint64_t isolate, [in, size=len0] void* input,  size_t len0, [out, size=8] void* output, [out, size=8] size_t* len1);
+        // unload enclave services instance;
+        public int unload_enclave_svm_service(uint64_t isolate, [in, size=len0] void* input,  size_t len0, [out, size=8] void* output, [out, size=8] size_t* len1);
+        // destroy a graal isolate;
+        public int enclave_svm_isolate_destroy(uint64_t isolateThread);
+    };
+
+    untrusted {
+        // rlimit syscall.
+        int ocall_getrlimit(int resource, [out, size=16]void *rlim);
+        // malloc memory buffer from host side to store an returned object's serialization result.
+        int ocall_malloc(size_t size, [out, size=8]void *ptr);
+    };
+};

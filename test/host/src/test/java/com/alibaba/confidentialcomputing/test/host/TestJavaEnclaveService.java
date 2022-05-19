@@ -56,17 +56,20 @@ public class TestJavaEnclaveService {
             EnclaveCreatingException, EnclaveDestroyingException, ServicesLoadingException {
         assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_JVM, "Hello World"));
         assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_SVM, "Hello World"));
+        assertEquals("Hello World", sayHelloService(EnclaveType.TEE_SDK, "Hello World"));
     }
 
     @Test
     public void testReflectionCallService() throws ServicesLoadingException, EnclaveCreatingException, EnclaveDestroyingException {
         reflectionCallService(EnclaveType.MOCK_IN_JVM);
         reflectionCallService(EnclaveType.MOCK_IN_SVM);
+        reflectionCallService(EnclaveType.TEE_SDK);
     }
 
     @Test
     public void testJavaEnclaveException() throws ServicesLoadingException, EnclaveCreatingException, EnclaveDestroyingException {
         javaEnclaveException(EnclaveType.MOCK_IN_JVM);
         javaEnclaveException(EnclaveType.MOCK_IN_SVM);
+        javaEnclaveException(EnclaveType.TEE_SDK);
     }
 }

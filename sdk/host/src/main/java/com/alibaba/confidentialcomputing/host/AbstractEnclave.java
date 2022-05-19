@@ -180,7 +180,7 @@ abstract class AbstractEnclave implements Enclave {
         Class<?>[] serviceInterface = new Class[1];
         serviceInterface[0] = service;
 
-        List<T> serviceProxies = new ArrayList<T>();
+        List<T> serviceProxies = new ArrayList<>();
         ServiceHandler[] services = loadService(service);
         for (ServiceHandler serviceHandler : services) {
             ProxyEnclaveInvocationHandler handler = new ProxyEnclaveInvocationHandler(this, serviceHandler);

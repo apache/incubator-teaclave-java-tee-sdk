@@ -10,11 +10,17 @@ import java.io.IOException;
  * TeeSdkEnclave is a sgx2 enclave based on Alibaba cloud's tee sdk.
  */
 class TeeSdkEnclave extends AbstractEnclave {
-    private final static String JNI_EXTRACTED_PACKAGE_PATH = "jni/lib_jni_tee_sdk.so";
-    private final static String TEE_SDK_SIGNED_PACKAGE_PATH = "libs/lib_enclave_tee_sdk.signed";
+    private final static String JNI_EXTRACTED_PACKAGE_PATH = "jni/lib_jni_tee_sdk_svm.so";
+    private final static String TEE_SDK_SIGNED_PACKAGE_PATH = "lib_tee_sdk_svm_load.signed";
     private static volatile TeeSdkExtractTempPath extractTempPath;
-    private final EnclaveNativeContext nativeHandlerContext = new EnclaveNativeContext(
-            0, 0, 0);
+
+    // enclaveHandle stores created enclave's handle id.
+    private long enclaveHandle;
+    // isolate stores svm created isolate instance.
+    // In JavaEnclave only one isolateHandle instance will be created.
+    private long isolateHandle;
+    // isolateThreadHandle stores the first attached isolateThread Handle.
+    private long isolateThreadHandle;
 
     TeeSdkEnclave(EnclaveDebug mode) throws EnclaveCreatingException {
         // Set EnclaveContext for this enclave instance.
@@ -33,7 +39,8 @@ class TeeSdkEnclave extends AbstractEnclave {
                                 TeeSdkEnclave.class.getClassLoader(),
                                 TEE_SDK_SIGNED_PACKAGE_PATH);
                         extractTempPath = new TeeSdkExtractTempPath(jniTempFilePath, teeSdkSignedFilePath);
-                        System.load(jniTempFilePath);
+                        System.load(extractTempPath.getJniTempFilePath());
+                        registerNatives();
                     } catch (IOException e) {
                         throw new EnclaveCreatingException("extracting tee sdk jni .so or signed .so failed.", e);
                     }
@@ -47,11 +54,13 @@ class TeeSdkEnclave extends AbstractEnclave {
             throw new EnclaveCreatingException("create tee sdk enclave by native calling failed.");
         }
         // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
-        ret = nativeSvmAttachIsolate(nativeHandlerContext.getEnclaveHandle());
+        ret = nativeSvmAttachIsolate(enclaveHandle);
         if (ret != 0) {
             throw new EnclaveCreatingException("create svm isolate by native calling failed.");
         }
     }
+
+    private static native void registerNatives();
 
     private native int nativeCreateEnclave(int mode, String path);
 
@@ -96,26 +105,17 @@ class TeeSdkEnclave extends AbstractEnclave {
 
     @Override
     InnerNativeInvocationResult loadServiceNative(byte[] payload) {
-        return nativeLoadService(
-                nativeHandlerContext.getEnclaveHandle(),
-                nativeHandlerContext.getIsolateHandle(),
-                payload);
+        return nativeLoadService(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
     InnerNativeInvocationResult unloadServiceNative(byte[] payload) {
-        return nativeUnloadService(
-                nativeHandlerContext.getEnclaveHandle(),
-                nativeHandlerContext.getIsolateHandle(),
-                payload);
+        return nativeUnloadService(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
     InnerNativeInvocationResult invokeMethodNative(byte[] payload) {
-        return nativeInvokeMethod(
-                nativeHandlerContext.getEnclaveHandle(),
-                nativeHandlerContext.getIsolateHandle(),
-                payload);
+        return nativeInvokeMethod(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
@@ -125,13 +125,12 @@ class TeeSdkEnclave extends AbstractEnclave {
             // interrupt enclave services' recycler firstly.
             this.getEnclaveContext().getEnclaveServicesRecycler().interruptServiceRecycler();
             // destroy svm isolate.
-            int ret = nativeSvmDetachIsolate(nativeHandlerContext.getEnclaveHandle(),
-                    nativeHandlerContext.getIsolateThreadHandle());
+            int ret = nativeSvmDetachIsolate(enclaveHandle, isolateThreadHandle);
             if (ret != 0) {
                 throw new EnclaveDestroyingException("isolate destroy native call failed.");
             }
             // destroy the enclave.
-            ret = nativeDestroyEnclave(nativeHandlerContext.getEnclaveHandle());
+            ret = nativeDestroyEnclave(enclaveHandle);
             if (ret != 0) {
                 throw new EnclaveDestroyingException("enclave destroy native call failed.");
             }
@@ -153,38 +152,6 @@ class TeeSdkEnclave extends AbstractEnclave {
 
         String getTeeSdkSignedFilePath() {
             return teeSdkSignedFilePath;
-        }
-    }
-
-    /**
-     * JavaEnclave will create svm isolate handle and isolateThread handle by native call,
-     * so EnclaveNativeContextCache will cache them for usage.
-     */
-    class EnclaveNativeContext {
-        // enclaveHandle stores created enclave's handle id.
-        private final long enclaveHandle;
-        // isolate stores svm created isolate instance.
-        // In JavaEnclave only one isolateHandle instance will be created.
-        private final long isolateHandle;
-        // isolateThreadHandle stores the first attached isolateThread Handle.
-        private final long isolateThreadHandle;
-
-        EnclaveNativeContext(long enclaveHandle, long isolateHandle, long isolateThreadHandle) {
-            this.enclaveHandle = enclaveHandle;
-            this.isolateHandle = isolateHandle;
-            this.isolateThreadHandle = isolateThreadHandle;
-        }
-
-        long getEnclaveHandle() {
-            return enclaveHandle;
-        }
-
-        long getIsolateHandle() {
-            return isolateHandle;
-        }
-
-        long getIsolateThreadHandle() {
-            return isolateThreadHandle;
         }
     }
 }

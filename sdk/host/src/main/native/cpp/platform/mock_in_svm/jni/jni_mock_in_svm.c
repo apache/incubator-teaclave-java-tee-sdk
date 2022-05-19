@@ -13,7 +13,7 @@
 
 #include "jni_mock_in_svm.h"
 
-typedef int (*java_enclave_stub)(graal_isolate_t*, enc_data_t*, enc_data_t*, callbacks_t*);
+typedef int (*mock_enclave_stub)(graal_isolate_t*, enc_data_t*, enc_data_t*, callbacks_t*);
 
 static JNINativeMethod mock_in_svm_methods[] = {
     {"nativeCreateEnclave",       "(Ljava/lang/String;)I",           (void *)&JavaEnclave_MockSVMNativeCreateEnclave},
@@ -41,6 +41,7 @@ void set_long_field_value(JNIEnv *env, jclass class_mirror, jobject obj, const c
 
 char* memcpy_char_pointer(char* src, int len) {
     char *ptr = malloc(len);
+    if (ptr == NULL) { return NULL; }
     memcpy(ptr, src, len);
     return (char*)ptr;
 }
@@ -52,37 +53,42 @@ jobject build_invocation_result(JNIEnv *env, jint ret, jbyteArray array) {
     return (*env)->NewObject(env, invocation_result_clazz, id, (jint)ret, array);
 }
 
-jobject service_operate_common(JNIEnv *env, jlong isolate_handler, jbyteArray payload, java_enclave_stub p_function) {
-    jbyte *service_payload_copy = (*env)->GetByteArrayElements(env, payload, NULL);
-    int service_payload_copy_length = (*env)->GetArrayLength(env, payload);
-    enc_data_t invoke_data;
-    invoke_data.data = (char*)service_payload_copy;
-    invoke_data.data_len = service_payload_copy_length;
-    enc_data_t result;
-    result.data = NULL;
-    result.data_len = 0x0;
+jobject mock_enclave_calling_entry(JNIEnv *env, jlong isolate_handler, jbyteArray payload, mock_enclave_stub stub) {
+    jbyte *payload_copy = (*env)->GetByteArrayElements(env, payload, NULL);
+    int payload_copy_length = (*env)->GetArrayLength(env, payload);
+
+    enc_data_t input;
+    input.data = (char*)payload_copy;
+    input.data_len = payload_copy_length;
+    enc_data_t output;
+    output.data = NULL;
+    output.data_len = 0x0;
+
     callbacks_t callback_methods;
     callback_methods.memcpy_char_pointer = &memcpy_char_pointer;
     callback_methods.exception_handler = NULL;
-    int ret = p_function((graal_isolate_t*)isolate_handler, &invoke_data, &result, &callback_methods);
-    (*env)->ReleaseByteArrayElements(env, payload, service_payload_copy, 0);
+    callback_methods.get_random_number = NULL;
+    int ret = stub((graal_isolate_t*)isolate_handler, &input, &output, &callback_methods);
 
     // create a byte array.
-    jbyteArray invocation_result_arr = (*env)->NewByteArray(env, result.data_len);
-    jbyte *invocation_result_arr_point = (*env)->GetByteArrayElements(env, invocation_result_arr, NULL);
-    memcpy(invocation_result_arr_point, result.data, result.data_len);
+    jbyteArray invocation_result_array = (*env)->NewByteArray(env, output.data_len);
+    jbyte *invocation_result_array_ptr = (*env)->GetByteArrayElements(env, invocation_result_array, NULL);
+    memcpy(invocation_result_array_ptr, output.data, output.data_len);
 
+    (*env)->ReleaseByteArrayElements(env, payload, payload_copy, 0);
     // free buffer malloc in jni.
-    (*env)->ReleaseByteArrayElements(env, invocation_result_arr, invocation_result_arr_point, 0);
+    (*env)->ReleaseByteArrayElements(env, invocation_result_array, invocation_result_array_ptr, 0);
     // free buffer malloc in native image by callback mechanism.
-    free(result.data);
+    free(output.data);
 
-    return build_invocation_result(env, ret, invocation_result_arr);
+    return build_invocation_result(env, ret, invocation_result_array);
 }
 
-JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeCreateEnclave(JNIEnv *env, jobject obj, jstring path) {
+JNIEXPORT jint JNICALL
+JavaEnclave_MockSVMNativeCreateEnclave(JNIEnv *env, jobject obj, jstring path) {
     const char *path_str = (path == 0) ? 0 : (*env)->GetStringUTFChars(env, path, 0);
     void *enclave_handler = dlopen(path_str , RTLD_LOCAL | RTLD_LAZY);
+    (*env)->ReleaseStringUTFChars(env, path, path_str);
     if (enclave_handler == 0x0) {
         fprintf(stderr, "mock in svm dlopen error:%s\n", dlerror());
         return -1;
@@ -114,7 +120,8 @@ JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeCreateEnclave(JNIEnv *env, jobje
     return 0;
 }
 
-JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler) {
+JNIEXPORT jint JNICALL
+JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler) {
     graal_isolate_t* isolate_t;
     graal_create_isolate_params_t p;
     graal_isolatethread_t* isolate_thread_t;
@@ -140,23 +147,23 @@ JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jo
     return ret;
 }
 
-JNIEXPORT jobject JNICALL JavaEnclave_MockSVMNativeLoadService(JNIEnv *env, jobject obj, jlong enclave_handler,
-jlong isolate_handler, jbyteArray service_payload) {
-    return service_operate_common(env, isolate_handler, service_payload, (java_enclave_stub) mock_in_svm_load_service_symbol);
+JNIEXPORT jobject JNICALL
+JavaEnclave_MockSVMNativeLoadService(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_handler, jbyteArray load_service_payload) {
+    return mock_enclave_calling_entry(env, isolate_handler, load_service_payload, (mock_enclave_stub) mock_in_svm_load_service_symbol);
 }
 
-JNIEXPORT jobject JNICALL JavaEnclave_MockSVMNativeInvokeMethod(JNIEnv *env, jobject obj, jlong enclave_handler,
-jlong isolate_handler, jbyteArray invoke_wrapper_payload) {
-    return service_operate_common(env, isolate_handler, invoke_wrapper_payload, (java_enclave_stub) mock_in_svm_invoke_service_symbol);
+JNIEXPORT jobject JNICALL
+JavaEnclave_MockSVMNativeInvokeMethod(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_handler, jbyteArray invoke_payload) {
+    return mock_enclave_calling_entry(env, isolate_handler, invoke_payload, (mock_enclave_stub) mock_in_svm_invoke_service_symbol);
 }
 
-JNIEXPORT jobject JNICALL JavaEnclave_MockSVMNativeUnloadService(JNIEnv *env, jobject obj, jlong enclave_handler,
-jlong isolate_handler, jbyteArray service_payload) {
-    return service_operate_common(env, isolate_handler, service_payload, (java_enclave_stub) mock_in_svm_unload_service_symbol);
+JNIEXPORT jobject JNICALL
+JavaEnclave_MockSVMNativeUnloadService(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_handler, jbyteArray unload_service_payload) {
+    return mock_enclave_calling_entry(env, isolate_handler, unload_service_payload, (mock_enclave_stub) mock_in_svm_unload_service_symbol);
 }
 
-JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeSvmDetachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler,
-jlong isolate_thread_handler) {
+JNIEXPORT jint JNICALL
+JavaEnclave_MockSVMNativeSvmDetachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_thread_handler) {
     int (*graal_detach_all_threads_and_tear_down_isolate)(graal_isolatethread_t* isolateThread);
     graal_detach_all_threads_and_tear_down_isolate =
     (int (*)(graal_isolatethread_t*)) dlsym((void *)enclave_handler, "graal_detach_all_threads_and_tear_down_isolate");
@@ -167,6 +174,7 @@ jlong isolate_thread_handler) {
     return (jint)graal_detach_all_threads_and_tear_down_isolate((graal_isolatethread_t*)isolate_thread_handler);
 }
 
-JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeDestroyEnclave(JNIEnv *env, jobject obj, jlong enclave_handler) {
+JNIEXPORT jint JNICALL
+JavaEnclave_MockSVMNativeDestroyEnclave(JNIEnv *env, jobject obj, jlong enclave_handler) {
     return dlclose((void *)enclave_handler);
 }

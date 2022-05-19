@@ -45,6 +45,9 @@
   "name":"java.io.NotSerializableException"
   },
   {
+    "name":"java.io.StreamCorruptedException"
+  },
+  {
   "name":"java.lang.StackTraceElement"
   },
   {

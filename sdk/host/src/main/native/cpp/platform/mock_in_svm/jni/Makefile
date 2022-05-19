@@ -1,5 +1,5 @@
-include ./../../../../config/config.mk
-include ./../../../../config/platform/mock_in_svm/jni/config.mk
+include $(NATIVE_BASE_DIR)/config/config.mk
+include $(NATIVE_BASE_DIR)/config/platform/mock_in_svm/jni/config.mk
 
 .PHONY: all build clean
 

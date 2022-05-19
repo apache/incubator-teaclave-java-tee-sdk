@@ -12,8 +12,10 @@ this_script_dir=`dirname "$0"`
 cd "$this_script_dir"
 
 # step two: parse parameters from pom.xml
-# parse and store base dir path
-export base_dir=$1
+# parse and store host base dir path
+export ENCLAVE_BASE_DIR=$1
+export NATIVE_BASE_DIR="$ENCLAVE_BASE_DIR"/../native
+
 # parse and store supported enclave platform set
 enclave_platform_config=$2
 # process supported enclave platform set
@@ -40,10 +42,6 @@ elif [ "$3" == build ];
 then
   # make build.
   make -f ./Makefile build
-  # copy jni.so to target/classes, which will be packed into a jar file.
-  if [[ $MOCK_IN_SVM == TRUE ]]; then
-    cp -r "$base_dir"/src/main/native/bin/platform/mock_in_svm/jni "$base_dir"/target/classes
-  fi
 else
   echo "unsupported make command!!!"
 fi
