@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# set sgx enclave remote attestation PCCS_URL.
+echo "PCCS_URL=${PCCS_URL}" > /etc/sgx_default_qcnl.conf
+echo "USE_SECURE_CERT=TRUE" >> /etc/sgx_default_qcnl.conf
+
 # parse shell file's path location.
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 
@@ -15,4 +19,4 @@ cd "${WORKDIR}"/sdk && mvn $SETTING clean install
 rm -rf /opt/javaenclave && mkdir -p /opt/javaenclave && cp -r ${SHELL_FOLDER}/sdk/native/bin /opt/javaenclave \
 && cp -r ${SHELL_FOLDER}/sdk/native/config /opt/javaenclave && cp -r ${SHELL_FOLDER}/sdk/native/script/build_app /opt/javaenclave
 # Test unit test cases in JavaEnclave
-cd "${WORKDIR}"/test && mvn -X $SETTING -Pnative -e clean package
+cd "${WORKDIR}"/test && mvn $SETTING -Pnative clean package

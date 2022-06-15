@@ -47,7 +47,7 @@ class TestRemoteAttestation {
         AttestationReport deserializedReport = AttestationReport.fromByteArray(serializedReport);
         assertEquals(EnclaveType.TEE_SDK, deserializedReport.getEnclaveType());
         for (int index = 0; index < quote.length; index++) {
-            assertEquals(quote[index], (deserializedReport.getReport())[index]);
+            assertEquals(quote[index], (deserializedReport.getQuote())[index]);
         }
     }
 }

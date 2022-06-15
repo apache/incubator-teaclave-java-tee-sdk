@@ -2,8 +2,7 @@ package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.common.*;
 import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
-import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
-import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
+import com.alibaba.confidentialcomputing.host.exception.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +64,7 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
-    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+    AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException {
         throw new RemoteAttestationException("MockTestEnclave enclave doesn't support remote attestation generation.");
     }
 
@@ -74,7 +73,7 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
-    InnerNativeInvocationResult loadServiceNative(byte[] payload) {
+    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
         List<ServiceHandler> handlers = new ArrayList<>();
         Throwable exception = null;
         EnclaveInvocationResult result;
@@ -97,14 +96,14 @@ class MockTestEnclave extends AbstractEnclave {
         }
 
         try {
-            return new InnerNativeInvocationResult(0, SerializationHelper.serialize(result));
+            return SerializationHelper.serialize(result);
         } catch (IOException e) {
-            return new InnerNativeInvocationResult(-1, null);
+            throw new ServicesLoadingException(e);
         }
     }
 
     @Override
-    InnerNativeInvocationResult unloadServiceNative(byte[] payload) {
+    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
         ServiceHandler serviceHandler;
         Throwable exception = null;
         EnclaveInvocationResult result;
@@ -118,14 +117,14 @@ class MockTestEnclave extends AbstractEnclave {
         }
 
         try {
-            return new InnerNativeInvocationResult(0, SerializationHelper.serialize(result));
+            return SerializationHelper.serialize(result);
         } catch (IOException e) {
-            return new InnerNativeInvocationResult(-1, null);
+            throw new ServicesUnloadingException(e);
         }
     }
 
     @Override
-    InnerNativeInvocationResult invokeMethodNative(byte[] payload) {
+    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
         EnclaveInvocationContext invocationContext;
         Throwable exception = null;
         Object invokeRet = null;
@@ -150,14 +149,14 @@ class MockTestEnclave extends AbstractEnclave {
         }
 
         try {
-            return new InnerNativeInvocationResult(0, SerializationHelper.serialize(result));
+            return SerializationHelper.serialize(result);
         } catch (IOException e) {
-            return new InnerNativeInvocationResult(-1, null);
+            throw new EnclaveMethodInvokingException(e);
         }
     }
 
     @Override
-    public void destroy() {
+    public void destroy() throws EnclaveDestroyingException {
         // destroyToken will wait for all ongoing enclave invocations finished.
         if (this.getEnclaveContext().getEnclaveToken().destroyToken()) {
             // interrupt enclave services' recycler firstly.

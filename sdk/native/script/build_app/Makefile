@@ -1,11 +1,10 @@
 include /opt/javaenclave/config/config.mk
 include /opt/javaenclave/config/platform/tee_sdk_svm/jni/config.mk
 
-.PHONY: all build sign keys clean
+.PHONY: all build clean
 
 all:
 	$(MAKE) build
-	$(MAKE) sign
 
 build:
 ifeq ($(TEE_SDK), TRUE)
@@ -24,13 +23,16 @@ ifeq ($(TEE_SDK), TRUE)
 	-L${ENCLAVE_BASE_DIR}/target/enclave_workspace \
 	-fpie -ljava -lzip -lnio -lnet -ljvm -lfdlibm -llibchelper \
 	$(TS_ENCLAVE_LDFLAGS) -Wl,--version-script=/opt/javaenclave/config/platform/tee_sdk_svm/edl/tee_sdk_enclave.lds
-endif
 
-sign:
-ifeq ($(TEE_SDK), TRUE)
-	openssl genrsa -out private.pem -3 3072
-	openssl rsa -in private.pem -pubout -out public.pem
-	$(SGX_ENCLAVE_SIGNER) sign -enclave ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load \
-	-out ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load.signed \
-	-config ${ENCLAVE_BASE_DIR}/src/main/resources/tee_sdk_svm.conf -key private.pem
+    # sign the enclave image
+    ifeq ($(ENCLAVE_PRIVATE_PEM_PATH), )
+		openssl genrsa -out ${ENCLAVE_BASE_DIR}/target/enclave_workspace/private.pem -3 3072
+		$(SGX_ENCLAVE_SIGNER) sign -enclave ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load \
+		-out ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load.signed \
+		-config ${ENCLAVE_BASE_DIR}/src/main/resources/tee_sdk_svm.conf -key ${ENCLAVE_BASE_DIR}/target/enclave_workspace/private.pem
+    else
+		$(SGX_ENCLAVE_SIGNER) sign -enclave ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load \
+        -out ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load.signed \
+        -config ${ENCLAVE_BASE_DIR}/src/main/resources/tee_sdk_svm.conf -key $(ENCLAVE_PRIVATE_PEM_PATH)
+    endif
 endif

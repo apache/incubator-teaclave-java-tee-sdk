@@ -1,6 +1,6 @@
 package com.alibaba.confidentialcomputing.host;
 
-import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
+import com.alibaba.confidentialcomputing.host.exception.*;
 
 /**
  * MockInJvmEnclave is a mock jvm enclave. Both host and enclave codes run
@@ -13,7 +13,7 @@ class MockInJvmEnclave extends AbstractEnclave {
     }
 
     @Override
-    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+    AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException {
         throw new RemoteAttestationException("MOCK_IN_JVM enclave doesn't support remote attestation generation.");
     }
 
@@ -22,22 +22,22 @@ class MockInJvmEnclave extends AbstractEnclave {
     }
 
     @Override
-    InnerNativeInvocationResult loadServiceNative(byte[] payload) {
+    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
         return null;
     }
 
     @Override
-    InnerNativeInvocationResult unloadServiceNative(byte[] payload) {
+    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
         return null;
     }
 
     @Override
-    InnerNativeInvocationResult invokeMethodNative(byte[] payload) {
+    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
         return null;
     }
 
     @Override
-    public void destroy() {
+    public void destroy() throws EnclaveDestroyingException {
         ; // Do nothing here.
     }
 }

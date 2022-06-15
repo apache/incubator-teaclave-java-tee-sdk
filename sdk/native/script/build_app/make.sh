@@ -1,15 +1,19 @@
 #!/bin/bash
 
 # shellcheck disable=SC2006
-this_script_dir=`dirname "$0"`
+export BUILD_SCRIPT_DIR=`dirname "$0"`
 
+# set enclave project's base dir path.
 export ENCLAVE_BASE_DIR="$1"
+# set enclave platform, such as mock_in_svm and tee_sdk.
 enclave_platform_config=$2
+# get enclave private pem for making .signed file.
+export ENCLAVE_PRIVATE_PEM_PATH=$3
 
 # Create a native image building workspace in application's enclave submodule.
 mkdir -p "${ENCLAVE_BASE_DIR}"/target/enclave_workspace
 # copy Makefile script to enclave_workspace.
-cp -r "${this_script_dir}"/Makefile "${ENCLAVE_BASE_DIR}"/target/enclave_workspace
+cp -r "${BUILD_SCRIPT_DIR}"/Makefile "${ENCLAVE_BASE_DIR}"/target/enclave_workspace
 
 # cd to enclave workspace.
 cd "${ENCLAVE_BASE_DIR}"/target/enclave_workspace

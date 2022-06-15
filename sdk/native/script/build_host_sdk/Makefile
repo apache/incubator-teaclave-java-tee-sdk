@@ -11,6 +11,7 @@ endif
 
 ifeq ($(TEE_SDK), TRUE)
 	$(MAKE) -C $(HOST_BASE_DIR)/src/main/native/cpp/platform/tee_sdk_svm
+	$(MAKE) -C $(HOST_BASE_DIR)/src/main/native/cpp/attestation_verify/sgx/jni
 endif
 
 clean:
@@ -20,4 +21,5 @@ endif
 
 ifeq ($(TEE_SDK), TRUE)
 	$(MAKE) -C $(HOST_BASE_DIR)/src/main/native/cpp/platform/tee_sdk_svm clean
+	$(MAKE) -C $(HOST_BASE_DIR)/src/main/native/cpp/attestation_verify/sgx/jni clean
 endif

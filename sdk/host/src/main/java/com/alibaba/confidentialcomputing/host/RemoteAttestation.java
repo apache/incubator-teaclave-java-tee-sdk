@@ -52,11 +52,15 @@ public final class RemoteAttestation {
      *
      * @param report signed data in an enclave and its tee type info.
      * @return Zero means enclave is valid, Other value means enclave is invalid.
+     * @throws RemoteAttestationException {@link RemoteAttestationException} If enclave remote
+     *                                    attestation verify failed.
      */
     public static int verifyAttestationReport(AttestationReport report) throws RemoteAttestationException {
-        if (report.getEnclaveType() != EnclaveType.TEE_SDK) {
-            throw new RemoteAttestationException("enclaveType must be TEE_SDK.");
+        switch (report.getEnclaveType()) {
+            case TEE_SDK:
+                return TeeSdkEnclave.verifyAttestationReport(report.getQuote());
+            default:
+                throw new RemoteAttestationException("enclaveType must be TEE_SDK.");
         }
-        return TeeSdkEnclave.verifyAttestationReport(report.getReport());
     }
 }

@@ -5,15 +5,15 @@ import java.io.Serializable;
 /**
  * AttestationReport wraps enclave's type and generated remote attestation report.
  */
-public final class AttestationReport implements Serializable {
+public class AttestationReport implements Serializable {
     private static final long serialVersionUID = -2781780414647128479L;
 
     private final EnclaveType enclaveType;
-    private final byte[] report;
+    private final byte[] quote;
 
-    AttestationReport(EnclaveType enclaveType, byte[] report) {
+    AttestationReport(EnclaveType enclaveType, byte[] quote) {
         this.enclaveType = enclaveType;
-        this.report = report;
+        this.quote = quote;
     }
 
     /**
@@ -27,25 +27,25 @@ public final class AttestationReport implements Serializable {
     }
 
     /**
-     * Get enclave report from an AttestationReport instance.
+     * Get enclave quote from an AttestationReport instance.
      * <p>
      *
-     * @return Remote attestation report data.
+     * @return Remote attestation quote data.
      */
-    public byte[] getReport() {
-        return report;
+    public byte[] getQuote() {
+        return quote;
     }
 
     /**
-     * Bind an AttestationReport's type and report into a buffer for rpc transmission.
+     * Bind an AttestationReport's type and quote into a buffer for rpc transmission.
      * <p>
      *
      * @return Serialized buffer.
      */
     public byte[] toByteArray() {
-        byte[] bindReport = new byte[1 + report.length];
+        byte[] bindReport = new byte[1 + quote.length];
         bindReport[0] = (byte) enclaveType.ordinal();
-        System.arraycopy(report, 0, bindReport, 1, report.length);
+        System.arraycopy(quote, 0, bindReport, 1, quote.length);
         return bindReport;
     }
 

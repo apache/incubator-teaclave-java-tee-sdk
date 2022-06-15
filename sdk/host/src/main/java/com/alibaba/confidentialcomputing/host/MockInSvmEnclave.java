@@ -1,7 +1,6 @@
 package com.alibaba.confidentialcomputing.host;
 
-import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
-import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingException;
+import com.alibaba.confidentialcomputing.host.exception.*;
 import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 
 import java.io.IOException;
@@ -54,19 +53,13 @@ class MockInSvmEnclave extends AbstractEnclave {
         }
 
         // Create svm sdk enclave by native call, enclaveSvmSdkHandle are set in jni in nativeHandlerContext.
-        int ret = nativeCreateEnclave(extractTempPath.getEnclaveSvmFilePath());
-        if (ret != 0) {
-            throw new EnclaveCreatingException("create svm sdk enclave by native calling failed.");
-        }
+        nativeCreateEnclave(extractTempPath.getEnclaveSvmFilePath());
         // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
-        ret = nativeSvmAttachIsolate(enclaveSvmSdkHandle);
-        if (ret != 0) {
-            throw new EnclaveCreatingException("create svm isolate by native calling failed.");
-        }
+        nativeSvmAttachIsolate(enclaveSvmSdkHandle);
     }
 
     @Override
-    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+    AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException {
         throw new RemoteAttestationException("MOCK_IN_SVM enclave doesn't support remote attestation generation.");
     }
 
@@ -75,17 +68,17 @@ class MockInSvmEnclave extends AbstractEnclave {
     }
 
     @Override
-    InnerNativeInvocationResult loadServiceNative(byte[] payload) {
+    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
         return nativeLoadService(enclaveSvmSdkHandle, isolateHandle, payload);
     }
 
     @Override
-    InnerNativeInvocationResult unloadServiceNative(byte[] payload) {
+    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
         return nativeUnloadService(enclaveSvmSdkHandle, isolateHandle, payload);
     }
 
     @Override
-    InnerNativeInvocationResult invokeMethodNative(byte[] payload) {
+    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
         return nativeInvokeMethod(enclaveSvmSdkHandle, isolateHandle, payload);
     }
 
@@ -96,45 +89,26 @@ class MockInSvmEnclave extends AbstractEnclave {
             // interrupt enclave services' recycler firstly.
             this.getEnclaveContext().getEnclaveServicesRecycler().interruptServiceRecycler();
             // destroy svm isolate.
-            int ret = nativeSvmDetachIsolate(enclaveSvmSdkHandle, isolateThreadHandle);
-            if (ret != 0) {
-                throw new EnclaveDestroyingException("isolate destroy native call failed.");
-            }
-            ret = nativeDestroyEnclave(enclaveSvmSdkHandle);
-            if (ret != 0) {
-                throw new EnclaveDestroyingException("enclave destroy native call failed.");
-            }
+            nativeSvmDetachIsolate(enclaveSvmSdkHandle, isolateThreadHandle);
+            nativeDestroyEnclave(enclaveSvmSdkHandle);
         }
     }
 
     private static native void registerNatives();
 
-    private native int nativeCreateEnclave(String path);
+    private native int nativeCreateEnclave(String path) throws EnclaveCreatingException;
 
-    private native int nativeSvmAttachIsolate(
-            long enclaveSvmSdkHandle);
+    private native int nativeSvmAttachIsolate(long enclaveSvmSdkHandle) throws EnclaveCreatingException;
 
-    private native InnerNativeInvocationResult nativeLoadService(
-            long enclaveSvmSdkHandle,
-            long isolateHandler,
-            byte[] serviceHandler);
+    private native byte[] nativeLoadService(long enclaveSvmSdkHandle, long isolateHandler, byte[] serviceHandler) throws ServicesLoadingException;
 
-    private native InnerNativeInvocationResult nativeInvokeMethod(
-            long enclaveSvmSdkHandle,
-            long isolateHandler,
-            byte[] enclaveInvokeMetaWrapper);
+    private native byte[] nativeInvokeMethod(long enclaveSvmSdkHandle, long isolateHandler, byte[] enclaveInvokeMetaWrapper) throws EnclaveMethodInvokingException;
 
-    private native InnerNativeInvocationResult nativeUnloadService(
-            long enclaveSvmSdkHandle,
-            long isolateHandler,
-            byte[] serviceHandler);
+    private native byte[] nativeUnloadService(long enclaveSvmSdkHandle, long isolateHandler, byte[] serviceHandler) throws ServicesUnloadingException;
 
-    private native int nativeSvmDetachIsolate(
-            long enclaveSvmSdkHandle,
-            long isolateThreadHandler);
+    private native int nativeSvmDetachIsolate(long enclaveSvmSdkHandle, long isolateThreadHandler) throws EnclaveDestroyingException;
 
-    private native int nativeDestroyEnclave(
-            long enclaveSvmSdkHandle);
+    private native int nativeDestroyEnclave(long enclaveSvmSdkHandle) throws EnclaveDestroyingException;
 
     class MockInSvmExtractTempPath {
         private final String jniTempFilePath;

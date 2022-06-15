@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD_IMAGE=javaenclave_build
-BUILD_TAG=v0.1.8
+BUILD_TAG=v0.1.9
 
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 
@@ -25,11 +25,14 @@ if [[ "$(docker images -q ${BUILD_IMAGE}:${BUILD_TAG} 2> /dev/null)" == "" ]]; t
   rm -f sgx_linux_x64_sdk_2.17.100.0.bin
 fi
 
+# Set PCCS for DCAP Remote Attestation.
+PCCS_URL='https://sgx-dcap-server.cn-beijing.aliyuncs.com/sgx/certification/v3/'
+
 # test JavaEnclave's unit test cases and samples
 docker run -i --rm --privileged --network host                    \
 -w "${WORKDIR}"                                                   \
 -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
+-e PCCS_URL=${PCCS_URL}                                           \
 -v /dev/sgx_enclave:/dev/sgx/enclave             \
 -v /dev/sgx_provision:/dev/sgx/provision         \
 ${BUILD_IMAGE}:${BUILD_TAG} /bin/bash build.sh
-

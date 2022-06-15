@@ -44,11 +44,13 @@ abstract class AbstractEnclave implements Enclave {
         return enclaveContext;
     }
 
-    abstract InnerNativeInvocationResult loadServiceNative(byte[] payload);
+    abstract byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException;
 
-    abstract InnerNativeInvocationResult unloadServiceNative(byte[] payload);
+    abstract byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException;
 
-    abstract InnerNativeInvocationResult invokeMethodNative(byte[] payload);
+    abstract byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException;
+
+    abstract AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException;
 
     // load service by interface name.
     ServiceHandler[] loadService(Class<?> service) throws ServicesLoadingException {
@@ -64,15 +66,9 @@ abstract class AbstractEnclave implements Enclave {
             } catch (IOException e) {
                 throw new ServicesLoadingException("service name serialization failed.", e);
             }
-            InnerNativeInvocationResult resultNativeWrapper = loadServiceNative(payload);
-            // If loadServiceNative native call return value is error, an ServicesLoadingException exception
-            // will be thrown.
-            if (resultNativeWrapper.getRet() != 0) {
-                throw new ServicesLoadingException("load service native call failed.");
-            }
             EnclaveInvocationResult resultWrapper;
             try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(resultNativeWrapper.getPayload());
+                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(loadServiceNative(payload));
             } catch (IOException | ClassNotFoundException e) {
                 throw new ServicesLoadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }
@@ -108,13 +104,9 @@ abstract class AbstractEnclave implements Enclave {
             } catch (IOException e) {
                 throw new ServicesUnloadingException("unload service serialization failed.", e);
             }
-            InnerNativeInvocationResult resultNativeWrapper = unloadServiceNative(payload);
-            if (resultNativeWrapper.getRet() != 0) {
-                throw new ServicesUnloadingException("unload service native call failed.");
-            }
             EnclaveInvocationResult resultWrapper;
             try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(resultNativeWrapper.getPayload());
+                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(unloadServiceNative(payload));
             } catch (IOException | ClassNotFoundException e) {
                 throw new ServicesUnloadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }
@@ -139,13 +131,9 @@ abstract class AbstractEnclave implements Enclave {
             } catch (IOException e) {
                 throw new EnclaveMethodInvokingException("EnclaveInvokeMetaWrapper serialization failed.", e);
             }
-            InnerNativeInvocationResult resultNativeWrapper = invokeMethodNative(payload);
-            if (resultNativeWrapper.getRet() != 0) {
-                throw new EnclaveMethodInvokingException("method invoke native call failed.");
-            }
             EnclaveInvocationResult resultWrapper;
             try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(resultNativeWrapper.getPayload());
+                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(invokeMethodNative(payload));
             } catch (IOException | ClassNotFoundException e) {
                 throw new EnclaveMethodInvokingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }
@@ -161,7 +149,16 @@ abstract class AbstractEnclave implements Enclave {
         }
     }
 
-    abstract AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException;
+    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
+        if (!getEnclaveContext().getEnclaveToken().tryAcquireToken()) {
+            throw new RemoteAttestationException("enclave was destroyed.");
+        }
+        try {
+            return generateAttestationReportNative(userData);
+        } finally {
+            getEnclaveContext().getEnclaveToken().restoreToken();
+        }
+    }
 
     @Override
     public <T> Iterator<T> load(Class<T> service) throws ServicesLoadingException {

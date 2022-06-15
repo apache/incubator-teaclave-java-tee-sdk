@@ -1,5 +1,6 @@
 enclave {
     include "sgx_report.h"
+    include "sgx_ql_lib_common.h"
 
     from "sgx_tstdc.edl"              import *;
     from "sgx_pthread.edl"            import *;
@@ -16,6 +17,8 @@ enclave {
         public int unload_enclave_svm_service(uint64_t isolate, [in, size=len0] void* input,  size_t len0, [out, size=8] void* output, [out, size=8] size_t* len1);
         // destroy a graal isolate;
         public int enclave_svm_isolate_destroy(uint64_t isolateThread);
+        // generate sgx enclave remote attestation report;
+        public int generate_remote_attestation_report([in, size=hash_length] void* hash,  size_t hash_length, [out]sgx_report_t* ra_report);
     };
 
     untrusted {
@@ -23,5 +26,8 @@ enclave {
         int ocall_getrlimit(int resource, [out, size=16]void *rlim);
         // malloc memory buffer from host side to store an returned object's serialization result.
         int ocall_malloc(size_t size, [out, size=8]void *ptr);
+
+        // get target info from host.
+        quote3_error_t ocall_get_target_info([out] sgx_target_info_t *qe_target_info);
     };
 };

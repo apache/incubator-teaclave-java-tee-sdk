@@ -1,8 +1,6 @@
 package com.alibaba.confidentialcomputing.host;
 
-import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
-import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingException;
-import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
+import com.alibaba.confidentialcomputing.host.exception.*;
 
 import java.io.IOException;
 
@@ -49,73 +47,51 @@ class TeeSdkEnclave extends AbstractEnclave {
         }
 
         // Create tee sdk enclave by native call, enclaveHandler is set in jni in nativeHandlerContext.
-        int ret = nativeCreateEnclave(mode.getValue(), extractTempPath.getTeeSdkSignedFilePath());
-        if (ret != 0) {
-            throw new EnclaveCreatingException("create tee sdk enclave by native calling failed.");
-        }
+        nativeCreateEnclave(mode.getValue(), extractTempPath.getTeeSdkSignedFilePath());
         // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
-        ret = nativeSvmAttachIsolate(enclaveHandle);
-        if (ret != 0) {
-            throw new EnclaveCreatingException("create svm isolate by native calling failed.");
-        }
+        nativeSvmAttachIsolate(enclaveHandle);
     }
 
     private static native void registerNatives();
 
-    private native int nativeCreateEnclave(int mode, String path);
+    private native int nativeCreateEnclave(int mode, String path) throws EnclaveCreatingException;
 
-    private native InnerNativeInvocationResult nativeGenerateAttestationReport(byte[] userData);
+    private native TeeSdkAttestationReport nativeGenerateAttestationReport(long enclaveHandler, byte[] userData) throws RemoteAttestationException;
 
-    private static native InnerNativeInvocationResult nativeVerifyAttestationReport(byte[] report);
+    private native int nativeSvmAttachIsolate(long enclaveHandler) throws EnclaveCreatingException;
 
-    private native int nativeSvmAttachIsolate(long enclaveHandler);
+    private native byte[] nativeLoadService(long enclaveHandler, long isolateHandler, byte[] serviceHandler) throws ServicesLoadingException;
 
-    private native InnerNativeInvocationResult nativeLoadService(
-            long enclaveHandler, long isolateHandler, byte[] serviceHandler);
+    private native byte[] nativeInvokeMethod(long enclaveHandler, long isolateHandler, byte[] enclaveInvokeMetaWrapper) throws EnclaveMethodInvokingException;
 
-    private native InnerNativeInvocationResult nativeInvokeMethod(
-            long enclaveHandler, long isolateHandler, byte[] enclaveInvokeMetaWrapper);
+    private native byte[] nativeUnloadService(long enclaveHandler, long isolateHandler, byte[] serviceHandler) throws ServicesUnloadingException;
 
-    private native InnerNativeInvocationResult nativeUnloadService(
-            long enclaveHandler, long isolateHandler, byte[] serviceHandler);
+    private native int nativeSvmDetachIsolate(long enclaveHandler, long isolateThreadHandler) throws EnclaveDestroyingException;
 
-    private native int nativeSvmDetachIsolate(long enclaveHandler, long isolateThreadHandler);
+    private native int nativeDestroyEnclave(long enclaveHandler) throws EnclaveDestroyingException;
 
-    private native int nativeDestroyEnclave(long enclaveHandler);
-
-    @Override
-    AttestationReport generateAttestationReport(byte[] userData) throws RemoteAttestationException {
-        InnerNativeInvocationResult result = nativeGenerateAttestationReport(userData);
-        if (result.getRet() != 0) {
-            throw new RemoteAttestationException("TEE_SDK's attestation report generation native call error code: " + result.getRet());
-        }
-        return new AttestationReport(EnclaveType.TEE_SDK, result.getPayload());
-    }
-
-    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
-        InnerNativeInvocationResult result = nativeVerifyAttestationReport(report);
-        if (result.getRet() != 0) {
-            throw new RemoteAttestationException("TEE_SDK's attestation verification native call error code: " + result.getRet());
-        }
-        if (result.getPayload() == null) {
-            return 0;  // Remote Attestation Verification result is succeed.
-        }
-        return 1; // Remote Attestation Verification result is failed.
+    static int verifyAttestationReport(byte[] quote) throws RemoteAttestationException {
+        return SGXRemoteAttestationVerify.VerifyAttestationReport(quote);
     }
 
     @Override
-    InnerNativeInvocationResult loadServiceNative(byte[] payload) {
+    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
         return nativeLoadService(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
-    InnerNativeInvocationResult unloadServiceNative(byte[] payload) {
+    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
         return nativeUnloadService(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
-    InnerNativeInvocationResult invokeMethodNative(byte[] payload) {
+    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
         return nativeInvokeMethod(enclaveHandle, isolateHandle, payload);
+    }
+
+    @Override
+    AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException {
+        return nativeGenerateAttestationReport(enclaveHandle, userData);
     }
 
     @Override
@@ -125,19 +101,13 @@ class TeeSdkEnclave extends AbstractEnclave {
             // interrupt enclave services' recycler firstly.
             this.getEnclaveContext().getEnclaveServicesRecycler().interruptServiceRecycler();
             // destroy svm isolate.
-            int ret = nativeSvmDetachIsolate(enclaveHandle, isolateThreadHandle);
-            if (ret != 0) {
-                throw new EnclaveDestroyingException("isolate destroy native call failed.");
-            }
+            nativeSvmDetachIsolate(enclaveHandle, isolateThreadHandle);
             // destroy the enclave.
-            ret = nativeDestroyEnclave(enclaveHandle);
-            if (ret != 0) {
-                throw new EnclaveDestroyingException("enclave destroy native call failed.");
-            }
+            nativeDestroyEnclave(enclaveHandle);
         }
     }
 
-    class TeeSdkExtractTempPath {
+    static class TeeSdkExtractTempPath {
         private final String jniTempFilePath;
         private final String teeSdkSignedFilePath;
 

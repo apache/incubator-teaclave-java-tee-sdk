@@ -3,8 +3,32 @@
 #ifndef _Included_jni_mock_in_svm
 #define _Included_jni_mock_in_svm
 
-#define MOCK_IN_SVM_NATIVE_CALL_SIGNATURE   "(JJ[B)Lcom/alibaba/confidentialcomputing/host/InnerNativeInvocationResult;"
-#define MOCK_IN_SVM_RETURN_OBJECT_SIGNATURE "com/alibaba/confidentialcomputing/host/InnerNativeInvocationResult"
+typedef struct {
+    int        ret;
+    jbyteArray result;
+} enclave_calling_stub_result;
+
+#define REMOTE_ATTESTATION_CLASS_NAME                "com/alibaba/confidentialcomputing/host/exception/RemoteAttestationException"
+#define ENCLAVE_CREATING_EXCEPTION                   "com/alibaba/confidentialcomputing/host/exception/EnclaveCreatingException"
+#define ENCLAVE_DESTROYING_EXCEPTION                 "com/alibaba/confidentialcomputing/host/exception/EnclaveDestroyingException"
+#define ENCLAVE_SERVICE_LOADING_EXCEPTION            "com/alibaba/confidentialcomputing/host/exception/ServicesLoadingException"
+#define ENCLAVE_SERVICE_UNLOADING_EXCEPTION          "com/alibaba/confidentialcomputing/host/exception/ServicesUnloadingException"
+#define ENCLAVE_SERVICE_INVOKING_EXCEPTION           "com/alibaba/confidentialcomputing/host/exception/EnclaveMethodInvokingException"
+
+#define MOCK_IN_SVM_NATIVE_CALL_SIGNATURE            "(JJ[B)[B"
+
+#define THROW_EXCEPTION(env, exception, info)                                  \
+{                                                                              \
+    jclass ra_class = (*env)->FindClass(env, exception);                       \
+    if (ra_class == NULL) {                                                    \
+        printf("JavaEnclave Error:  ");                                        \
+        printf(exception);                                                     \
+        printf(" class loading failed.\n");                                    \
+        return;                                                                \
+    }                                                                          \
+    (*env)->ThrowNew(env, ra_class, info);                                     \
+    return;                                                                    \
+}
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,23 +52,23 @@ JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *, jobje
 /*
  * Class:     JavaEnclave_MockSVMNativeLoadService
  * Method:    nativeLoadService
- * Signature: (JJ[B)Lcom/alibaba/confidentialcomputing/host/InnerNativeInvocationResult;
+ * Signature: (JJ[B)[B
  */
-JNIEXPORT jobject JNICALL JavaEnclave_MockSVMNativeLoadService(JNIEnv *, jobject, jlong, jlong, jbyteArray);
+JNIEXPORT jbyteArray JNICALL JavaEnclave_MockSVMNativeLoadService(JNIEnv *, jobject, jlong, jlong, jbyteArray);
 
 /*
  * Class:     JavaEnclave_MockSVMNativeInvokeMethod
  * Method:    nativeInvokeMethod
- * Signature: (JJ[B)Lcom/alibaba/confidentialcomputing/host/InnerNativeInvocationResult;
+ * Signature: (JJ[B)[B
  */
-JNIEXPORT jobject JNICALL JavaEnclave_MockSVMNativeInvokeMethod(JNIEnv *, jobject, jlong, jlong, jbyteArray);
+JNIEXPORT jbyteArray JNICALL JavaEnclave_MockSVMNativeInvokeMethod(JNIEnv *, jobject, jlong, jlong, jbyteArray);
 
 /*
  * Class:     JavaEnclave_MockSVMNativeUnloadService
  * Method:    nativeUnloadService
- * Signature: (JJ[B)Lcom/alibaba/confidentialcomputing/host/InnerNativeInvocationResult;
+ * Signature: (JJ[B)[B
  */
-JNIEXPORT jobject JNICALL JavaEnclave_MockSVMNativeUnloadService(JNIEnv *, jobject, jlong, jlong, jbyteArray);
+JNIEXPORT jbyteArray JNICALL JavaEnclave_MockSVMNativeUnloadService(JNIEnv *, jobject, jlong, jlong, jbyteArray);
 
 /*
  * Class:     JavaEnclave_MockSVMNativeSvmDetachIsolate

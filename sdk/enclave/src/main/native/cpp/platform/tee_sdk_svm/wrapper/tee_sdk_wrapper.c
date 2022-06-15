@@ -33,6 +33,7 @@ int tee_sdk_random(void* data, long size) {
 }
 
 int enclave_svm_isolate_create(void* isolate, void* isolateThread) {
+    // printf("JavaEnclave Warning: %s is called in enclave svm.\n", __FUNCTION__);
     graal_isolate_t* isolate_t;
     graal_isolatethread_t* thread_t;
 
