@@ -1,12 +1,16 @@
 package com.alibaba.confidentialcomputing.enclave.system;
 
+import com.alibaba.confidentialcomputing.enclave.EnclavePlatFormSettings;
 import com.alibaba.confidentialcomputing.enclave.c.EnclaveEnvironment;
 import com.alibaba.confidentialcomputing.enclave.system.EnclavePhysicalMemory.PhysicalMemorySupportImpl;
 import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.core.os.VirtualMemoryProvider;
+import com.oracle.svm.core.util.VMError;
 import org.graalvm.nativeimage.ImageSingletons;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.impl.RuntimeClassInitializationSupport;
+
+import java.util.List;
 
 /**
  * Native image queries the memory page size and heap pages number at runtime with {@code sysconf(_SC_PHYS_PAGES)} and
@@ -22,12 +26,21 @@ import org.graalvm.nativeimage.impl.RuntimeClassInitializationSupport;
  */
 @AutomaticFeature
 public class EnclaveMemoryFeature implements Feature {
+    @Override
+    public List<Class<? extends Feature>> getRequiredFeatures() {
+        try {
+            Class<? extends Feature> physicalMemClass = (Class<? extends Feature>) Class.forName("com.oracle.svm.core.posix.linux.LinuxPhysicalMemory$PhysicalMemoryFeature");
+            return List.of(physicalMemClass);
+        } catch (ClassNotFoundException e) {
+            throw VMError.shouldNotReachHere(e);
+        }
+    }
 
     @Override
     public void afterRegistration(AfterRegistrationAccess access) {
         RuntimeClassInitializationSupport rci = ImageSingletons.lookup(RuntimeClassInitializationSupport.class);
         rci.initializeAtBuildTime("com.alibaba.confidentialcomputing.enclave.system.EnclaveVirtualMemoryProvider", "Native Image classes are always initialized at build time");
-        ImageSingletons.add(PhysicalMemorySupportImpl.getPhysicalMemorySupportClass(), new PhysicalMemorySupportImpl());
+        EnclavePlatFormSettings.replaceImageSingletonEntry(PhysicalMemorySupportImpl.getPhysicalMemorySupportClass(), new PhysicalMemorySupportImpl());
         ImageSingletons.add(VirtualMemoryProvider.class, new EnclaveVirtualMemoryProvider());
     }
 }

@@ -171,8 +171,6 @@ public abstract class NativeImageTest implements NativeImageTestable {
         command.add("-H:+ReportExceptionStackTraces");
         command.add("-H:Name=lib" + SVM_ENCLAVE_LIB);
         command.add("-H:-DeleteLocalSymbols");
-        command.add("-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser," +
-                "com.oracle.svm.core.posix.linux.LinuxPhysicalMemory$PhysicalMemoryFeature");
         List<String> extraOptions = extraSVMOptions();
         if (extraOptions != null && !extraOptions.isEmpty()) {
             command.addAll(extraOptions);
