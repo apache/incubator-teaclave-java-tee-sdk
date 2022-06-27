@@ -8,4 +8,8 @@ public class EnclaveOptions {
     @Option(help = "Use native function instead of accessing /dev/random /dev/urandom for getting random number.", type = OptionType.User)
 //
     public static final HostedOptionKey<Boolean> UseNativeGetRandom = new HostedOptionKey<>(true);
+
+    @Option(help = "Enable enclave features.", type = OptionType.User)
+//
+    public static final HostedOptionKey<Boolean> RunInEnclave = new HostedOptionKey<>(true);
 }

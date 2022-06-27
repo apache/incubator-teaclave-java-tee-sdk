@@ -67,7 +67,7 @@ public class EnclaveFeature implements Feature {
         FeatureImpl.DuringSetupAccessImpl config = (FeatureImpl.DuringSetupAccessImpl) access;
         RuntimeSerialization.register(ConfidentialComputingException.class, RuntimeException.class,
                 ReflectiveOperationException.class, ClassNotFoundException.class);
-        RuntimeSerialization.registerAllAssociatedClasses(Collections.EMPTY_LIST.getClass());
+        RuntimeSerialization.registerIncludingAssociatedClasses(Collections.EMPTY_LIST.getClass());
         imageClassLoader = config.getImageClassLoader();
     }
 
@@ -149,7 +149,7 @@ public class EnclaveFeature implements Feature {
     }
 
     private boolean registerCollectedConfigs() {
-        boolean registeredNewSerializations = registerCollectedConfigs(serializationCandidateTypes, RuntimeSerialization::registerAllAssociatedClasses);
+        boolean registeredNewSerializations = registerCollectedConfigs(serializationCandidateTypes, RuntimeSerialization::registerIncludingAssociatedClasses);
         boolean registeredNewReflectionTypes = registerCollectedConfigs(reflectionCandidateTypes, RuntimeReflection::register);
         boolean registeredNewReflectionMethods = registerCollectedConfigs(reflectionCandidateMethods, RuntimeReflection::register);
         return registeredNewSerializations || registeredNewReflectionTypes || registeredNewReflectionMethods;

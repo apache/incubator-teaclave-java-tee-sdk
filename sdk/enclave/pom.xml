@@ -13,7 +13,8 @@
     <name>JavaEnclave-Enclave</name>
     <url></url>
     <properties>
-        <graal.version>enclave-11-22.0.0-0.1.0</graal.version>
+        <graal.version>22.1.0</graal.version>
+        <enclave.graal.version>enclave-11-22.1.0-1.0</enclave.graal.version>
         <svm.maven.version>0.9.10</svm.maven.version>
     </properties>
     <profiles>
@@ -207,12 +208,12 @@
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>${graal.version}</version>
+            <version>${enclave.graal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
-            <version>${graal.version}</version>
+            <version>${enclave.graal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>

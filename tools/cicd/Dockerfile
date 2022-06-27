@@ -5,13 +5,13 @@ LABEL maintainer="Junshao Wang <jeffery.wsj@alibaba-inc.com>"
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 ENV DEBIAN_FRONTEND noninteractive
 
-ADD ["graalvm-enclave-22.0.0.tar", "/root/tools/"]
+ADD ["graalvm-enclave-22.1.0.tar", "/root/tools/"]
 ADD ["x86_64-linux-musl-native.tgz", "/root/tools/"]
 ADD ["zlib-1.2.12.tar.gz", "/root/tools/"]
 ADD ["settings.xml", "/root/tools/"]
 ADD ["sgx_linux_x64_sdk_2.15.100.0.bin", "/root/tools/"]
-ENV GRAALVM_HOME "/root/tools/graalvm-enclave-22.0.0"
-ENV JAVA_HOME "/root/tools/graalvm-enclave-22.0.0"
+ENV GRAALVM_HOME "/root/tools/graalvm-enclave-22.1.0"
+ENV JAVA_HOME "/root/tools/graalvm-enclave-22.1.0"
 ENV CC "/root/tools/x86_64-linux-musl-native/bin/gcc"
 ENV PATH $PATH:"/root/tools/x86_64-linux-musl-native/bin"
 

@@ -1,5 +1,6 @@
 package com.alibaba.confidentialcomputing.enclave.system;
 
+import com.alibaba.confidentialcomputing.enclave.EnclaveOptions;
 import com.alibaba.confidentialcomputing.enclave.EnclavePlatFormSettings;
 import com.alibaba.confidentialcomputing.enclave.c.EnclaveEnvironment;
 import com.alibaba.confidentialcomputing.enclave.system.EnclavePhysicalMemory.PhysicalMemorySupportImpl;
@@ -21,8 +22,6 @@ import java.util.List;
  * implemented in native code and linked by out framework. See {@code test/resources/native/enc_invoke_entry_test.c} and
  * {@code com.alibaba.confidentialcomputing.enclave.NativeImageTest#compileJNILibrary()} for details.
  * <p>
- * On the other hand, the original queries from sysconf must be invalided. So the option {@code -H:DisableFeatures=com.oracle.svm.core.posix.linux.LinuxPhysicalMemory$PhysicalMemoryFeature}
- * must be set.
  */
 @AutomaticFeature
 public class EnclaveMemoryFeature implements Feature {
@@ -38,9 +37,11 @@ public class EnclaveMemoryFeature implements Feature {
 
     @Override
     public void afterRegistration(AfterRegistrationAccess access) {
-        RuntimeClassInitializationSupport rci = ImageSingletons.lookup(RuntimeClassInitializationSupport.class);
-        rci.initializeAtBuildTime("com.alibaba.confidentialcomputing.enclave.system.EnclaveVirtualMemoryProvider", "Native Image classes are always initialized at build time");
-        EnclavePlatFormSettings.replaceImageSingletonEntry(PhysicalMemorySupportImpl.getPhysicalMemorySupportClass(), new PhysicalMemorySupportImpl());
-        ImageSingletons.add(VirtualMemoryProvider.class, new EnclaveVirtualMemoryProvider());
+        if (EnclaveOptions.RunInEnclave.getValue()) {
+            RuntimeClassInitializationSupport rci = ImageSingletons.lookup(RuntimeClassInitializationSupport.class);
+            rci.initializeAtBuildTime("com.alibaba.confidentialcomputing.enclave.system.EnclaveVirtualMemoryProvider", "Native Image classes are always initialized at build time");
+            EnclavePlatFormSettings.replaceImageSingletonEntry(PhysicalMemorySupportImpl.getPhysicalMemorySupportClass(), new PhysicalMemorySupportImpl());
+            ImageSingletons.add(VirtualMemoryProvider.class, new EnclaveVirtualMemoryProvider());
+        }
     }
 }

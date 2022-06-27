@@ -36,6 +36,11 @@ public class ConfigMemTest {
             return List.of("-DPAGE_SIZE=2048",
                     "-DHEAP_PAGES=24000");
         }
+
+        /*@Override
+        public List<String> extraSVMOptions() {
+            return List.of("--debug-attach:7788");
+        }*/
     }
 
     private static final String MEM_SERVICE = "com.alibaba.confidentialcomputing.enclave.testservice.MemService";

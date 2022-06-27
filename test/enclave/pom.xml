@@ -34,7 +34,7 @@
                                 <configuration>
                                     <buildArgs>
                                         <buildArg>--no-fallback</buildArg>
-                                        <buildArg>-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser,com.alibaba.confidentialcomputing.enclave.system.EnclaveMemoryFeature</buildArg>
+                                        <buildArg>-H:-RunInEnclave</buildArg>
                                     </buildArgs>
                                 </configuration>
                                 <phase>test</phase>
@@ -51,7 +51,7 @@
                                         <buildArg>--no-fallback</buildArg>
                                         <buildArg>--allow-incomplete-classpath</buildArg>
                                         <buildArg>-H:Path=svm-output</buildArg>
-                                        <buildArg>-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser,com.alibaba.confidentialcomputing.enclave.system.EnclaveMemoryFeature</buildArg>
+                                        <buildArg>-H:-RunInEnclave</buildArg>
                                         <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/target/native/agent-output/test/reflect-config.json</buildArg>
                                     </buildArgs>
                                 </configuration>
@@ -69,7 +69,7 @@
                                         <buildArg>--no-fallback</buildArg>
                                         <buildArg>--allow-incomplete-classpath</buildArg>
                                         <buildArg>-H:Path=svm-output</buildArg>
-                                        <buildArg>-H:DisableFeatures=com.oracle.svm.core.posix.NativeSecureRandomFilesCloser,com.oracle.svm.core.posix.linux.LinuxPhysicalMemory$PhysicalMemoryFeature</buildArg>
+                                        <buildArg>-H:-RunInEnclave</buildArg>
                                         <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/target/native/agent-output/test/reflect-config.json</buildArg>
                                     </buildArgs>
                                 </configuration>

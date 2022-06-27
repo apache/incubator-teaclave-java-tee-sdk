@@ -45,12 +45,14 @@ public class SUNECReplaceFeature extends JNIRegistrationUtil implements Feature 
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
-        access.registerReachabilityHandler(this::prepareEncSunEC,
-                method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "signDigest", byte[].class, byte[].class, byte[].class, byte[].class, int.class),
-                method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "verifySignedDigest", byte[].class, byte[].class, byte[].class, byte[].class),
-                method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "isCurveSupported", byte[].class),
-                method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "generateECKeyPair", int.class, byte[].class, byte[].class),
-                method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "deriveKey", byte[].class, byte[].class, byte[].class));
+        if (EnclaveOptions.RunInEnclave.getValue()) {
+            access.registerReachabilityHandler(this::prepareEncSunEC,
+                    method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "signDigest", byte[].class, byte[].class, byte[].class, byte[].class, int.class),
+                    method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "verifySignedDigest", byte[].class, byte[].class, byte[].class, byte[].class),
+                    method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "isCurveSupported", byte[].class),
+                    method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "generateECKeyPair", int.class, byte[].class, byte[].class),
+                    method(access, "com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods", "deriveKey", byte[].class, byte[].class, byte[].class));
+        }
     }
 
     @Platforms(Platform.LINUX.class)

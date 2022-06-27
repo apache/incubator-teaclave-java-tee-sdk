@@ -10,10 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sun.security.ec.ECKeyPairGenerator;
 
 import java.security.KeyPair;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -70,9 +68,9 @@ public class ReplaceSunECTest {
             Class<?> PKCS8KeyClass = a.getImageClassLoader().findClass("sun.security.pkcs.PKCS8Key").get();
             Class<?> X509KeyClass = a.getImageClassLoader().findClass("sun.security.x509.X509Key").get();
             RuntimeSerialization.register(PKCS8KeyClass, X509KeyClass);
-            RuntimeSerialization.registerAllAssociatedClasses(java.security.KeyRep.class);
-            RuntimeSerialization.registerAllAssociatedClasses(sun.security.ec.ECPrivateKeyImpl.class);
-            RuntimeSerialization.registerAllAssociatedClasses(sun.security.ec.ECPublicKeyImpl.class);
+            RuntimeSerialization.registerIncludingAssociatedClasses(java.security.KeyRep.class);
+            RuntimeSerialization.registerIncludingAssociatedClasses(sun.security.ec.ECPrivateKeyImpl.class);
+            RuntimeSerialization.registerIncludingAssociatedClasses(sun.security.ec.ECPublicKeyImpl.class);
         }
     }
 }
