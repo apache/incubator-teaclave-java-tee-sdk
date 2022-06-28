@@ -19,6 +19,7 @@
                 <includes>
                     <include>**/*.so</include>
                     <include>**/*.signed</include>
+                    <include>**/*.tgz</include>
                 </includes>
             </resource>
         </resources>
@@ -42,6 +43,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <!--configuration>
+                     <forkCount>0</forkCount>
+                </configuration-->
                 <version>3.0.0-M5</version>
             </plugin>
         </plugins>

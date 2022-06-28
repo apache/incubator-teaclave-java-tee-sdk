@@ -1,5 +1,7 @@
 package com.alibaba.confidentialcomputing.host;
 
+import com.alibaba.confidentialcomputing.common.EnclaveInvocationContext;
+import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.host.exception.*;
 
 /**
@@ -22,17 +24,17 @@ class MockInJvmEnclave extends AbstractEnclave {
     }
 
     @Override
-    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
+    byte[] loadServiceNative(String service) throws ServicesLoadingException {
         return null;
     }
 
     @Override
-    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
+    byte[] unloadServiceNative(ServiceHandler handler) throws ServicesUnloadingException {
         return null;
     }
 
     @Override
-    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
+    byte[] invokeMethodNative(EnclaveInvocationContext context) throws EnclaveMethodInvokingException {
         return null;
     }
 

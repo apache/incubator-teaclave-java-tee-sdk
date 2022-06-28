@@ -17,7 +17,6 @@ import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationExcepti
 import com.alibaba.confidentialcomputing.host.exception.ServicesLoadingException;
 import com.alibaba.confidentialcomputing.host.exception.ServicesUnloadingException;
 
-
 /**
  * AbstractEnclave implements all kinds of enclave platform's common operation.
  * Such as service loading、unloading and service method invocation.
@@ -33,6 +32,9 @@ abstract class AbstractEnclave implements Enclave {
         if (type == EnclaveType.TEE_SDK && mode == EnclaveDebug.NONE) {
             throw new EnclaveCreatingException("TEE SDK enclave's debug mode must be RELEASE or DEBUG.");
         }
+        if (type == EnclaveType.EMBEDDED_LIB_OS && mode == EnclaveDebug.NONE) {
+            throw new EnclaveCreatingException("EMBEDDED_LIB_OS enclave's debug mode must be RELEASE or DEBUG.");
+        }
         enclaveContext = new EnclaveContext(type, mode, recycler);
     }
 
@@ -44,11 +46,11 @@ abstract class AbstractEnclave implements Enclave {
         return enclaveContext;
     }
 
-    abstract byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException;
+    abstract byte[] loadServiceNative(String service) throws ServicesLoadingException;
 
-    abstract byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException;
+    abstract byte[] unloadServiceNative(ServiceHandler handler) throws ServicesUnloadingException;
 
-    abstract byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException;
+    abstract byte[] invokeMethodNative(EnclaveInvocationContext context) throws EnclaveMethodInvokingException;
 
     abstract AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException;
 
@@ -60,15 +62,9 @@ abstract class AbstractEnclave implements Enclave {
         try {
             // Only need to provide service's interface name is enough to load service
             // in enclave.
-            byte[] payload;
-            try {
-                payload = SerializationHelper.serialize(service.getName());
-            } catch (IOException e) {
-                throw new ServicesLoadingException("service name serialization failed.", e);
-            }
             EnclaveInvocationResult resultWrapper;
             try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(loadServiceNative(payload));
+                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(loadServiceNative(service.getName()));
             } catch (IOException | ClassNotFoundException e) {
                 throw new ServicesLoadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }
@@ -98,15 +94,9 @@ abstract class AbstractEnclave implements Enclave {
             throw new ServicesUnloadingException("enclave was destroyed.");
         }
         try {
-            byte[] payload;
-            try {
-                payload = SerializationHelper.serialize(service);
-            } catch (IOException e) {
-                throw new ServicesUnloadingException("unload service serialization failed.", e);
-            }
             EnclaveInvocationResult resultWrapper;
             try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(unloadServiceNative(payload));
+                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(unloadServiceNative(service));
             } catch (IOException | ClassNotFoundException e) {
                 throw new ServicesUnloadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }
@@ -125,15 +115,9 @@ abstract class AbstractEnclave implements Enclave {
             throw new EnclaveMethodInvokingException("enclave was destroyed.");
         }
         try {
-            byte[] payload;
-            try {
-                payload = SerializationHelper.serialize(input);
-            } catch (IOException e) {
-                throw new EnclaveMethodInvokingException("EnclaveInvokeMetaWrapper serialization failed.", e);
-            }
             EnclaveInvocationResult resultWrapper;
             try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(invokeMethodNative(payload));
+                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(invokeMethodNative(input));
             } catch (IOException | ClassNotFoundException e) {
                 throw new EnclaveMethodInvokingException("EnclaveInvokeResultWrapper deserialization failed.", e);
             }

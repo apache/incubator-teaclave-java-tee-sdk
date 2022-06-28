@@ -1,6 +1,5 @@
 package com.alibaba.confidentialcomputing.host;
 
-import com.alibaba.confidentialcomputing.host.ExtractLibrary;
 import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 
 import java.io.IOException;

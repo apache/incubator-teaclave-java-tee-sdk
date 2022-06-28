@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TestRemoteAttestation {
     @Test
-    void testRemoteAttestation() throws EnclaveCreatingException {
+    void testRemoteAttestation() {
         Enclave mockInJvmEnclave = new MockInJvmEnclave();
         assertThrows(RemoteAttestationException.class, () -> RemoteAttestation.generateAttestationReport(mockInJvmEnclave, null));
         assertThrows(RemoteAttestationException.class, () -> RemoteAttestation.verifyAttestationReport(new AttestationReport(EnclaveType.MOCK_IN_JVM, null)));
@@ -37,7 +37,7 @@ class TestRemoteAttestation {
     }
 
     @Test
-    void testAttestationReport() throws Exception {
+    void testAttestationReport() {
         byte[] quote = new byte[4];
         for (int index = 0; index < quote.length; index++) {
             quote[index] = (byte) 0x5f;
@@ -46,6 +46,14 @@ class TestRemoteAttestation {
         byte[] serializedReport = report.toByteArray();
         AttestationReport deserializedReport = AttestationReport.fromByteArray(serializedReport);
         assertEquals(EnclaveType.TEE_SDK, deserializedReport.getEnclaveType());
+        for (int index = 0; index < quote.length; index++) {
+            assertEquals(quote[index], (deserializedReport.getQuote())[index]);
+        }
+
+        report = new AttestationReport(EnclaveType.EMBEDDED_LIB_OS, quote);
+        serializedReport = report.toByteArray();
+        deserializedReport = AttestationReport.fromByteArray(serializedReport);
+        assertEquals(EnclaveType.EMBEDDED_LIB_OS, deserializedReport.getEnclaveType());
         for (int index = 0; index < quote.length; index++) {
             assertEquals(quote[index], (deserializedReport.getQuote())[index]);
         }

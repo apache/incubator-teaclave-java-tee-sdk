@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD_IMAGE=javaenclave_build
-BUILD_TAG=v0.1.9
+BUILD_TAG=v0.1.10
 
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 
@@ -14,15 +14,15 @@ if [[ "$(docker images -q ${BUILD_IMAGE}:${BUILD_TAG} 2> /dev/null)" == "" ]]; t
   # Get the customized Graal VM from git@gitlab.alibaba-inc.com:graal/SGXGraalVM.git
   # This should be replaced to the offical version when all patches are accepted by the Graal community
   wget https://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/JDK11-22.1.0/graalvm-enclave-22.1.0.tar
-  wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/x86_64-linux-musl-native.tgz
   wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/zlib-1.2.11.tar.gz
   wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/settings_taobao.xml -O settings.xml
   wget https://dragonwell.oss-cn-shanghai.aliyuncs.com/11/tee_java/dependency/sgx_linux_x64_sdk_2.17.100.0.bin
+  wget https://dragonwell.oss-cn-shanghai.aliyuncs.com/11.0.15.11.9/Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz
   docker build -t ${BUILD_IMAGE}:${BUILD_TAG} .
   rm -f graalvm-enclave-22.1.0.tar
-  rm -f x86_64-linux-musl-native.tgz
   rm -f zlib-1.2.11.tar.gz
   rm -f sgx_linux_x64_sdk_2.17.100.0.bin
+  rm -f Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz
 fi
 
 # Set PCCS for DCAP Remote Attestation.

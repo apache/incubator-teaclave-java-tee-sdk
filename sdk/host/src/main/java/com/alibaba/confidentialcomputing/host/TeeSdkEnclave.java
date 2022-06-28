@@ -1,5 +1,8 @@
 package com.alibaba.confidentialcomputing.host;
 
+import com.alibaba.confidentialcomputing.common.EnclaveInvocationContext;
+import com.alibaba.confidentialcomputing.common.SerializationHelper;
+import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.host.exception.*;
 
 import java.io.IOException;
@@ -75,17 +78,35 @@ class TeeSdkEnclave extends AbstractEnclave {
     }
 
     @Override
-    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
+    byte[] loadServiceNative(String service) throws ServicesLoadingException {
+        byte[] payload;
+        try {
+            payload = SerializationHelper.serialize(service);
+        } catch (IOException e) {
+            throw new ServicesLoadingException("service name serialization failed.", e);
+        }
         return nativeLoadService(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
-    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
+    byte[] unloadServiceNative(ServiceHandler handler) throws ServicesUnloadingException {
+        byte[] payload;
+        try {
+            payload = SerializationHelper.serialize(handler);
+        } catch (IOException e) {
+            throw new ServicesUnloadingException("unload service serialization failed.", e);
+        }
         return nativeUnloadService(enclaveHandle, isolateHandle, payload);
     }
 
     @Override
-    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
+    byte[] invokeMethodNative(EnclaveInvocationContext context) throws EnclaveMethodInvokingException {
+        byte[] payload;
+        try {
+            payload = SerializationHelper.serialize(context);
+        } catch (IOException e) {
+            throw new EnclaveMethodInvokingException("EnclaveInvokeMetaWrapper serialization failed.", e);
+        }
         return nativeInvokeMethod(enclaveHandle, isolateHandle, payload);
     }
 

@@ -95,9 +95,7 @@ JavaEnclave_TeeSDKSVMNativeCreateEnclave(JNIEnv *env, jobject obj, jint mode, js
     const char *path_str = (path == 0) ? 0 : (*env)->GetStringUTFChars(env, path, 0);
     sgx_enclave_id_t enclave_id;
     int ret = sgx_create_enclave(path_str, enable_debug_mode, NULL, NULL, &enclave_id, NULL);
-
     (*env)->ReleaseStringUTFChars(env, path, path_str);
-
     if (ret != SGX_SUCCESS) {
         THROW_EXCEPTION(env, ENCLAVE_CREATING_EXCEPTION, "create tee sdk enclave by native calling failed.")
     }
@@ -158,12 +156,12 @@ JavaEnclave_TeeSDKSVMNativeUnloadService(JNIEnv *env, jobject obj, jlong enclave
 
 JNIEXPORT jint JNICALL
 JavaEnclave_TeeSDKSVMNativeSvmDetachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_thread_handler) {
-    int ret = 0x0;
+    int ret = 0;
     enclave_svm_isolate_destroy((sgx_enclave_id_t)enclave_handler, &ret, (uint64_t)isolate_thread_handler);
     if (ret != 0) {
         THROW_EXCEPTION(env, ENCLAVE_DESTROYING_EXCEPTION, "isolate destroy native call failed.")
     }
-    return 0;
+    return ret;
 }
 
 JNIEXPORT jint JNICALL
@@ -177,7 +175,6 @@ JavaEnclave_TeeSDKSVMNativeDestroyEnclave(JNIEnv *env, jobject obj, jlong enclav
 JNIEXPORT jobject JNICALL
 JavaEnclave_TeeSDK_REMOTE_ATTESTATION_REPORT(JNIEnv *env, jobject obj, jlong enclave_handler, jbyteArray data) {
     int ret = 0;
-
     quote3_error_t qe3_ret = SGX_QL_SUCCESS;
     // Step one, load remote attestation related .signed files.
     if (SGX_QL_SUCCESS != (qe3_ret = load_qe_signed_package())) {
@@ -242,13 +239,19 @@ JavaEnclave_TeeSDK_REMOTE_ATTESTATION_REPORT(JNIEnv *env, jobject obj, jlong enc
     jbyte *mr_signer_buf = (*env)->GetByteArrayElements(env, mr_signer, NULL);
     memcpy(mr_signer_buf, ra_report.body.mr_signer.m, SGX_HASH_SIZE);
 
+    // create user data byte array.
+    jbyteArray user_data = (*env)->NewByteArray(env, SGX_REPORT_DATA_SIZE);
+    jbyte *user_data_buf = (*env)->GetByteArrayElements(env, user_data, NULL);
+    memcpy(user_data_buf, ra_report.body.report_data.d, SGX_REPORT_DATA_SIZE);
+
     (*env)->ReleaseByteArrayElements(env, data, data_copy, 0);
     (*env)->ReleaseByteArrayElements(env, quote_array, quote_array_ptr, 0);
     (*env)->ReleaseByteArrayElements(env, mr_enclave, mr_enclave_buf, 0);
     (*env)->ReleaseByteArrayElements(env, mr_signer, mr_signer_buf, 0);
+    (*env)->ReleaseByteArrayElements(env, user_data, user_data_buf, 0);
     free(quote_buffer_ptr);
 
     jclass tee_sdk_ra_report_clazz = (*env)->FindClass(env, TEE_SDK_REMOTE_ATTESTATION_REPORT_CLASS_NAME);
-    jmethodID construct = (*env)->GetMethodID(env, tee_sdk_ra_report_clazz, "<init>", "([B[B[B)V");
-    return (*env)->NewObject(env, tee_sdk_ra_report_clazz, construct, quote_array, mr_signer, mr_enclave);
+    jmethodID construct = (*env)->GetMethodID(env, tee_sdk_ra_report_clazz, "<init>", "([B[B[B[B)V");
+    return (*env)->NewObject(env, tee_sdk_ra_report_clazz, construct, quote_array, mr_signer, mr_enclave, user_data);
 }

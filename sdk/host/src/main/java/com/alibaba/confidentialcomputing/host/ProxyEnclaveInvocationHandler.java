@@ -50,21 +50,23 @@ class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
             result = enclave.InvokeEnclaveMethod(methodInvokeMetaWrapper);
         } catch (EnclaveMethodInvokingException e) {
             // Get cause exception if it has one.
-            ConfidentialComputingException enclaveException = (ConfidentialComputingException) e.getCause();
-            Throwable enclaveCauseException = enclaveException.getCause();
-            Class<?>[] exceptionTypes = method.getExceptionTypes();
-            if (enclaveCauseException instanceof InvocationTargetException) {
-                // Check whether cause exception matches one of the method's exception declaration.
-                // If it's true, it illustrates that an exception happened in enclave when the service
-                // method was invoked in enclave, we should throw this exception directly and user will
-                // handle it.
-                // If it's false, it illustrates that an exception happened in host side or enclave side,
-                // but the exception is not belong to the method's declaration. In the case we should throw
-                // EnclaveMethodInvokingException again.
-                Throwable rootCause = enclaveCauseException.getCause();
-                for (Class<?> exception : exceptionTypes) {
-                    if (exception == rootCause.getClass()) {
-                        throw rootCause;
+            Throwable causeException = e.getCause();
+            if (causeException instanceof ConfidentialComputingException) {
+                Throwable enclaveCauseException = causeException.getCause();
+                Class<?>[] exceptionTypes = method.getExceptionTypes();
+                if (enclaveCauseException instanceof InvocationTargetException) {
+                    // Check whether cause exception matches one of the method's exception declaration.
+                    // If it's true, it illustrates that an exception happened in enclave when the service
+                    // method was invoked in enclave, we should throw this exception directly and user will
+                    // handle it.
+                    // If it's false, it illustrates that an exception happened in host side or enclave side,
+                    // but the exception is not belong to the method's declaration. In the case we should throw
+                    // EnclaveMethodInvokingException again.
+                    Throwable rootCause = enclaveCauseException.getCause();
+                    for (Class<?> exception : exceptionTypes) {
+                        if (exception == rootCause.getClass()) {
+                            throw rootCause;
+                        }
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package com.alibaba.confidentialcomputing.enclave.framework;
 
-
 import com.alibaba.confidentialcomputing.common.EnclaveInvocationResult;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;

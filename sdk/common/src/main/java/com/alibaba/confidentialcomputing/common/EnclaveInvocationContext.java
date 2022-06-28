@@ -7,13 +7,20 @@ import java.io.Serializable;
  * call, including the service instance's unique instanceIdentity, interface name, class name,
  * method name and its parameters.
  */
-public final class EnclaveInvocationContext implements Serializable {
+public class EnclaveInvocationContext implements Serializable {
     private static final long serialVersionUID = 6878585714134748604L;
 
     private final ServiceHandler serviceHandler;
     private final String methodName;
     private final String[] parameterTypes;
     private final Object[] arguments;
+
+    public EnclaveInvocationContext() {
+        this.serviceHandler = null;
+        this.methodName = null;
+        this.parameterTypes = null;
+        this.arguments = null;
+    }
 
     public EnclaveInvocationContext(ServiceHandler serviceHandler,
                                     String methodName,

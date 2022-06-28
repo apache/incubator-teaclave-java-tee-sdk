@@ -8,6 +8,7 @@ import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingE
  * Programmers need to handle EnclaveCreatingException seriously.
  */
 public class EnclaveCreatingException extends ConfidentialComputingException {
+
     /**
      * @param info exception information.
      */

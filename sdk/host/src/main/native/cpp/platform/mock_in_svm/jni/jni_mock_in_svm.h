@@ -21,9 +21,9 @@ typedef struct {
 {                                                                              \
     jclass ra_class = (*env)->FindClass(env, exception);                       \
     if (ra_class == NULL) {                                                    \
-        printf("JavaEnclave Error:  ");                                        \
-        printf(exception);                                                     \
-        printf(" class loading failed.\n");                                    \
+        fprintf(stderr, "JavaEnclave Error:  ");                               \
+        fprintf(stderr, exception);                                            \
+        fprintf(stderr, " class loading failed.\n");                           \
         return;                                                                \
     }                                                                          \
     (*env)->ThrowNew(env, ra_class, info);                                     \

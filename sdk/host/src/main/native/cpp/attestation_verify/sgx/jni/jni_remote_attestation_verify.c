@@ -65,7 +65,6 @@ verify_result_wrapper ecdsa_quote_verification_qvl(const uint8_t* quote, uint32_
 
     if (dcap_ret != SGX_QL_SUCCESS) {
         result.status = QUOTE_VERIFICATION_STATUS_QUOTE_VERIFY_FAILED;
-        // printf("JavaEnclave Remote Attestation Error: sgx_qv_verify_quote failed: 0x%04x\n", dcap_ret);
         return result;
     }
 

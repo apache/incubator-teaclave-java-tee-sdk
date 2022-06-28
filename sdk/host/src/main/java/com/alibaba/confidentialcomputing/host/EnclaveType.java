@@ -23,4 +23,11 @@ public enum EnclaveType {
      * host application runs in jvm environment, and enclave package were loaded by host.
      */
     TEE_SDK,
+    /**
+     * An enclave based on Intel's SGX2, with OCCLUM Libos. Enclave application
+     * was compiled to .class files and packaged as a jar file, there is a jvm runs based
+     * on enclave's occlum libos. host application runs in jvm environment, and enclave
+     * package were loaded by host.
+     */
+    EMBEDDED_LIB_OS,
 }

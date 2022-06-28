@@ -25,6 +25,9 @@ class EnclaveConfigure {
                 case "TEE_SDK":
                     enclaveType = EnclaveType.TEE_SDK;
                     break;
+                case "EMBEDDED_LIB_OS":
+                    enclaveType = EnclaveType.EMBEDDED_LIB_OS;
+                    break;
                 case "MOCK_IN_JVM":
                     enclaveType = EnclaveType.MOCK_IN_JVM;
                     break;
@@ -77,6 +80,8 @@ class EnclaveConfigure {
                 return new MockInSvmEnclave();
             case TEE_SDK:
                 return new TeeSdkEnclave(enclaveDebug);
+            case EMBEDDED_LIB_OS:
+                return EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getDebuggable(), EnclaveSimulate.HARDWARE);
             case NONE:
             default:
                 throw new EnclaveCreatingException("enclave type is not supported.");

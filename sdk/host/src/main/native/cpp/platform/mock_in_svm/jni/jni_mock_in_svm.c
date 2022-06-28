@@ -134,7 +134,6 @@ JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclav
     }
 
     if (graal_create_isolate(NULL, &isolate_t, &isolate_thread_t) != 0) {
-        // fprintf(stderr, "graal_create_isolate create error:%s\n", dlerror());
         THROW_EXCEPTION(env, ENCLAVE_CREATING_EXCEPTION, "graal_create_isolate create error.")
     }
 
@@ -145,7 +144,7 @@ JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclav
     return 0;
 }
 
-JNIEXPORT jobject JNICALL
+JNIEXPORT jbyteArray JNICALL
 JavaEnclave_MockSVMNativeLoadService(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_handler, jbyteArray load_service_payload) {
     enclave_calling_stub_result result_wrapper =  mock_enclave_calling_entry(env, isolate_handler, load_service_payload, (mock_enclave_stub) mock_in_svm_load_service_symbol);
     if (result_wrapper.ret != 0) {
@@ -154,7 +153,7 @@ JavaEnclave_MockSVMNativeLoadService(JNIEnv *env, jobject obj, jlong enclave_han
     return result_wrapper.result;
 }
 
-JNIEXPORT jobject JNICALL
+JNIEXPORT jbyteArray JNICALL
 JavaEnclave_MockSVMNativeInvokeMethod(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_handler, jbyteArray invoke_payload) {
     enclave_calling_stub_result result_wrapper = mock_enclave_calling_entry(env, isolate_handler, invoke_payload, (mock_enclave_stub) mock_in_svm_invoke_service_symbol);
     if (result_wrapper.ret != 0) {
@@ -163,7 +162,7 @@ JavaEnclave_MockSVMNativeInvokeMethod(JNIEnv *env, jobject obj, jlong enclave_ha
     return result_wrapper.result;
 }
 
-JNIEXPORT jobject JNICALL
+JNIEXPORT jbyteArray JNICALL
 JavaEnclave_MockSVMNativeUnloadService(JNIEnv *env, jobject obj, jlong enclave_handler, jlong isolate_handler, jbyteArray unload_service_payload) {
     enclave_calling_stub_result result_wrapper = mock_enclave_calling_entry(env, isolate_handler, unload_service_payload, (mock_enclave_stub) mock_in_svm_unload_service_symbol);
     if (result_wrapper.ret != 0) {

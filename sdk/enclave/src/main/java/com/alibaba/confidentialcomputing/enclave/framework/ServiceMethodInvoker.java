@@ -6,7 +6,6 @@ import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
 import jdk.vm.ci.meta.MetaUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;

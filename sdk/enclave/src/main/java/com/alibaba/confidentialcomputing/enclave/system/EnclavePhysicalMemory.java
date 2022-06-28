@@ -6,7 +6,6 @@ import com.oracle.svm.core.util.VMError;
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.word.WordFactory;
 
-import java.util.Properties;
 
 /**
  * Physical memory implementation for Enclave environment. The sysconf(_SC_PAGESIZE()) and

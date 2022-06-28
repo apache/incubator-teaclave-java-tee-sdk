@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-
 class MockTestEnclave extends AbstractEnclave {
     private static final AtomicLong instanceIdentity = new AtomicLong(0);
     private static final Map<String, Object> instancesRegisterCenter = new ConcurrentHashMap<>();
@@ -73,12 +72,11 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
-    byte[] loadServiceNative(byte[] payload) throws ServicesLoadingException {
+    byte[] loadServiceNative(String interfaceName) throws ServicesLoadingException {
         List<ServiceHandler> handlers = new ArrayList<>();
         Throwable exception = null;
         EnclaveInvocationResult result;
         try {
-            String interfaceName = (String) SerializationHelper.deserialize(payload);
             Class<?> service = Class.forName(interfaceName);
             Iterator<?> services = ServiceLoader.load(service).iterator();
             while (services.hasNext()) {
@@ -89,7 +87,7 @@ class MockTestEnclave extends AbstractEnclave {
                 cacheServiceHandler.add(sm);
                 instancesRegisterCenter.put(identity, instance);
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             exception = e;
         } finally {
             result = new EnclaveInvocationResult(handlers.toArray(new ServiceHandler[0]), exception);
@@ -103,18 +101,12 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
-    byte[] unloadServiceNative(byte[] payload) throws ServicesUnloadingException {
-        ServiceHandler serviceHandler;
+    byte[] unloadServiceNative(ServiceHandler handler) throws ServicesUnloadingException {
         Throwable exception = null;
         EnclaveInvocationResult result;
-        try {
-            serviceHandler = (ServiceHandler) SerializationHelper.deserialize(payload);
-            instancesRegisterCenter.remove(serviceHandler.getInstanceIdentity());
-        } catch (IOException | ClassNotFoundException e) {
-            exception = e;
-        } finally {
-            result = new EnclaveInvocationResult(null, exception);
-        }
+
+        instancesRegisterCenter.remove(handler.getInstanceIdentity());
+        result = new EnclaveInvocationResult(null, exception);
 
         try {
             return SerializationHelper.serialize(result);
@@ -124,13 +116,11 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
-    byte[] invokeMethodNative(byte[] payload) throws EnclaveMethodInvokingException {
-        EnclaveInvocationContext invocationContext;
+    byte[] invokeMethodNative(EnclaveInvocationContext invocationContext) throws EnclaveMethodInvokingException {
         Throwable exception = null;
         Object invokeRet = null;
         EnclaveInvocationResult result;
         try {
-            invocationContext = (EnclaveInvocationContext) SerializationHelper.deserialize(payload);
             String className = invocationContext.getServiceHandler().getServiceImplClassName();
             String[] parameterTypes = invocationContext.getParameterTypes();
             String methodName = invocationContext.getMethodName();

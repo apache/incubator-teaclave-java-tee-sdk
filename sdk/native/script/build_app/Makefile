@@ -24,7 +24,6 @@ ifeq ($(TEE_SDK), TRUE)
 	-fpie -ljava -lzip -lnio -lnet -ljvm -lfdlibm -llibchelper \
 	$(TS_ENCLAVE_LDFLAGS) -Wl,--version-script=/opt/javaenclave/config/platform/tee_sdk_svm/edl/tee_sdk_enclave.lds
 
-    # sign the enclave image
     ifeq ($(ENCLAVE_PRIVATE_PEM_PATH), )
 		openssl genrsa -out ${ENCLAVE_BASE_DIR}/target/enclave_workspace/private.pem -3 3072
 		$(SGX_ENCLAVE_SIGNER) sign -enclave ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load \
@@ -35,4 +34,8 @@ ifeq ($(TEE_SDK), TRUE)
         -out ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load.signed \
         -config ${ENCLAVE_BASE_DIR}/src/main/resources/tee_sdk_svm.conf -key $(ENCLAVE_PRIVATE_PEM_PATH)
     endif
+endif
+
+ifeq ($(EMBEDDED_LIB_OS), TRUE)
+	/bin/bash ${BUILD_SCRIPT_DIR}/libos_occlum_enclave_build.sh
 endif

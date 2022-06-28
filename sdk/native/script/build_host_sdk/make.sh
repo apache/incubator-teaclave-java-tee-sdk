@@ -48,6 +48,13 @@ then
   # copy jni.so to target/classes, which will be packed into a jar file.
   if [[ $TEE_SDK == TRUE ]]; then
     cp -r "$NATIVE_BASE_DIR"/bin/platform/tee_sdk_svm/jni "$HOST_BASE_DIR"/target/classes
+  fi
+  # copy jni.so to target/classes, which will be packed into a jar file.
+  if [[ $EMBEDDED_LIB_OS == TRUE ]]; then
+    cp -r "$NATIVE_BASE_DIR"/bin/platform/libos_occlum_enclave/jni "$HOST_BASE_DIR"/target/classes
+  fi
+  # copy sgx remote attestation verification jni.so to target/classes, which will be packed into a jar file.
+  if [ "$TEE_SDK" == TRUE ] || [ "$EMBEDDED_LIB_OS" == TRUE ]; then
     cp -r "$NATIVE_BASE_DIR"/bin/remote_attestation "$HOST_BASE_DIR"/target/classes
   fi
 else

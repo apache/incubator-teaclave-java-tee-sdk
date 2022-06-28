@@ -9,6 +9,8 @@ public class ConfidentialComputingException extends Exception {
 
     private static final long serialVersionUID = 5964126736764332957L;
 
+    public ConfidentialComputingException() {super();}
+
     /**
      * @param info exception information.
      */

@@ -19,6 +19,8 @@ public final class RemoteAttestation {
             System.arraycopy(userData, 0, result, 0, userData.length);
         } else if (userData.length > 64) {
             throw new RemoteAttestationException("enclave remote attestation user data length exceeds 64 bytes.");
+        } else {
+            result = userData;
         }
         return result;
     }
@@ -59,8 +61,10 @@ public final class RemoteAttestation {
         switch (report.getEnclaveType()) {
             case TEE_SDK:
                 return TeeSdkEnclave.verifyAttestationReport(report.getQuote());
+            case EMBEDDED_LIB_OS:
+                return EmbeddedLibOSEnclave.verifyAttestationReport(report.getQuote());
             default:
-                throw new RemoteAttestationException("enclaveType must be TEE_SDK.");
+                throw new RemoteAttestationException("enclaveType must be TEE_SDK or EMBEDDED_LIB_OS.");
         }
     }
 }

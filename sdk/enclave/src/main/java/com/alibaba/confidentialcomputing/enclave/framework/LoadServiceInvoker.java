@@ -17,9 +17,9 @@ public final class LoadServiceInvoker implements EnclaveMethodInvoker<String> {
         Class<?> service;
         try {
             service = Class.forName(inputData);
+            return new EnclaveInvocationResult(EnclaveContext.getInstance().loadService(service), null);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Can't find the service interface class.", e);
+            return new EnclaveInvocationResult(null, e);
         }
-        return new EnclaveInvocationResult(EnclaveContext.getInstance().loadService(service), null);
     }
 }

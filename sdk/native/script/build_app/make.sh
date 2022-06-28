@@ -2,7 +2,6 @@
 
 # shellcheck disable=SC2006
 export BUILD_SCRIPT_DIR=`dirname "$0"`
-
 # set enclave project's base dir path.
 export ENCLAVE_BASE_DIR="$1"
 # set enclave platform, such as mock_in_svm and tee_sdk.

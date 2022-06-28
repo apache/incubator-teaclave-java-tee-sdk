@@ -2,6 +2,7 @@ package com.alibaba.confidentialcomputing.test.host;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Random;
 
 import com.alibaba.confidentialcomputing.host.*;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
@@ -21,13 +22,28 @@ public class TestJavaEnclaveService {
     private String sayHelloService(EnclaveType type, String plain) throws
             EnclaveCreatingException, ServicesLoadingException, EnclaveDestroyingException, RemoteAttestationException, IOException {
         Enclave enclave = EnclaveFactory.create(type);
+        assertNotNull(enclave);
+        byte[] userData = new byte[64];
+        new Random().nextBytes(userData);
         if (type == EnclaveType.TEE_SDK) {
-            TeeSdkAttestationReport report = (TeeSdkAttestationReport) RemoteAttestation.generateAttestationReport(enclave, null);
+            TeeSdkAttestationReport report = (TeeSdkAttestationReport) RemoteAttestation.generateAttestationReport(enclave, userData);
             assertEquals(report.getEnclaveType(), EnclaveType.TEE_SDK);
             assertNotNull(report.getQuote());
             assertEquals(0, RemoteAttestation.verifyAttestationReport(report));
             assertNotNull(report.getMeasurementEnclave());
             assertNotNull(report.getMeasurementSigner());
+            assertNotNull(report.getUserData());
+            assertArrayEquals(userData, report.getUserData());
+        }
+        if (type == EnclaveType.EMBEDDED_LIB_OS) {
+            EmbeddedLibOSAttestationReport report = (EmbeddedLibOSAttestationReport) RemoteAttestation.generateAttestationReport(enclave, userData);
+            assertEquals(report.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
+            assertNotNull(report.getQuote());
+            assertEquals(0, RemoteAttestation.verifyAttestationReport(report));
+            assertNotNull(report.getMeasurementEnclave());
+            assertNotNull(report.getMeasurementSigner());
+            assertNotNull(report.getUserData());
+            assertArrayEquals(userData, report.getUserData());
         }
         Iterator<SayHelloService> userServices = enclave.load(SayHelloService.class);
         assertNotNull(userServices);
@@ -41,13 +57,28 @@ public class TestJavaEnclaveService {
 
     private void reflectionCallService(EnclaveType type) throws EnclaveCreatingException, ServicesLoadingException, EnclaveDestroyingException, RemoteAttestationException {
         Enclave enclave = EnclaveFactory.create(type);
+        assertNotNull(enclave);
+        byte[] userData = new byte[64];
+        new Random().nextBytes(userData);
         if (type == EnclaveType.TEE_SDK) {
-            TeeSdkAttestationReport report = (TeeSdkAttestationReport) RemoteAttestation.generateAttestationReport(enclave, null);
+            TeeSdkAttestationReport report = (TeeSdkAttestationReport) RemoteAttestation.generateAttestationReport(enclave, userData);
             assertEquals(report.getEnclaveType(), EnclaveType.TEE_SDK);
             assertNotNull(report.getQuote());
             assertEquals(0, RemoteAttestation.verifyAttestationReport(report));
             assertNotNull(report.getMeasurementEnclave());
             assertNotNull(report.getMeasurementSigner());
+            assertNotNull(report.getUserData());
+            assertArrayEquals(userData, report.getUserData());
+        }
+        if (type == EnclaveType.EMBEDDED_LIB_OS) {
+            EmbeddedLibOSAttestationReport report = (EmbeddedLibOSAttestationReport) RemoteAttestation.generateAttestationReport(enclave, userData);
+            assertEquals(report.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
+            assertNotNull(report.getQuote());
+            assertEquals(0, RemoteAttestation.verifyAttestationReport(report));
+            assertNotNull(report.getMeasurementEnclave());
+            assertNotNull(report.getMeasurementSigner());
+            assertNotNull(report.getUserData());
+            assertArrayEquals(userData, report.getUserData());
         }
         Iterator<ReflectionCallService> userServices = enclave.load(ReflectionCallService.class);
         assertNotNull(userServices);
@@ -60,13 +91,28 @@ public class TestJavaEnclaveService {
 
     private void javaEnclaveException(EnclaveType type) throws EnclaveCreatingException, ServicesLoadingException, EnclaveDestroyingException, RemoteAttestationException {
         Enclave enclave = EnclaveFactory.create(type);
+        assertNotNull(enclave);
+        byte[] userData = new byte[64];
+        new Random().nextBytes(userData);
         if (type == EnclaveType.TEE_SDK) {
-            TeeSdkAttestationReport report = (TeeSdkAttestationReport) RemoteAttestation.generateAttestationReport(enclave, null);
+            TeeSdkAttestationReport report = (TeeSdkAttestationReport) RemoteAttestation.generateAttestationReport(enclave, userData);
             assertEquals(report.getEnclaveType(), EnclaveType.TEE_SDK);
             assertNotNull(report.getQuote());
             assertEquals(0, RemoteAttestation.verifyAttestationReport(report));
             assertNotNull(report.getMeasurementEnclave());
             assertNotNull(report.getMeasurementSigner());
+            assertNotNull(report.getUserData());
+            assertArrayEquals(userData, report.getUserData());
+        }
+        if (type == EnclaveType.EMBEDDED_LIB_OS) {
+            EmbeddedLibOSAttestationReport report = (EmbeddedLibOSAttestationReport) RemoteAttestation.generateAttestationReport(enclave, userData);
+            assertEquals(report.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
+            assertNotNull(report.getQuote());
+            assertEquals(0, RemoteAttestation.verifyAttestationReport(report));
+            assertNotNull(report.getMeasurementEnclave());
+            assertNotNull(report.getMeasurementSigner());
+            assertNotNull(report.getUserData());
+            assertArrayEquals(userData, report.getUserData());
         }
         Iterator<EnclaveException> userServices = enclave.load(EnclaveException.class);
         assertNotNull(userServices);
@@ -77,24 +123,38 @@ public class TestJavaEnclaveService {
     }
 
     @Test
-    public void testSayHelloService() throws
-            EnclaveCreatingException, EnclaveDestroyingException, ServicesLoadingException, RemoteAttestationException, IOException {
-        assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_JVM, "Hello World"));
-        assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_SVM, "Hello World"));
-        assertEquals("Hello World", sayHelloService(EnclaveType.TEE_SDK, "Hello World"));
+    public void testSayHelloService() {
+        try {
+            assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_JVM, "Hello World"));
+            assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_SVM, "Hello World"));
+            assertEquals("Hello World", sayHelloService(EnclaveType.TEE_SDK, "Hello World"));
+            assertEquals("Hello World", sayHelloService(EnclaveType.EMBEDDED_LIB_OS, "Hello World"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testReflectionCallService() throws ServicesLoadingException, EnclaveCreatingException, EnclaveDestroyingException, RemoteAttestationException {
-        reflectionCallService(EnclaveType.MOCK_IN_JVM);
-        reflectionCallService(EnclaveType.MOCK_IN_SVM);
-        reflectionCallService(EnclaveType.TEE_SDK);
+    public void testReflectionCallService() {
+        try {
+            reflectionCallService(EnclaveType.MOCK_IN_JVM);
+            reflectionCallService(EnclaveType.MOCK_IN_SVM);
+            reflectionCallService(EnclaveType.TEE_SDK);
+            reflectionCallService(EnclaveType.EMBEDDED_LIB_OS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testJavaEnclaveException() throws ServicesLoadingException, EnclaveCreatingException, EnclaveDestroyingException, RemoteAttestationException {
-        javaEnclaveException(EnclaveType.MOCK_IN_JVM);
-        javaEnclaveException(EnclaveType.MOCK_IN_SVM);
-        javaEnclaveException(EnclaveType.TEE_SDK);
+    public void testJavaEnclaveException() {
+        try {
+            javaEnclaveException(EnclaveType.MOCK_IN_JVM);
+            javaEnclaveException(EnclaveType.MOCK_IN_SVM);
+            javaEnclaveException(EnclaveType.TEE_SDK);
+            javaEnclaveException(EnclaveType.EMBEDDED_LIB_OS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

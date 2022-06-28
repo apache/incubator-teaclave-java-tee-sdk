@@ -71,6 +71,9 @@ public class AttestationReport implements Serializable {
             case 3:
                 enclaveType = EnclaveType.TEE_SDK;
                 break;
+            case 4:
+                enclaveType = EnclaveType.EMBEDDED_LIB_OS;
+                break;
         }
         System.arraycopy(attestationReport, 1, report, 0, report.length);
         return new AttestationReport(enclaveType, report);

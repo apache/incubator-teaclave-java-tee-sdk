@@ -3,7 +3,7 @@ package com.alibaba.confidentialcomputing.host;
 /**
  * An enumeration of enclave debug mode.
  */
-enum EnclaveDebug {
+public enum EnclaveDebug {
     /**
      * For MOCK_IN_JVM and MOCK_IN_SVM, there is no real enclave environment.
      */
