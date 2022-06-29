@@ -6,23 +6,31 @@ public class NumericMath implements MathService<Number> {
 
     @Override
     public Number add(Number x, Number y) {
-        counter++;
+        synchronized (this) {
+            counter++;
+        }
         return x.intValue() + y.intValue();
     }
 
     @Override
     public Number minus(Number x, Number y) {
-        counter++;
+        synchronized (this) {
+            counter++;
+        }
         return x.intValue() - y.intValue();
     }
 
     @Override
     public Number div(Number x, Number y) {
-        counter++;
+        synchronized (this) {
+            counter++;
+        }
         return x.intValue() / y.intValue();
     }
 
     public int getCounter() {
-        return counter;
+        synchronized (this) {
+            return counter;
+        }
     }
 }
