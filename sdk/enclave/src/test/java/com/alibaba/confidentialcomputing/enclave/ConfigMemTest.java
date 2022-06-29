@@ -37,7 +37,7 @@ public class ConfigMemTest {
                     "-DHEAP_PAGES=24000");
         }
 
-        /*@Override
+/*        @Override
         public List<String> extraSVMOptions() {
             return List.of("--debug-attach:7788");
         }*/

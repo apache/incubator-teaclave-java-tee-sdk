@@ -10,6 +10,7 @@ import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.core.c.libc.TemporaryBuildDirectoryProvider;
 import com.oracle.svm.core.jdk.resources.NativeImageResourceFileSystemUtil;
 import com.oracle.svm.core.util.VMError;
+import com.oracle.svm.hosted.FeatureHandler;
 import com.oracle.svm.hosted.FeatureImpl;
 import com.oracle.svm.hosted.ImageClassLoader;
 import com.oracle.svm.hosted.NativeImageGenerator;
@@ -54,6 +55,20 @@ public class EnclaveFeature implements Feature {
     @Override
     public List<Class<? extends Feature>> getRequiredFeatures() {
         return Arrays.asList(ReflectionFeature.class, SerializationFeature.class, ServiceLoaderFeature.class);
+    }
+
+    /**
+     * {@code com.oracle.svm.core.cpufeature.RuntimeCPUFeatureCheckFeature} is introduced since GraalVM 22.1.0. It is not
+     * compatible with TEE SDK, so we have to disable it.
+     *
+     */
+    @Override
+    public void afterRegistration(AfterRegistrationAccess access) {
+        if (EnclaveOptions.RunInEnclave.getValue()) {
+            FeatureImpl.AfterRegistrationAccessImpl a = (FeatureImpl.AfterRegistrationAccessImpl) access;
+            FeatureHandler featureHandler = a.getFeatureHandler();
+            EnclavePlatFormSettings.disableFeatures(featureHandler, "com.oracle.svm.core.cpufeature.RuntimeCPUFeatureCheckFeature");
+        }
     }
 
     @Override

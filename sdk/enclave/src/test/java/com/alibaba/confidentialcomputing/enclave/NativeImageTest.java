@@ -167,7 +167,7 @@ public abstract class NativeImageTest implements NativeImageTestable {
         }
         command.add("--no-fallback");
         command.add("-H:Path=" + SVM_OUT);
-        command.add("-H:+AllowIncompleteClasspath");
+        command.add("-H:+RunInEnclave");
         command.add("-H:+ReportExceptionStackTraces");
         command.add("-H:Name=lib" + SVM_ENCLAVE_LIB);
         command.add("-H:-DeleteLocalSymbols");

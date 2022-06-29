@@ -34,7 +34,6 @@
                                 <configuration>
                                     <buildArgs>
                                         <buildArg>--no-fallback</buildArg>
-                                        <buildArg>-H:-RunInEnclave</buildArg>
                                     </buildArgs>
                                 </configuration>
                                 <phase>test</phase>
@@ -49,9 +48,7 @@
                                     <buildArgs>
                                         <buildArg>--shared</buildArg>
                                         <buildArg>--no-fallback</buildArg>
-                                        <buildArg>--allow-incomplete-classpath</buildArg>
                                         <buildArg>-H:Path=svm-output</buildArg>
-                                        <buildArg>-H:-RunInEnclave</buildArg>
                                         <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/target/native/agent-output/test/reflect-config.json</buildArg>
                                     </buildArgs>
                                 </configuration>
@@ -67,9 +64,8 @@
                                     <buildArgs>
                                         <buildArg>--shared</buildArg>
                                         <buildArg>--no-fallback</buildArg>
-                                        <buildArg>--allow-incomplete-classpath</buildArg>
                                         <buildArg>-H:Path=svm-output</buildArg>
-                                        <buildArg>-H:-RunInEnclave</buildArg>
+                                        <buildArg>-H:+RunInEnclave</buildArg>
                                         <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/target/native/agent-output/test/reflect-config.json</buildArg>
                                     </buildArgs>
                                 </configuration>
