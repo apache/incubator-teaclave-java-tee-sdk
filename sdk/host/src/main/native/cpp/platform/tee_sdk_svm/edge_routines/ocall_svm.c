@@ -1,4 +1,4 @@
-#include "ocall.h"
+#include "ocall_svm.h"
 
 int ocall_getrlimit(int resource, void *rlim) {
     return getrlimit(resource, (struct rlimit *)rlim);

@@ -5,6 +5,20 @@
 #include <stdio.h>
 #include <assert.h>
 
+//#define ENABLE_TRACE_SYSCALL
+#if defined(ENABLE_TRACE_SYSCALL)
+#define TRACE_SYMBOL_CALL()  printf("JavaEnclave Warning: %s is called in enclave svm.\n", __FUNCTION__);
+#else
+#define TRACE_SYMBOL_CALL()
+#endif
+
+//#define UNSUPPORTED_SYSCALL_SYMBOL_ASSERT
+#if defined(UNSUPPORTED_SYSCALL_SYMBOL_ASSERT)
+#define ASSERT()  assert(-1);
+#else
+#define ASSERT()
+#endif
+
 void __fxstat();
 void __fxstat64();
 void __isnan();
@@ -15,6 +29,7 @@ void __lxstat64();
 void __sched_cpucount();
 void __strdup();
 void __xmknod();
+void __xpg_strerror_r();
 void __xstat();
 void __xstat64();
 void chmod();
@@ -28,44 +43,41 @@ void deflateSetHeader();
 void dlopen();
 void dlsym();
 void endmntent();
-void fchmod();
-void fchown();
-void fpathconf();
+void fscanf();
 void fstatvfs();
 void fstatvfs64();
 void getgrnam_r();
 void getmntent_r();
 void getpwnam_r();
+void inet_pton();
 void inflate();
 void inflateEnd();
 void inflateInit2_();
 void inflateReset();
 void inflateSetDictionary();
+void ioctl();
 void lchown();
-void lstat();
 void mknod();
-void pathconf();
 void pipe();
-void pthread_attr_init();
-void pthread_attr_setdetachstate();
-void pthread_attr_setstacksize();
 void pthread_kill();
-void pthread_setname_np();
-void readlink();
-void realpath();
 void sched_getaffinity();
 void sendfile();
 void sendfile64();
 void setmntent();
+void sigaction();
 void sigaddset();
 void sigemptyset();
 void sigprocmask();
 void statvfs();
 void statvfs64();
 void symlink();
-void utimes();
+void timezone();
 
-int posix_memalign(void **memptr, size_t alignment, size_t size);
+char* strcat(char *restrict dest, const char *restrict src);
+char* strcpy(char* dest,const char* src);
+char* stpcpy(char *dest, const char *src);
+
+size_t __getdelim(char **lineptr, size_t *n, int delim, FILE *stream);
 
 unsigned long int pthread_self();
 
@@ -87,6 +99,8 @@ typedef struct _pthread_attr {
 
 thread_data* get_thread_data(void);
 unsigned long int pthread_self(void);
+int pthread_attr_init(pthread_attr *attr);
+int pthread_attr_setdetachstate(pthread_attr *attr, int detachstate);
 int pthread_attr_getstack(const pthread_attr *a, void ** addr, uint64_t *size);
 int pthread_attr_getguardsize(const pthread_attr *a, size_t *size);
 int mprotect();
@@ -103,7 +117,10 @@ typedef struct {
 int getrlimit(int resource, rlimit* rlim);
 int setrlimit();
 int pthread_condattr_init();
+int pthread_setname_np();
 int pthread_condattr_setclock();
+int pthread_cond_timedwait();
 int pthread_attr_destroy();
+int pthread_attr_setstacksize();
 
 #endif /* end of _TEE_SDK_SYMBOL_H */

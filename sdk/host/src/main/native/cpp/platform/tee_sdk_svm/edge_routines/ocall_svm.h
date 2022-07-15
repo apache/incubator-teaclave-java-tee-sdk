@@ -1,5 +1,5 @@
-#ifndef _OCALL_H_
-#define _OCALL_H_
+#ifndef _OCALL_SVM_H_
+#define _OCALL_SVM_H_
 
 #include <sys/resource.h>
 #include <sys/mman.h>
@@ -17,4 +17,4 @@ extern "C"
 }
 #endif
 
-#endif /* !_OCALL_H_ */
+#endif /* !_OCALL_SVM_H_ */

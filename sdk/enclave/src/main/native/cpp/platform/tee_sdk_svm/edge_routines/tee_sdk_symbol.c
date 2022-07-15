@@ -1,20 +1,6 @@
 #include "tee_sdk_enclave_t.h"
 #include "tee_sdk_symbol.h"
 
-//#define ENABLE_TRACE_SYSCALL
-#if defined(ENABLE_TRACE_SYSCALL)
-#define TRACE_SYMBOL_CALL()  printf("JavaEnclave Warning: %s is called in enclave svm.\n", __FUNCTION__);
-#else
-#define TRACE_SYMBOL_CALL()
-#endif
-
-//#define UNSUPPORTED_SYSCALL_SYMBOL_ASSERT
-#if defined(UNSUPPORTED_SYSCALL_SYMBOL_ASSERT)
-#define ASSERT()  assert(-1);
-#else
-#define ASSERT()
-#endif
-
 void __fxstat() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __fxstat64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __isnan() {TRACE_SYMBOL_CALL(); ASSERT();}
@@ -25,6 +11,7 @@ void __lxstat64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __sched_cpucount() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __strdup() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __xmknod() {TRACE_SYMBOL_CALL(); ASSERT();}
+void __xpg_strerror_r() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __xstat() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __xstat64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void chmod() {TRACE_SYMBOL_CALL(); ASSERT();}
@@ -38,53 +25,83 @@ void deflateSetHeader() {TRACE_SYMBOL_CALL(); ASSERT();}
 void dlopen() {TRACE_SYMBOL_CALL(); ASSERT();}
 void dlsym() {TRACE_SYMBOL_CALL(); ASSERT();}
 void endmntent() {TRACE_SYMBOL_CALL(); ASSERT();}
-void fchmod() {TRACE_SYMBOL_CALL(); ASSERT();}
-void fchown() {TRACE_SYMBOL_CALL(); ASSERT();}
-void fpathconf() {TRACE_SYMBOL_CALL(); ASSERT();}
+void fscanf() {TRACE_SYMBOL_CALL(); ASSERT();}
 void fstatvfs() {TRACE_SYMBOL_CALL(); ASSERT();}
 void fstatvfs64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void getgrnam_r() {TRACE_SYMBOL_CALL(); ASSERT();}
 void getmntent_r() {TRACE_SYMBOL_CALL(); ASSERT();}
 void getpwnam_r() {TRACE_SYMBOL_CALL(); ASSERT();}
+void inet_pton() {TRACE_SYMBOL_CALL(); ASSERT();}
 void inflate() {TRACE_SYMBOL_CALL(); ASSERT();}
 void inflateEnd() {TRACE_SYMBOL_CALL(); ASSERT();}
 void inflateInit2_() {TRACE_SYMBOL_CALL(); ASSERT();}
 void inflateReset() {TRACE_SYMBOL_CALL(); ASSERT();}
 void inflateSetDictionary() {TRACE_SYMBOL_CALL(); ASSERT();}
+void ioctl() {TRACE_SYMBOL_CALL(); ASSERT();}
 void lchown() {TRACE_SYMBOL_CALL(); ASSERT();}
-void lstat() {TRACE_SYMBOL_CALL(); ASSERT();}
 void mknod() {TRACE_SYMBOL_CALL(); ASSERT();}
-void pathconf() {TRACE_SYMBOL_CALL(); ASSERT();}
 void pipe() {TRACE_SYMBOL_CALL(); ASSERT();}
-void pthread_attr_init() {TRACE_SYMBOL_CALL(); ASSERT();}
-void pthread_attr_setdetachstate() {TRACE_SYMBOL_CALL(); ASSERT();}
 void pthread_kill() {TRACE_SYMBOL_CALL(); ASSERT();}
-void pthread_setname_np() {TRACE_SYMBOL_CALL(); ASSERT();}
-void readlink() {TRACE_SYMBOL_CALL(); ASSERT();}
-void realpath() {TRACE_SYMBOL_CALL(); ASSERT();}
 void sched_getaffinity() {TRACE_SYMBOL_CALL(); ASSERT();}
 void sendfile() {TRACE_SYMBOL_CALL(); ASSERT();}
 void sendfile64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void setmntent() {TRACE_SYMBOL_CALL(); ASSERT();}
+void sigaction() {TRACE_SYMBOL_CALL(); ASSERT();}
 void sigaddset() {TRACE_SYMBOL_CALL(); ASSERT();}
 void sigemptyset() {TRACE_SYMBOL_CALL(); ASSERT();}
 void sigprocmask() {TRACE_SYMBOL_CALL(); ASSERT();}
 void statvfs() {TRACE_SYMBOL_CALL(); ASSERT();}
 void statvfs64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void symlink() {TRACE_SYMBOL_CALL(); ASSERT();}
-void utimes() {TRACE_SYMBOL_CALL(); ASSERT();}
+void timezone() {TRACE_SYMBOL_CALL(); ASSERT();}
 
-int posix_memalign(void **memptr, size_t alignment, size_t size) {
+char* strcat(char* dest, const char* source) {
     TRACE_SYMBOL_CALL();
-    void* ptr = malloc(size);
-    if (ptr == NULL) { return -1; }
-    *memptr = ptr;
-    return 0;
+	if (dest == NULL || source == NULL) { return dest; }
+	char* p = dest;
+	while (*p != '\0') { p++; }
+	while (*source != '\0') { *p = *source; p++; source++; }
+	*p = '\0';
+	return dest;
+}
+
+char* strcpy(char* dest,const char* sourse) {
+    TRACE_SYMBOL_CALL();
+    if(dest==NULL || sourse==NULL) return NULL;
+    char* res=dest;
+    while((*dest++ = *sourse++)!='\0');
+    return res;
+}
+
+char* stpcpy(char *dest, const char *src) {
+    TRACE_SYMBOL_CALL();
+    size_t len = strlen (src);
+    return memcpy(dest, src, len + 1) + len;
+}
+
+size_t __getdelim(char **lineptr, size_t *n, int delim, FILE *stream) {
+    TRACE_SYMBOL_CALL();
+    return getdelim(lineptr, n, delim, stream);
 }
 
 unsigned long int pthread_self(void) {
     TRACE_SYMBOL_CALL();
     return (unsigned long int)get_thread_data();
+}
+
+int pthread_attr_init(pthread_attr *attr) {
+    TRACE_SYMBOL_CALL();
+    return 0;
+}
+
+int pthread_setname_np() {
+    TRACE_SYMBOL_CALL();
+    return 0;
+}
+
+int pthread_attr_setdetachstate(pthread_attr *attr, int detachstate) {
+    TRACE_SYMBOL_CALL();
+    return 0;
 }
 
 int pthread_attr_getstack(const pthread_attr *a, void ** addr, size_t *size) {
@@ -125,7 +142,17 @@ int pthread_condattr_setclock() {
     return 0;
 }
 
+int pthread_cond_timedwait() {
+    TRACE_SYMBOL_CALL();
+    return 0;
+}
+
 int pthread_getattr_np() {
+    TRACE_SYMBOL_CALL();
+    return 0;
+}
+
+int pthread_attr_setstacksize() {
     TRACE_SYMBOL_CALL();
     return 0;
 }

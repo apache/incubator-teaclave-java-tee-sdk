@@ -46,7 +46,7 @@ SGX_COMMON_CXXFLAGS := $(SGX_COMMON_FLAGS) -Wnon-virtual-dtor -std=c++11
 TS_HOST_INCDIR = -I$(TEE_SDK_PATH)/include
 TS_HOST_CFLAGS = $(TS_HOST_INCDIR) $(SGX_COMMON_CFLAGS)
 TS_HOST_CXXFLAGS = $(SGX_COMMON_CXXFLAGS)
-TS_HOST_LDFLAGS = -L$(SGX_LIBRARY_PATH) -Wl,-z,noexecstack -lc -l$(Urts_Library_Name) -lpthread -lsgx_usyscall -lsgx_urts
+TS_HOST_LDFLAGS = -L$(SGX_LIBRARY_PATH) -Wl,-z,noexecstack -lc -l$(Urts_Library_Name) -lpthread -lsgx_ustdc_ex
 
 Enclave_Security_Link_Flags = -Wl,-z,relro,-z,now,-z,noexecstack
 
@@ -55,7 +55,7 @@ TS_ENCLAVE_CFLAGS = $(TS_ENCLAVE_INCDIR) -nostdinc -fvisibility=hidden -fpie -ff
 TS_ENCLAVE_CXXFLAGS = $(TS_ENCLAVE_CFLAGS) -nostdinc++
 TS_ENCLAVE_LDFLAGS = -L$(SGX_LIBRARY_PATH) $(TS_ENCLAVE_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles $(Enclave_Security_Link_Flags) \
 				-Wl,--whole-archive -l$(Trts_Library_Name) -Wl,--no-whole-archive \
-				-Wl,--start-group -lsgx_tsyscall -lsgx_tstdc -lsgx_tcxx -lsgx_pthread -lsgx_tcrypto -l$(Service_Library_Name)  -Wl,--end-group \
+				-Wl,--start-group -lsgx_tstdc -lsgx_tstdc_ex -lsgx_tcxx -lsgx_pthread -lsgx_tcrypto -l$(Service_Library_Name)  -Wl,--end-group \
 				-Wl,-Bstatic -Wl,-Bsymbolic -Wl,--no-undefined \
 				-Wl,-pie,-eenclave_entry -Wl,--export-dynamic  \
 				-Wl,--defsym,__ImageBase=0
