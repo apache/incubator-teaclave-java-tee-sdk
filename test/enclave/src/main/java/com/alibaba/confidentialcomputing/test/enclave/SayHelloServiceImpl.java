@@ -10,4 +10,9 @@ public class SayHelloServiceImpl implements SayHelloService {
     public String sayHelloService(String plainText) {
         return plainText;
     }
+
+    @Override
+    public String sayHelloWorld() {
+        return "Hello World";
+    }
 }

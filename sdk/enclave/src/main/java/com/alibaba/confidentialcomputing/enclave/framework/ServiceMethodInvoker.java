@@ -9,6 +9,7 @@ import jdk.vm.ci.meta.MetaUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,6 +69,7 @@ public final class ServiceMethodInvoker implements EnclaveMethodInvoker<EnclaveI
     }
 
     private static List<Class<?>> extractParamClasses(String[] parameterTypes) {
+        if (parameterTypes == null)  return Collections.emptyList();
         List<Class<?>> parameterClassList = new ArrayList<>();
         for (String parameterType : parameterTypes) {
             try {

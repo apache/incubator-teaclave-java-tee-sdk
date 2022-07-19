@@ -34,6 +34,7 @@ public class TestJavaEnclaveService {
         assertTrue(userServices.hasNext());
         SayHelloService service = userServices.next();
         String result = service.sayHelloService(plain);
+        assertEquals("Hello World", service.sayHelloWorld());
         enclave.destroy();
         return result;
     }
