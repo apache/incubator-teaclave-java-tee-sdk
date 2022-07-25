@@ -10,7 +10,7 @@ class BaseEnclaveServicesRecycler {
     void enqueueProxyHandler(ProxyEnclaveInvocationHandler handler) {
     }
 
-    void registerProxyHandler(ProxyEnclaveInvocationHandler handler) {
+    void registerProxyHandler(Object obj, ProxyEnclaveInvocationHandler handler) {
     }
 
     void interruptServiceRecycler() {

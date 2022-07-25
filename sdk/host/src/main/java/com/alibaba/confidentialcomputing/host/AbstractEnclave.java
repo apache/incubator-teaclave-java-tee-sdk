@@ -168,7 +168,7 @@ abstract class AbstractEnclave implements Enclave {
             T proxy = (T) Proxy.newProxyInstance(service.getClassLoader(), serviceInterface, handler);
             serviceProxies.add(proxy);
             // Register proxy handler for enclave's corresponding service gc recycling.
-            enclaveContext.getEnclaveServicesRecycler().registerProxyHandler(handler);
+            enclaveContext.getEnclaveServicesRecycler().registerProxyHandler(proxy, handler);
         }
         return serviceProxies.iterator();
     }

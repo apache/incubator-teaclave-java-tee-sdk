@@ -24,6 +24,9 @@
   "name":"java.lang.Throwable"
   },
   {
+    "name":"java.lang.Error"
+  },
+  {
   "name":"java.lang.Exception"
   },
   {

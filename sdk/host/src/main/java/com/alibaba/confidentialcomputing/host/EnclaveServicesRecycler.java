@@ -50,8 +50,8 @@ class EnclaveServicesRecycler extends BaseEnclaveServicesRecycler {
 
     // register service's proxy handler when it's created.
     @Override
-    void registerProxyHandler(ProxyEnclaveInvocationHandler handler) {
-        cleaner.register(handler, handler);
+    void registerProxyHandler(Object obj, ProxyEnclaveInvocationHandler handler) {
+        cleaner.register(obj, handler);
     }
 
     // interrupt enclave services' recycler thread exit.
