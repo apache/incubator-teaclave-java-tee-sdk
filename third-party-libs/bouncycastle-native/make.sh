@@ -1,0 +1,1 @@
+mvn clean -Pnative package

@@ -1,0 +1,126 @@
+diff --git a/build.gradle b/build.gradle
+index 0885cb10e..597f5b557 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -24,7 +24,7 @@ allprojects {
+   }
+ 
+   dependencies {
+-    testCompile group: 'junit', name: 'junit', version: '4.11'
++    testImplementation group: 'junit', name: 'junit', version: '4.11'
+   }
+ }
+ 
+@@ -38,6 +38,9 @@ task printProperties {
+   }
+ }
+ 
++File callerFilter = file('native-image-agent-caller-filter.json');
++File accessFilter = file('native-image-agent-access-filter.json');
++
+ subprojects {
+ 
+   JavaVersion current = JavaVersion.current();
+@@ -58,7 +61,9 @@ subprojects {
+ 
+   test {
+     systemProperty 'bc.test.data.home', bcTestDataHome
+-
++    ignoreFailures = true
++    maxHeapSize = "4g"
++    jvmArgs '-agentlib:native-image-agent=config-output-dir=test-configs,caller-filter-file=' + callerFilter.absolutePath + ',access-filter-file=' + accessFilter.absolutePath
+     filter {
+       includeTestsMatching "AllTest*"
+     }
+diff --git a/mail/build.gradle b/mail/build.gradle
+index 37aaf5c06..313f74ebb 100644
+--- a/mail/build.gradle
++++ b/mail/build.gradle
+@@ -1,9 +1,9 @@
+ dependencies {
+-    compile project(':core')
+-    compile project(':pkix')
+-    compile project(':prov')
++    implementation project(':core')
++    implementation project(':pkix')
++    implementation project(':prov')
+ 
+-    compile group: 'javax.mail', name: 'mail', version: '1.4'
++    implementation group: 'javax.mail', name: 'mail', version: '1.4'
+ }
+ 
+ jar.baseName = "bcmail-$vmrange"
+diff --git a/pg/build.gradle b/pg/build.gradle
+index 6be248bfd..2ac2745a8 100644
+--- a/pg/build.gradle
++++ b/pg/build.gradle
+@@ -1,6 +1,6 @@
+ dependencies {
+-    compile project(':core')
+-    compile project(':prov')
++    implementation project(':core')
++    implementation project(':prov')
+ }
+ 
+ jar.baseName = "bcpg-$vmrange"
+diff --git a/pkix/build.gradle b/pkix/build.gradle
+index cca823dd9..afa810f76 100644
+--- a/pkix/build.gradle
++++ b/pkix/build.gradle
+@@ -1,6 +1,6 @@
+ dependencies {
+-  compile project(':core')
+-  compile project(':prov')
++  implementation project(':core')
++  implementation project(':prov')
+ }
+ 
+ jar.baseName = "bcpkix-$vmrange"
+diff --git a/prov/build.gradle b/prov/build.gradle
+index dd717eabb..fb904bbd6 100644
+--- a/prov/build.gradle
++++ b/prov/build.gradle
+@@ -1,5 +1,5 @@
+ dependencies {
+-    compile project(':core')
++    implementation project(':core')
+ }
+ 
+ jar.baseName = "bcprov-$vmrange"
+diff --git a/test/build.gradle b/test/build.gradle
+index 0f7a2a440..025e09e61 100644
+--- a/test/build.gradle
++++ b/test/build.gradle
+@@ -1,10 +1,10 @@
+ dependencies {
+-  compile fileTree(dir: 'libs', include: '*.jar')
+-  compile project(":core")
+-  compile project(":mail")
+-  compile project(":pg")
+-  compile project(":pkix")
+-  compile project(":prov")
+-  compile project(":tls")
++  implementation fileTree(dir: 'libs', include: '*.jar')
++  implementation project(":core")
++  implementation project(":mail")
++  implementation project(":pg")
++  implementation project(":pkix")
++  implementation project(":prov")
++  implementation project(":tls")
+ }
+ 
+diff --git a/tls/build.gradle b/tls/build.gradle
+index ab27f4d2a..03b298fa6 100644
+--- a/tls/build.gradle
++++ b/tls/build.gradle
+@@ -1,7 +1,7 @@
+ dependencies {
+-    compile project(':core')
+-    compile project(':prov')
+-    compile project(':pkix')
++    implementation project(':core')
++    implementation project(':prov')
++    implementation project(':pkix')
+ }
+ 
+ jar.baseName = "bctls-$vmrange"

@@ -1,0 +1,29 @@
+{
+  "resources":{
+  "includes":[
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-ca-rsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-dsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-ecdh.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-ecdsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-ed25519.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-ed448.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-key-rsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-rsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-rsa_pss_256.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-rsa_pss_384.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-client-rsa_pss_512.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-dsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-ecdh.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-ecdsa.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-ed25519.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-ed448.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-key-rsa-sign.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-rsa-enc.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-rsa-sign.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-rsa_pss_256.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-rsa_pss_384.pem\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/tls/test/x509-server-rsa_pss_512.pem\\E"}, 
+    {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}
+  ]},
+  "bundles":[]
+}

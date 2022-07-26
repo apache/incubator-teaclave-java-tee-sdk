@@ -1,0 +1,273 @@
+[
+{
+  "name":"com.sun.crypto.provider.AESCipher$General",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.security.MessageDigestSpi"
+},
+{
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"org.bouncycastle.asn1.ASN1Enumerated",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.ASN1GeneralizedTime",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.ASN1Integer",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.ASN1UTCTime",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERBMPString",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERGeneralString",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERIA5String",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERNumericString",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERPrintableString",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERT61String",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERUTF8String",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERUniversalString",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.DERVisibleString",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.CAKeyUpdAnnContent",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.CMPCertificate",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.CRLAnnContent",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.CertResponse",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.CertStatus",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.Challenge",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.ErrorMsgContent",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.PKIFreeText",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.cmp.PKIStatusInfo",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.crmf.CertId",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.CompleteRevocationRefs",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.CrlIdentifier",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.CrlListID",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.CrlOcspRef",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.CrlValidatedID",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.OcspIdentifier",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.OcspListID",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.OcspResponsesID",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.OtherHashAlgAndValue",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.OtherRevRefs",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.OtherRevVals",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.RevocationValues",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.SPUserNotice",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.SigPolicyQualifierInfo",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.SignaturePolicyId",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.SignaturePolicyIdentifier",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.SignerAttribute",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.esf.SignerLocation",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.ocsp.CertID",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.GeneralSubtree",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.Holder",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.NameConstraints",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.NoticeReference",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.ObjectDigestInfo",
+  "methods":[
+    {"name":"getInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"getInstance","parameterTypes":["org.bouncycastle.asn1.ASN1TaggedObject","boolean"] }
+  ]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.RoleSyntax",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"org.bouncycastle.asn1.x509.UserNotice",
+  "methods":[{"name":"getInstance","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]

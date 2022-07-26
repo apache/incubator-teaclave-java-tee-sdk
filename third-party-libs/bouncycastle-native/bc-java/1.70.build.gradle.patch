@@ -1,0 +1,23 @@
+diff --git a/build.gradle b/build.gradle
+index 5f2835008..50c1bdbde 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -48,6 +48,9 @@ task printProperties {
+   }
+ }
+ 
++File callerFilter = file('native-image-agent-caller-filter.json');
++File accessFilter = file('native-image-agent-access-filter.json');
++
+ subprojects {
+   apply plugin: 'eclipse'
+ 
+@@ -70,7 +73,7 @@ subprojects {
+   test {
+     systemProperty 'bc.test.data.home', bcTestDataHome
+     maxHeapSize = "1536m"
+-
++    jvmArgs '-agentlib:native-image-agent=config-output-dir=test-configs,caller-filter-file=' + callerFilter.absolutePath + ',access-filter-file=' + accessFilter.absolutePath
+     filter {
+       includeTestsMatching "AllTest*"
+     }

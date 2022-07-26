@@ -1,0 +1,37 @@
+{
+  "resources":{
+  "includes":[
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/bigpub.asc\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa-pubring.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-1024-160.pub\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-1024-160.sec\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-15360-512.pub\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-2048-224.pub\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-2048-224.sec\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-3072-256.pub\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/keys/DSA-7680-384.pub\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-1024-160-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-1024-224-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-1024-256-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-1024-384-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-1024-512-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-15360-512-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-2048-224-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-3072-256-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/dsa/sigs/dsa-7680-384-sign.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/eddsa-pub-keyring.asc\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/eddsa-sks-pub-keyring.asc\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/longSigSubPack.asc\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/rsa-pubring.gpg\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/unicode/passphrase_cyr.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/openpgp/test/unicode/secring.gpg\\E"}, 
+    {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}, 
+    {"pattern":"\\Qpgpdata/doublefirst.kbx\\E"}, 
+    {"pattern":"\\Qpgpdata/eg_pubring.kbx\\E"}, 
+    {"pattern":"\\Qpgpdata/md5kbx.kbx\\E"}, 
+    {"pattern":"\\Qpgpdata/pubring.kbx\\E"}, 
+    {"pattern":"\\Qpgpdata/up1/private-keys-v1.d/priv.key\\E"}, 
+    {"pattern":"\\Qpgpdata/up2/private-keys-v1.d/priv.key\\E"}
+  ]},
+  "bundles":[]
+}

@@ -1,0 +1,28 @@
+{
+  "resources":{
+  "includes":[
+    {"pattern":"\\Qorg/bouncycastle/asn1/test/masterlist-content.data\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/SCryptTestVectors.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/SHA3TestVectors.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/SHAKETestVectors.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/cavp/KDFCTR_gen.rsp\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/cavp/KDFDblPipelineCounter_gen.rsp\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/cavp/KDFDblPipelineNoCounter_gen.rsp\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/cavp/KDFFeedbackCounter_gen.rsp\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/cavp/KDFFeedbackNoCounter_gen.rsp\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/ecrypt_HC-128.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/ecrypt_HC-256_128K_128IV.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/ecrypt_HC-256_128K_256IV.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/ecrypt_HC-256_256K_128IV.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/crypto/test/ecrypt_HC-256_256K_256IV.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/lms/depth_1.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/lms/expansion.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/lms/testcase_1.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/lms/testcase_2.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/q3pIII.txt\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/qTeslaR2/KAT/ref/PQCsignKAT_qTesla-p-I.rsp\\E"}, 
+    {"pattern":"\\Qorg/bouncycastle/pqc/crypto/test/qTeslaR2/KAT/ref/PQCsignKAT_qTesla-p-III.rsp\\E"}, 
+    {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}
+  ]},
+  "bundles":[{"name":"org.bouncycastle.i18n.test.I18nTestMessages"}]
+}
