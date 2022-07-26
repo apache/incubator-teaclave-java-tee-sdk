@@ -28,7 +28,7 @@ public final class NativePRNGSubstitutions {
 
         @Override
         public boolean getAsBoolean() {
-            return EnclaveOptions.UseNativeGetRandom.getValue();
+            return EnclaveOptions.RunInEnclave.getValue();
         }
     }
 
