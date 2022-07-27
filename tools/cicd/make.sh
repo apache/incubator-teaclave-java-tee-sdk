@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MODE=$1
+
 BUILD_IMAGE=javaenclave_build
 BUILD_TAG=v0.1.10
 
@@ -28,11 +30,24 @@ fi
 # Set PCCS for DCAP Remote Attestation.
 PCCS_URL='https://sgx-dcap-server.cn-beijing.aliyuncs.com/sgx/certification/v3/'
 
-# test JavaEnclave's unit test cases and samples
-docker run -i --rm --privileged --network host                    \
--w "${WORKDIR}"                                                   \
--v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
--e PCCS_URL=${PCCS_URL}                                           \
--v /dev/sgx_enclave:/dev/sgx/enclave             \
--v /dev/sgx_provision:/dev/sgx/provision         \
-${BUILD_IMAGE}:${BUILD_TAG} /bin/bash build.sh
+if [ ! "$MODE" -o "build" = "$MODE" ]; then
+	echo "enter build mode"
+  # test JavaEnclave's unit test cases and samples
+  docker run -i --rm --privileged --network host                    \
+  -w "${WORKDIR}"                                                   \
+  -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
+  -e PCCS_URL=${PCCS_URL}                                           \
+  -v /dev/sgx_enclave:/dev/sgx/enclave             \
+  -v /dev/sgx_provision:/dev/sgx/provision         \
+  ${BUILD_IMAGE}:${BUILD_TAG} /bin/bash build.sh
+elif [ "develop" = "$MODE" ]; then
+	echo "enter develop mode"
+  # /bin/bash build.sh and then develop your project.
+  docker run -it --rm --privileged --network host                   \
+  -w "${WORKDIR}"                                                   \
+  -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
+  -e PCCS_URL=${PCCS_URL}                                           \
+  -v /dev/sgx_enclave:/dev/sgx/enclave             \
+  -v /dev/sgx_provision:/dev/sgx/provision         \
+  ${BUILD_IMAGE}:${BUILD_TAG} /bin/bash
+fi
