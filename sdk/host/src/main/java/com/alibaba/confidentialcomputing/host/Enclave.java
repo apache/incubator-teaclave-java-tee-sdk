@@ -75,6 +75,14 @@ public interface Enclave {
     <T> Iterator<T> load(Class<T> service) throws ServicesLoadingException;
 
     /**
+     * Returns enclave's enclave info. Such as enclave's type, is it debuggable and so on.
+     * <p>
+     *
+     * @return EnclaveInfo enclave information.
+     */
+    EnclaveInfo getEnclaveInfo();
+
+    /**
      * This method destroy the enclave instance, all the resources in the enclave will be released.
      * <p>
      *

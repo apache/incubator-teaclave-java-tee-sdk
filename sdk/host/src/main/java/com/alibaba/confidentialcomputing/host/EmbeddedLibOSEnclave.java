@@ -33,6 +33,7 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
     private int portEnclave;
     private URL url;
     private String httpURL;
+    private SGXEnclaveInfo enclaveInfo;
 
     static EmbeddedLibOSEnclave getEmbeddedLibOSEnclaveInstance(EnclaveDebug mode, EnclaveSimulate sim) throws EnclaveCreatingException {
         synchronized (EmbeddedLibOSEnclave.class) {
@@ -75,6 +76,16 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
             url = new URL(httpURL);
             // Attach to target enclave service by rmi.
             attachToEnclaveAgent(mode, sim);
+            // Create enclaveInfo.
+            boolean isDebuggable = true;
+            if (EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getDebuggable().getValue() == 0x2) {
+                isDebuggable = false;
+            }
+            enclaveInfo = new SGXEnclaveInfo(
+                    EnclaveType.EMBEDDED_LIB_OS,
+                    isDebuggable,
+                    EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getMaxEPCHeapSizeBytes(),
+                    EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getMaxNumOfThreads());
         } catch (IOException e) {
             throw new EnclaveCreatingException(e);
         }
@@ -217,6 +228,11 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
 
     static int verifyAttestationReport(byte[] quote) throws RemoteAttestationException {
         return SGXRemoteAttestationVerify.VerifyAttestationReport(quote);
+    }
+
+    @Override
+    public EnclaveInfo getEnclaveInfo() {
+        return enclaveInfo;
     }
 
     @Override

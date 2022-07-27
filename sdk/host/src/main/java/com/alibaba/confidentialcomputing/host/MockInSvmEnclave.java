@@ -26,6 +26,7 @@ class MockInSvmEnclave extends AbstractEnclave {
     private long isolateHandle;
     // isolateThreadHandle stores the first attached isolateThread Handle.
     private long isolateThreadHandle;
+    private final MockEnclaveInfo enclaveInfo;
 
     MockInSvmEnclave() throws EnclaveCreatingException {
         // Set EnclaveContext for this enclave instance.
@@ -58,6 +59,7 @@ class MockInSvmEnclave extends AbstractEnclave {
         nativeCreateEnclave(extractTempPath.getEnclaveSvmFilePath());
         // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
         nativeSvmAttachIsolate(enclaveSvmSdkHandle);
+        enclaveInfo = new MockEnclaveInfo(EnclaveType.MOCK_IN_SVM, true, -1, -1);
     }
 
     @Override
@@ -103,6 +105,11 @@ class MockInSvmEnclave extends AbstractEnclave {
     }
 
     @Override
+    public EnclaveInfo getEnclaveInfo() {
+        return enclaveInfo;
+    }
+
+    @Override
     public void destroy() throws EnclaveDestroyingException {
         // destroyToken will wait for all ongoing enclave invocations finished.
         if (this.getEnclaveContext().getEnclaveToken().destroyToken()) {
@@ -111,6 +118,7 @@ class MockInSvmEnclave extends AbstractEnclave {
             // destroy svm isolate.
             nativeSvmDetachIsolate(enclaveSvmSdkHandle, isolateThreadHandle);
             nativeDestroyEnclave(enclaveSvmSdkHandle);
+            EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
         }
     }
 

@@ -146,6 +146,11 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
+    public EnclaveInfo getEnclaveInfo() {
+        return null;
+    }
+
+    @Override
     public void destroy() throws EnclaveDestroyingException {
         // destroyToken will wait for all ongoing enclave invocations finished.
         if (this.getEnclaveContext().getEnclaveToken().destroyToken()) {

@@ -22,6 +22,7 @@ class TeeSdkEnclave extends AbstractEnclave {
     private long isolateHandle;
     // isolateThreadHandle stores the first attached isolateThread Handle.
     private long isolateThreadHandle;
+    private SGXEnclaveInfo enclaveInfo;
 
     TeeSdkEnclave(EnclaveDebug mode) throws EnclaveCreatingException {
         // Set EnclaveContext for this enclave instance.
@@ -53,6 +54,16 @@ class TeeSdkEnclave extends AbstractEnclave {
         nativeCreateEnclave(mode.getValue(), extractTempPath.getTeeSdkSignedFilePath());
         // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
         nativeSvmAttachIsolate(enclaveHandle);
+        // Create enclave info.
+        boolean isDebuggable = true;
+        if (mode.getValue() == 0x2) {
+            isDebuggable = false;
+        }
+        enclaveInfo = new SGXEnclaveInfo(
+                EnclaveType.TEE_SDK,
+                isDebuggable,
+                TeeSdkEnclaveConfig.getTeeSdkEnclaveConfigInstance().getHeapMaxSizeBytes(),
+                TeeSdkEnclaveConfig.getTeeSdkEnclaveConfigInstance().getThreadMaxNumber());
     }
 
     private static native void registerNatives();
@@ -116,6 +127,11 @@ class TeeSdkEnclave extends AbstractEnclave {
     }
 
     @Override
+    public EnclaveInfo getEnclaveInfo() {
+        return this.enclaveInfo;
+    }
+
+    @Override
     public void destroy() throws EnclaveDestroyingException {
         // destroyToken will wait for all ongoing enclave invocations finished.
         if (this.getEnclaveContext().getEnclaveToken().destroyToken()) {
@@ -125,6 +141,7 @@ class TeeSdkEnclave extends AbstractEnclave {
             nativeSvmDetachIsolate(enclaveHandle, isolateThreadHandle);
             // destroy the enclave.
             nativeDestroyEnclave(enclaveHandle);
+            EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
         }
     }
 

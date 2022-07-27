@@ -9,9 +9,12 @@ import com.alibaba.confidentialcomputing.host.exception.*;
  * in one jvm. It was used for test and debug.
  */
 class MockInJvmEnclave extends AbstractEnclave {
+    private final MockEnclaveInfo enclaveInfo;
+
     MockInJvmEnclave() {
         // Set EnclaveContext for this enclave instance.
         super(EnclaveType.MOCK_IN_JVM, new BaseEnclaveServicesRecycler());
+        enclaveInfo = new MockEnclaveInfo(EnclaveType.MOCK_IN_JVM, true, -1, -1);
     }
 
     @Override
@@ -39,7 +42,12 @@ class MockInJvmEnclave extends AbstractEnclave {
     }
 
     @Override
+    public EnclaveInfo getEnclaveInfo() {
+        return enclaveInfo;
+    }
+
+    @Override
     public void destroy() throws EnclaveDestroyingException {
-        ; // Do nothing here.
+        EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
     }
 }

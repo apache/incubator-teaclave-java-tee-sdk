@@ -12,7 +12,7 @@ import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException
  */
 class EnclaveConfigure {
     private static final String ENCLAVE_TYPE = "com.alibaba.enclave.type";
-    private static final String ENCLAVE_DEBUG = "com.alibaba.enclave.debug";
+    private static final String ENCLAVE_DEBUG = "com.alibaba.enclave.teesdk.debug";
     private static final EnclaveType enclaveType;
     private static final EnclaveDebug enclaveDebug;
 
@@ -73,18 +73,29 @@ class EnclaveConfigure {
 
     // create an enclave with specific enclave type.
     static Enclave create(EnclaveType type) throws EnclaveCreatingException {
+        Enclave enclave;
         switch (type) {
             case MOCK_IN_JVM:
-                return new MockInJvmEnclave();
+                enclave = new MockInJvmEnclave();
+                break;
             case MOCK_IN_SVM:
-                return new MockInSvmEnclave();
+                enclave = new MockInSvmEnclave();
+                break;
             case TEE_SDK:
-                return new TeeSdkEnclave(enclaveDebug);
+                // TEE_SDK only support hardware mode, not support simulate mode.
+                enclave = new TeeSdkEnclave(enclaveDebug);
+                break;
             case EMBEDDED_LIB_OS:
-                return EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getDebuggable(), EnclaveSimulate.HARDWARE);
+                // EMBEDDED_LIB_OS only support hardware mode, not support simulate mode.
+                enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(
+                        EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getDebuggable(),
+                        EnclaveSimulate.HARDWARE);
+                break;
             case NONE:
             default:
                 throw new EnclaveCreatingException("enclave type is not supported.");
         }
+        EnclaveInfoManager.getEnclaveInfoManagerInstance().addEnclave(enclave);
+        return enclave;
     }
 }

@@ -157,6 +157,8 @@
         <dependency>
             <groupId>com.alibaba.confidentialcomputing</groupId>
             <artifactId>enclave</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.auto.service</groupId>

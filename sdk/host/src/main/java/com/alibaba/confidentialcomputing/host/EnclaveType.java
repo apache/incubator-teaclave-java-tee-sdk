@@ -29,5 +29,9 @@ public enum EnclaveType {
      * on enclave's occlum libos. host application runs in jvm environment, and enclave
      * package were loaded by host.
      */
-    EMBEDDED_LIB_OS,
+    EMBEDDED_LIB_OS;
+
+    public String getEnclaveType() {
+        return this.toString();
+    }
 }

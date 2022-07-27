@@ -1,6 +1,5 @@
 package com.alibaba.confidentialcomputing.host;
 
-import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
 import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 import org.junit.jupiter.api.Test;
 
