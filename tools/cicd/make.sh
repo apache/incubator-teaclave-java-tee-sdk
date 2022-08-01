@@ -3,7 +3,7 @@
 MODE=$1
 
 BUILD_IMAGE=javaenclave_build
-BUILD_TAG=v0.1.10
+BUILD_TAG=v0.1.11
 
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 
@@ -13,15 +13,15 @@ WORKDIR=$(dirname $(dirname "$PWD"))
 
 # check target images exist or not, build it if not.
 if [[ "$(docker images -q ${BUILD_IMAGE}:${BUILD_TAG} 2> /dev/null)" == "" ]]; then
-  # Get the customized Graal VM from git@gitlab.alibaba-inc.com:graal/SGXGraalVM.git
-  # This should be replaced to the offical version when all patches are accepted by the Graal community
-  wget https://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/JDK11-22.1.0/graalvm-enclave-22.1.0.tar
+  # We have built and packaged GraalVM 22.2.0 from source code and then uploaded to OSS, the official release of GraalVM CE required to manually install native-image component.
+  wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/JDK11-22.2.0/graalvm-ce-java11-22.2.0.tar
   wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/zlib-1.2.11.tar.gz
   wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/settings_taobao.xml -O settings.xml
   wget https://dragonwell.oss-cn-shanghai.aliyuncs.com/11/tee_java/dependency/sgx_linux_x64_sdk_2.17.100.0.bin
   wget https://dragonwell.oss-cn-shanghai.aliyuncs.com/11.0.15.11.9/Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz
   docker build -t ${BUILD_IMAGE}:${BUILD_TAG} .
-  rm -f graalvm-enclave-22.1.0.tar
+  rm -f graalvm-ce-java11-22.2.0.tar
+  rm -f settings.xml
   rm -f zlib-1.2.11.tar.gz
   rm -f sgx_linux_x64_sdk_2.17.100.0.bin
   rm -f Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz

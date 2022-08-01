@@ -12,6 +12,9 @@
     <packaging>jar</packaging>
     <name>JavaEnclave-Enclave</name>
     <url></url>
+    <properties>
+        <graal.version>22.2.0</graal.version>
+    </properties>
     <profiles>
         <profile>
             <id>native</id>
@@ -92,6 +95,10 @@
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</arg>
                         <arg>--add-exports</arg>
+                        <arg>jdk.internal.vm.ci/jdk.vm.ci.amd64=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.internal.vm.ci/jdk.vm.ci.code=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.compiler/org.graalvm.compiler.serviceprovider=ALL-UNNAMED</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</arg>
@@ -138,6 +145,10 @@
                     <additionalJOptions>
                         <additionalJOption>--add-modules</additionalJOption>
                         <additionalJOption>jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.crypto.ec</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.amd64=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--add-exports</additionalJOption>
+                        <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.code=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
                         <additionalJOption>jdk.internal.vm.ci/jdk.vm.ci.meta=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>--add-exports</additionalJOption>
@@ -198,12 +209,12 @@
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>${enclave.graal.version}</version>
+            <version>${graal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
-            <version>${enclave.graal.version}</version>
+            <version>${graal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>

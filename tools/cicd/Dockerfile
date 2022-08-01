@@ -5,14 +5,14 @@ LABEL maintainer="Junshao Wang <jeffery.wsj@alibaba-inc.com>"
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 ENV DEBIAN_FRONTEND noninteractive
 
-ADD ["graalvm-enclave-22.1.0.tar", "/root/tools/"]
+ADD ["graalvm-ce-java11-22.2.0.tar", "/root/tools/"]
 ADD ["zlib-1.2.11.tar.gz", "/root/tools/"]
 ADD ["settings.xml", "/root/tools/"]
 ADD ["zlib-1.2.11.tar.gz", "/root/tools/"]
 ADD ["Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz", "/root/tools"]
 ADD ["sgx_linux_x64_sdk_2.17.100.0.bin", "/root/tools/"]
-ENV GRAALVM_HOME "/root/tools/graalvm-enclave-22.1.0"
-ENV JAVA_HOME "/root/tools/graalvm-enclave-22.1.0"
+ENV GRAALVM_HOME "/root/tools/graalvm-ce-java11-22.2.0"
+ENV JAVA_HOME "/root/tools/graalvm-ce-java11-22.2.0"
 ENV PATH="/opt/occlum/build/bin:/usr/local/occlum/bin:$PATH"
 ENV CC=/usr/local/occlum/bin/occlum-gcc
 

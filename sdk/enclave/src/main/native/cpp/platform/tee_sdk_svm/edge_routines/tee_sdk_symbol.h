@@ -43,6 +43,7 @@ void deflateSetHeader();
 void dlopen();
 void dlsym();
 void endmntent();
+void fputs();
 void fscanf();
 void fstatvfs();
 void fstatvfs64();

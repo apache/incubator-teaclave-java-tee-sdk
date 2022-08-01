@@ -18,7 +18,15 @@ We rewrite the native JNI code of above 5 methods by replacing `new` with `mallo
 See `src/main/resources/native/sunec/com_alibaba_confidentialcomputing_enclave_substitutes_NativeSunECMethods.h`, `com.alibaba.confidentialcomputing.enclave.SUNECReplaceFeature`, `com.alibaba.confidentialcomputing.enclave.substitutes.NativeSunECMethods` and `com.alibaba.confidentialcomputing.enclave.substitutes.SUNECSubstitutions` for more details.
 # System level
 ## CPU features check
-Since 22.1.0, GraalVM reads CPU features and checks which is supported at runtime, so that it doesn't only rely on the statically set CPU features (See `com.oracle.svm.core.cpufeature.RuntimeCPUFeatureCheckFeature`). But Enclave SDKs don't support reading CPU features at runtime. A solution is to disable the `RuntimeCPUFeatureCheckFeature`.
+Since 22.1.0, GraalVM reads CPU features and checks which is supported at runtime, so that it doesn't only rely on the statically set CPU features (see `com.oracle.svm.core.cpufeature.RuntimeCPUFeatureCheckFeature`).
+But Enclave SDKs don't support reading CPU features at runtime.
+A solution is to disable the `RuntimeCPUFeatureCheckFeature` (see `com.alibaba.confidentialcomputing.enclave.EnclaveFeature#afterRegistration`).
+
+Since 22.2.0, GraalVM verifies the cpu features as early as program starts (see `com.oracle.svm.core.JavaMainWrapper#run`), but the CPU checking functions are not supported by Enclave SDKs.
+The checking is performed by the `CPUFeatureAccess` instance which is set `ImageSingletons` by `com.oracle.svm.hosted.AMD64CPUFeatureAccessFeature` at image build time.
+So we added a subclass of `AMD64CPUFeatureAccessFeature`, `com.alibaba.confidentialcomputing.enclave.cpufeatures.EnclaveAMD64CPUFeatureAccessFeature` to override the behavior of setting `CPUFeatureAccess` instance.
+`EnclaveAMD64CPUFeatureAccessFeature` sets `com.alibaba.confidentialcomputing.enclave.cpufeatures.EnclaveAMD64CPUFeatureAccess` instance into `ImageSingletons` instead of the original `AMD64CPUFeatureAccess`.
+
 ## Memory 
 Enclave SDKs don't support reading system memory information from standard POSIX interfaces:
 

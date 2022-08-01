@@ -55,5 +55,8 @@
   },
   {
     "name":"[Ljava.lang.StackTraceElement;"
+  },
+  {
+    "name":"java.lang.Number"
   }
 ]

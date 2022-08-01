@@ -42,7 +42,7 @@ elif [ "$BC_VERSION""x" == "1.66x" ];then
 fi
 
 echo "Start BouncyCastle tests to collect native image configurations. It may take a while."
-gradle $GRADLE_JAVA_HOME test
+gradle clean $GRADLE_JAVA_HOME test
 
 BASE_MODULES="pg prov pkix core tls mail"
 if [ $(echo "${BC_VERSION} < 1.69" | bc) = 1 ];then

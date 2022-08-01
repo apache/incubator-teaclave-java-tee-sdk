@@ -8,15 +8,14 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <enclave.graal.version>enclave-11-22.1.0-1.0</enclave.graal.version>
-        <graal.version>22.1.0</graal.version>
+        <graal.version>22.2.0</graal.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
-            <version>${enclave.graal.version}</version>
+            <version>${graal.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>

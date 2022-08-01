@@ -37,9 +37,13 @@ public class ConfigMemTest {
                     "-DHEAP_PAGES=24000");
         }
 
-/*        @Override
+       /* @Override
         public List<String> extraSVMOptions() {
-            return List.of("--debug-attach:7788");
+            return List.of(*//*"--debug-attach:7788",
+                    "-H:Dump=:3",
+                    "-H:MethodFilter=com.oracle.svm.core.posix.PosixVirtualMemoryProvider.getPageSize",
+                    "-H:MethodFilter=com.alibaba.confidentialcomputing.enclave.system.EnclaveVirtualMemoryProvider.getVPageSize"*//*
+                    );
         }*/
     }
 

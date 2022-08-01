@@ -13,7 +13,7 @@
     <name>Test-Enclave</name>
     <url></url>
     <properties>
-        <svm.maven.version>0.9.10</svm.maven.version>
+        <svm.maven.version>0.9.13</svm.maven.version>
         <com.alibaba.enclave.privatePem.path></com.alibaba.enclave.privatePem.path>
     </properties>
     <profiles>

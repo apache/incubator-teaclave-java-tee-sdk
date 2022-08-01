@@ -25,6 +25,7 @@ void deflateSetHeader() {TRACE_SYMBOL_CALL(); ASSERT();}
 void dlopen() {TRACE_SYMBOL_CALL(); ASSERT();}
 void dlsym() {TRACE_SYMBOL_CALL(); ASSERT();}
 void endmntent() {TRACE_SYMBOL_CALL(); ASSERT();}
+void fputs() {TRACE_SYMBOL_CALL(); ASSERT();}
 void fscanf() {TRACE_SYMBOL_CALL(); ASSERT();}
 void fstatvfs() {TRACE_SYMBOL_CALL(); ASSERT();}
 void fstatvfs64() {TRACE_SYMBOL_CALL(); ASSERT();}
