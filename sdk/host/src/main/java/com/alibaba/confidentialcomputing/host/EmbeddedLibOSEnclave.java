@@ -15,8 +15,8 @@ import com.alibaba.confidentialcomputing.host.exception.*;
  * EmbeddedLibOSEnclave object in a process.
  */
 public class EmbeddedLibOSEnclave extends AbstractEnclave {
-    private static final int HTTP_CONNECT_TIMEOUT_MS = 50; // ms.
-    private static final int HTTP_READ_TIMEOUT_MS = 200;   // ms.
+    private static final int HTTP_CONNECT_TIMEOUT_MS = 800; // ms.
+    private static final int HTTP_READ_TIMEOUT_MS = 2000;   // ms.
     private static final int HTTP_READ_REMOTE_ATTESTATION_TIMEOUT_MS = HTTP_READ_TIMEOUT_MS * 10;  // ms.
     private static final String EMBEDDED_LIB_OS_ENCLAVE_STARTUP_THREAD_NAME = "async_lib_os_enclave_startup_thread";
     private static final String HTTP_SERVER_PREFIX = "http://localhost:";
@@ -241,6 +241,12 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
             // Because enclave libos occlum doesn't support creating a new occlum instance even
             // destroy the pre-created occlum instance, Do nothing here.
             // embedded lib os occlum instance in JavaEnclave is similar with a singleton instance.
+            try (MetricTraceContext trace = new MetricTraceContext(
+                    this.getEnclaveInfo(),
+                    MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_DESTROYING_PATTERN)) {
+            } catch (MetricTraceLogWriteException e) {
+                throw new EnclaveDestroyingException(e);
+            }
         }
     }
 

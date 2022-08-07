@@ -10,6 +10,11 @@ public interface EnclaveInfo {
     EnclaveType getEnclaveType();
 
     /**
+     * the enclave's Hash ID.
+     */
+    int getEnclaveID();
+
+    /**
      * is the enclave debuggable or not. MOCK_IN_JVM and MOCK_IN_SVM are simulation mode,
      * so the two mock enclave type are debuggable. TEE_SDK and EMBEDDED_LIB_OS depend on
      * user, if the enclave is not debuggable, we couldn't debug the code run in enclave by

@@ -4,6 +4,8 @@ import com.alibaba.confidentialcomputing.common.EnclaveInvocationContext;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.host.exception.*;
 
+import java.io.IOException;
+
 /**
  * MockInJvmEnclave is a mock jvm enclave. Both host and enclave codes run
  * in one jvm. It was used for test and debug.
@@ -11,7 +13,7 @@ import com.alibaba.confidentialcomputing.host.exception.*;
 class MockInJvmEnclave extends AbstractEnclave {
     private final MockEnclaveInfo enclaveInfo;
 
-    MockInJvmEnclave() {
+    MockInJvmEnclave() throws IOException {
         // Set EnclaveContext for this enclave instance.
         super(EnclaveType.MOCK_IN_JVM, new BaseEnclaveServicesRecycler());
         enclaveInfo = new MockEnclaveInfo(EnclaveType.MOCK_IN_JVM, true, -1, -1);
@@ -48,6 +50,12 @@ class MockInJvmEnclave extends AbstractEnclave {
 
     @Override
     public void destroy() throws EnclaveDestroyingException {
-        EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
+        try (MetricTraceContext trace = new MetricTraceContext(
+                this.getEnclaveInfo(),
+                MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_DESTROYING_PATTERN)) {
+            EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
+        } catch (MetricTraceLogWriteException e) {
+            throw new EnclaveDestroyingException(e);
+        }
     }
 }

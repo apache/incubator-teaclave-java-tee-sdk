@@ -23,6 +23,7 @@ import java.io.IOException;
 public class InvocationWrapper {
 
     public static <T> void invoke(EncData input, EncData result, CallBacks callBacks, EnclaveMethodInvoker<T> invoker) throws IOException {
+        long start = System.nanoTime();
         byte[] data = transformInput(input);
         EnclaveInvocationResult ret;
         try {
@@ -31,6 +32,7 @@ public class InvocationWrapper {
             ret = new EnclaveInvocationResult(null, new ConfidentialComputingException(t));
         }
         // Set method returned value to result parameter
+        ret.setCost(System.nanoTime() - start);
         wrapReturnValue(result, callBacks, ret);
     }
 

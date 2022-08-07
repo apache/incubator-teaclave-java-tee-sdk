@@ -15,6 +15,7 @@ public final class EnclaveInvocationResult implements Serializable {
 
     private final Object resultedValue;
     private final Throwable exception;
+    private long cost; // ns.
 
     public EnclaveInvocationResult(Object result, Throwable exception) {
         this.resultedValue = result;
@@ -37,5 +38,22 @@ public final class EnclaveInvocationResult implements Serializable {
      */
     public Throwable getException() {
         return this.exception;
+    }
+
+    /**
+     * set method's overhead.
+     *
+     */
+    public void setCost(long cost) {
+        this.cost = cost;
+    }
+
+    /**
+     * get method's overhead.
+     *
+     * @return method's overhead(ns).
+     */
+    public long getCost() {
+        return this.cost;
     }
 }

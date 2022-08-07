@@ -66,7 +66,7 @@ char* strcat(char* dest, const char* source) {
 	return dest;
 }
 
-char* strcpy(char* dest,const char* sourse) {
+char* strcpy(char* dest, const char* sourse) {
     TRACE_SYMBOL_CALL();
     if(dest==NULL || sourse==NULL) return NULL;
     char* res=dest;
@@ -74,10 +74,10 @@ char* strcpy(char* dest,const char* sourse) {
     return res;
 }
 
-char* stpcpy(char *dest, const char *src) {
+char* stpcpy(char *dest, const char *sourse) {
     TRACE_SYMBOL_CALL();
-    size_t len = strlen (src);
-    return memcpy(dest, src, len + 1) + len;
+    strcpy(dest, sourse);
+    return dest + strlen(sourse);
 }
 
 size_t __getdelim(char **lineptr, size_t *n, int delim, FILE *stream) {

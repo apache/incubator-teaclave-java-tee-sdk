@@ -6,6 +6,7 @@ import com.alibaba.confidentialcomputing.common.SerializationHelper;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.common.EmbeddedLibOSInnerAttestationReport;
 import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
+import com.alibaba.confidentialcomputing.enclave.framework.EnclaveMethodInvoker;
 import com.alibaba.confidentialcomputing.enclave.framework.LoadServiceInvoker;
 import com.alibaba.confidentialcomputing.enclave.framework.ServiceMethodInvoker;
 import com.alibaba.confidentialcomputing.enclave.framework.UnloadServiceInvoker;
@@ -20,40 +21,32 @@ public class EnclaveAgentServiceImpl {
     protected EnclaveAgentServiceImpl() {
     }
 
-    public byte[] loadService(String serviceName) {
+    private <T> byte[] invoke(EnclaveMethodInvoker<T> invoker, T input) {
+        long start = System.nanoTime();
+        EnclaveInvocationResult ret;
         try {
-            return SerializationHelper.serialize(loadServiceInstance.callMethod(serviceName));
-        } catch (IOException e) {
-            try {
-                return SerializationHelper.serialize(new EnclaveInvocationResult(null, e));
-            } catch (IOException ex) {
-            }
+            ret = invoker.callMethod(input);
+        } catch (Throwable t) {
+            ret = new EnclaveInvocationResult(null, new ConfidentialComputingException(t));
+        }
+        ret.setCost(System.nanoTime() - start);
+        try {
+            return SerializationHelper.serialize(ret);
+        } catch (IOException ex) {
         }
         return null;
+    }
+
+    public byte[] loadService(String serviceName) {
+        return invoke(loadServiceInstance, serviceName);
     }
 
     public byte[] unloadService(ServiceHandler handler) {
-        try {
-            return SerializationHelper.serialize(unloadServiceInstance.callMethod(handler));
-        } catch (IOException e) {
-            try {
-                return SerializationHelper.serialize(new EnclaveInvocationResult(null, e));
-            } catch (IOException ex) {
-            }
-        }
-        return null;
+        return invoke(unloadServiceInstance, handler);
     }
 
     public byte[] invokeMethod(EnclaveInvocationContext context) {
-        try {
-            return SerializationHelper.serialize(serviceInvokerInstance.callMethod(context));
-        } catch (IOException e) {
-            try {
-                return SerializationHelper.serialize(new EnclaveInvocationResult(null, e));
-            } catch (IOException ex) {
-            }
-        }
-        return null;
+        return invoke(serviceInvokerInstance, context);
     }
 
     public byte[] generateAttestationReport(byte[] userDate) {
@@ -64,6 +57,7 @@ public class EnclaveAgentServiceImpl {
         } catch (ConfidentialComputingException e) {
             exception = e;
         }
+
         try {
             return SerializationHelper.serialize(new EnclaveInvocationResult(report, exception));
         } catch (IOException e) {

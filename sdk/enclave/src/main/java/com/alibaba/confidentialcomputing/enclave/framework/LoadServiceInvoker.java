@@ -14,9 +14,8 @@ public final class LoadServiceInvoker implements EnclaveMethodInvoker<String> {
      */
     @Override
     public EnclaveInvocationResult callMethod(String inputData) {
-        Class<?> service;
         try {
-            service = Class.forName(inputData);
+            Class<?> service = Class.forName(inputData);
             return new EnclaveInvocationResult(EnclaveContext.getInstance().loadService(service), null);
         } catch (ClassNotFoundException e) {
             return new EnclaveInvocationResult(null, e);

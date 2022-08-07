@@ -1,6 +1,9 @@
 package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
+import com.alibaba.confidentialcomputing.host.exception.MetricTraceLogWriteException;
+
+import java.io.IOException;
 
 /**
  * EnclaveConfigure decides a new created enclave's type and debug mode.
@@ -73,29 +76,34 @@ class EnclaveConfigure {
 
     // create an enclave with specific enclave type.
     static Enclave create(EnclaveType type) throws EnclaveCreatingException {
-        Enclave enclave;
-        switch (type) {
-            case MOCK_IN_JVM:
-                enclave = new MockInJvmEnclave();
-                break;
-            case MOCK_IN_SVM:
-                enclave = new MockInSvmEnclave();
-                break;
-            case TEE_SDK:
-                // TEE_SDK only support hardware mode, not support simulate mode.
-                enclave = new TeeSdkEnclave(enclaveDebug);
-                break;
-            case EMBEDDED_LIB_OS:
-                // EMBEDDED_LIB_OS only support hardware mode, not support simulate mode.
-                enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(
-                        EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getDebuggable(),
-                        EnclaveSimulate.HARDWARE);
-                break;
-            case NONE:
-            default:
-                throw new EnclaveCreatingException("enclave type is not supported.");
+        try (MetricTraceContext trace = new MetricTraceContext(MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_CREATING_PATTERN)) {
+            Enclave enclave;
+            switch (type) {
+                case MOCK_IN_JVM:
+                    enclave = new MockInJvmEnclave();
+                    break;
+                case MOCK_IN_SVM:
+                    enclave = new MockInSvmEnclave();
+                    break;
+                case TEE_SDK:
+                    // TEE_SDK only support hardware mode, not support simulate mode.
+                    enclave = new TeeSdkEnclave(enclaveDebug);
+                    break;
+                case EMBEDDED_LIB_OS:
+                    // EMBEDDED_LIB_OS only support hardware mode, not support simulate mode.
+                    enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(
+                            EmbeddedLibOSEnclaveConfig.getEmbeddedLibOSEnclaveConfigInstance().getDebuggable(),
+                            EnclaveSimulate.HARDWARE);
+                    break;
+                case NONE:
+                default:
+                    throw new EnclaveCreatingException("enclave type is not supported.");
+            }
+            trace.setEnclaveInfo(enclave.getEnclaveInfo());
+            EnclaveInfoManager.getEnclaveInfoManagerInstance().addEnclave(enclave);
+            return enclave;
+        } catch (IOException | MetricTraceLogWriteException e) {
+            throw new EnclaveCreatingException(e);
         }
-        EnclaveInfoManager.getEnclaveInfoManagerInstance().addEnclave(enclave);
-        return enclave;
     }
 }

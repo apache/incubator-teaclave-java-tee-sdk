@@ -7,6 +7,7 @@ class SGXEnclaveInfo implements EnclaveInfo {
     private boolean isEnclaveDebuggable;
     private long enclaveEPCMemorySizeBytes; // Bytes.
     private int enclaveMaxThreadsNumber;
+    private int enclaveID;
 
     @ConstructorParameters({"enclaveType", "isEnclaveDebuggable", "enclaveEPCMemorySizeBytes", "enclaveMaxThreadsNumber"})
     SGXEnclaveInfo(EnclaveType enclaveType, boolean isEnclaveDebuggable, long enclaveEPCMemorySizeBytes, int enclaveMaxThreadsNumber) {
@@ -14,11 +15,17 @@ class SGXEnclaveInfo implements EnclaveInfo {
         this.isEnclaveDebuggable = isEnclaveDebuggable;
         this.enclaveEPCMemorySizeBytes = enclaveEPCMemorySizeBytes;
         this.enclaveMaxThreadsNumber = enclaveMaxThreadsNumber;
+        this.enclaveID = this.hashCode();
     }
 
     @Override
     public EnclaveType getEnclaveType() {
         return this.enclaveType;
+    }
+
+    @Override
+    public int getEnclaveID() {
+        return this.enclaveID;
     }
 
     @Override

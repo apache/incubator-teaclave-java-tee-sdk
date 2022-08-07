@@ -10,7 +10,7 @@ ADD ["zlib-1.2.11.tar.gz", "/root/tools/"]
 ADD ["settings.xml", "/root/tools/"]
 ADD ["zlib-1.2.11.tar.gz", "/root/tools/"]
 ADD ["Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz", "/root/tools"]
-ADD ["sgx_linux_x64_sdk_2.17.100.0.bin", "/root/tools/"]
+ADD ["sgx_linux_x64_sdk_2.17.100.1.bin", "/root/tools/"]
 ENV GRAALVM_HOME "/root/tools/graalvm-ce-java11-22.2.0"
 ENV JAVA_HOME "/root/tools/graalvm-ce-java11-22.2.0"
 ENV PATH="/opt/occlum/build/bin:/usr/local/occlum/bin:$PATH"
@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y gdb gnupg wget aptitude libfuse-dev lib
     echo -e 'yes\n' | apt-get install -y maven && \
     echo -e 'yes\n' | apt-get install -y build-essential libz-dev zlib1g-dev && \
     cd /root/tools/zlib-1.2.11 && ./configure --prefix=/opt/occlum/toolchains/gcc/x86_64-linux-musl && make && make install && \
-    cd /root/tools && chmod 777 sgx_linux_x64_sdk_2.17.100.0.bin && echo -e 'no\n/opt/teesdk\n' | ./sgx_linux_x64_sdk_2.17.100.0.bin
+    cd /root/tools && chmod 777 sgx_linux_x64_sdk_2.17.100.1.bin && echo -e 'no\n/opt/teesdk\n' | ./sgx_linux_x64_sdk_2.17.100.1.bin
 
 # copy dcap_occlum lib from occlum docker image.
 COPY --from=occlum/occlum:0.26.4-ubuntu18.04 /opt/occlum/toolchains/dcap_lib /opt/occlum/toolchains/dcap_lib

@@ -21,5 +21,9 @@ cd "${WORKDIR}"/sdk && mvn $SETTING clean install
 # Install JavaEnclave SDK
 rm -rf /opt/javaenclave && mkdir -p /opt/javaenclave && cp -r ${SHELL_FOLDER}/sdk/native/bin /opt/javaenclave \
 && cp -r ${SHELL_FOLDER}/sdk/native/config /opt/javaenclave && cp -r ${SHELL_FOLDER}/sdk/native/script/build_app /opt/javaenclave
+# Install JavaEnclave archetype
+cd "${WORKDIR}"/archetype && mvn $SETTING clean install
+# Install BouncyCastle Native Package
+cd "${WORKDIR}"/third-party-libs/bouncycastle-native && mvn $SETTING clean install
 # Test unit test cases in JavaEnclave
 cd "${WORKDIR}"/test && OCCLUM_RELEASE_ENCLAVE=true mvn $SETTING -Pnative clean package

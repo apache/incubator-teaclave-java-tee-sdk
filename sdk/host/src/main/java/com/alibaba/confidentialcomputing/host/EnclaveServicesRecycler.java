@@ -3,6 +3,7 @@ package com.alibaba.confidentialcomputing.host;
 import com.alibaba.confidentialcomputing.host.exception.ServicesUnloadingException;
 
 import java.lang.ref.Cleaner;
+import java.lang.reflect.InvocationHandler;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -39,9 +40,9 @@ class EnclaveServicesRecycler extends BaseEnclaveServicesRecycler {
 
     // enqueue the recycled proxy handler object of a service handler.
     @Override
-    void enqueueProxyHandler(ProxyEnclaveInvocationHandler handler) {
+    void enqueueProxyHandler(InvocationHandler handler) {
         try {
-            toBeReleasedEnclaveServices.add(handler);
+            toBeReleasedEnclaveServices.add((ProxyEnclaveInvocationHandler) handler);
         } catch (IllegalStateException | ClassCastException | NullPointerException | IllegalArgumentException e) {
             // Have to handle this exception locally.
             e.printStackTrace();
@@ -50,8 +51,8 @@ class EnclaveServicesRecycler extends BaseEnclaveServicesRecycler {
 
     // register service's proxy handler when it's created.
     @Override
-    void registerProxyHandler(Object obj, ProxyEnclaveInvocationHandler handler) {
-        cleaner.register(obj, handler);
+    void registerProxyHandler(Object obj, InvocationHandler handler) {
+        cleaner.register(obj, (ProxyEnclaveInvocationHandler)handler);
     }
 
     // interrupt enclave services' recycler thread exit.

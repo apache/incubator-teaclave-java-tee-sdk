@@ -3,6 +3,7 @@ package com.alibaba.confidentialcomputing.host;
 import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -10,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TestRemoteAttestation {
     @Test
-    void testRemoteAttestation() {
+    void testRemoteAttestation() throws IOException {
         Enclave mockInJvmEnclave = new MockInJvmEnclave();
         assertThrows(RemoteAttestationException.class, () -> RemoteAttestation.generateAttestationReport(mockInJvmEnclave, null));
         assertThrows(RemoteAttestationException.class, () -> RemoteAttestation.verifyAttestationReport(new AttestationReport(EnclaveType.MOCK_IN_JVM, null)));

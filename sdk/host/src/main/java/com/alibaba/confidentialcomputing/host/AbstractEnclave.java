@@ -11,11 +11,7 @@ import com.alibaba.confidentialcomputing.common.EnclaveInvocationResult;
 import com.alibaba.confidentialcomputing.common.EnclaveInvocationContext;
 import com.alibaba.confidentialcomputing.common.SerializationHelper;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
-import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
-import com.alibaba.confidentialcomputing.host.exception.EnclaveMethodInvokingException;
-import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
-import com.alibaba.confidentialcomputing.host.exception.ServicesLoadingException;
-import com.alibaba.confidentialcomputing.host.exception.ServicesUnloadingException;
+import com.alibaba.confidentialcomputing.host.exception.*;
 
 /**
  * AbstractEnclave implements all kinds of enclave platform's common operation.
@@ -54,20 +50,48 @@ abstract class AbstractEnclave implements Enclave {
 
     abstract AttestationReport generateAttestationReportNative(byte[] userData) throws RemoteAttestationException;
 
-    // load service by interface name.
-    ServiceHandler[] loadService(Class<?> service) throws ServicesLoadingException {
+    // load service by interface name in mock_jvm mode.
+    // because mock_svm/tee_sdk/lib_os adopt serialization and deserialization between host and enclave,
+    // while mock_jvm will call enclave service directly.
+    <T> Iterator<T> loadProxyServiceMockJVM(Class<?> service) throws ServicesLoadingException {
+        try (MetricTraceContext trace = new MetricTraceContext(
+                this.getEnclaveInfo(),
+                MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_SERVICE_LOADING_PATTERN,
+                service.getName())) {
+            List<T> serviceProxies = new ArrayList<>();
+            Class<?>[] serviceInterface = new Class[]{service};
+
+            ServiceLoader<T> innerProxyServices = (ServiceLoader<T>) ServiceLoader.load(service);
+            for (T innerProxyService : innerProxyServices) {
+                ProxyMockJvmInvocationHandler handler = new ProxyMockJvmInvocationHandler(this, innerProxyService);
+                T proxy = (T) Proxy.newProxyInstance(service.getClassLoader(), serviceInterface, handler);
+                serviceProxies.add(proxy);
+                // Register proxy handler for enclave's corresponding service gc recycling.
+                enclaveContext.getEnclaveServicesRecycler().registerProxyHandler(proxy, handler);
+            }
+            return serviceProxies.iterator();
+        } catch (MetricTraceLogWriteException e) {
+            throw new ServicesLoadingException(e);
+        }
+    }
+
+    // load service by interface name in mock_svm/tee_sdk/lib_os enclave mode.
+    <T> Iterator<T> loadProxyService(Class<?> service) throws ServicesLoadingException {
         if (!getEnclaveContext().getEnclaveToken().tryAcquireToken()) {
             throw new ServicesLoadingException("enclave was destroyed.");
         }
-        try {
+        try (MetricTraceContext trace = new MetricTraceContext(
+                this.getEnclaveInfo(),
+                MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_SERVICE_LOADING_PATTERN,
+                service.getName())) {
+            List<T> serviceProxies = new ArrayList<>();
+            Class<?>[] serviceInterface = new Class[]{service};
+
             // Only need to provide service's interface name is enough to load service
             // in enclave.
             EnclaveInvocationResult resultWrapper;
-            try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(loadServiceNative(service.getName()));
-            } catch (IOException | ClassNotFoundException e) {
-                throw new ServicesLoadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
-            }
+            resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(loadServiceNative(service.getName()));
+            trace.setCostInnerEnclave(resultWrapper.getCost());
             Throwable exception = resultWrapper.getException();
             Object result = resultWrapper.getResult();
             // this exception is transformed from enclave, so throw it and handle it in proxy handler.
@@ -81,7 +105,19 @@ abstract class AbstractEnclave implements Enclave {
             if (!(result instanceof ServiceHandler[])) {
                 throw new ServicesLoadingException("service load return type is not ServiceHandler[].");
             }
-            return (ServiceHandler[]) result;
+
+            for (ServiceHandler serviceHandler : (ServiceHandler[]) result) {
+                ProxyEnclaveInvocationHandler handler = new ProxyEnclaveInvocationHandler(this, serviceHandler);
+                T proxy = (T) Proxy.newProxyInstance(service.getClassLoader(), serviceInterface, handler);
+                serviceProxies.add(proxy);
+                // Register proxy handler for enclave's corresponding service gc recycling.
+                enclaveContext.getEnclaveServicesRecycler().registerProxyHandler(proxy, handler);
+            }
+            return serviceProxies.iterator();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new ServicesLoadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
+        } catch (MetricTraceLogWriteException e) {
+            throw new ServicesLoadingException(e);
         } finally {
             getEnclaveContext().getEnclaveToken().restoreToken();
         }
@@ -93,41 +129,37 @@ abstract class AbstractEnclave implements Enclave {
         if (!getEnclaveContext().getEnclaveToken().tryAcquireToken()) {
             throw new ServicesUnloadingException("enclave was destroyed.");
         }
-        try {
+        try (MetricTraceContext trace = new MetricTraceContext(
+                this.getEnclaveInfo(),
+                MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_SERVICE_UNLOADING_PATTERN,
+                service.getServiceImplClassName())) {
             EnclaveInvocationResult resultWrapper;
-            try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(unloadServiceNative(service));
-            } catch (IOException | ClassNotFoundException e) {
-                throw new ServicesUnloadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
-            }
+            resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(unloadServiceNative(service));
+            trace.setCostInnerEnclave(resultWrapper.getCost());
             Throwable exception = resultWrapper.getException();
             if (exception != null) {
                 throw new ServicesUnloadingException("service unload exception happened in enclave.", exception);
             }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new ServicesUnloadingException("EnclaveInvokeResultWrapper deserialization failed.", e);
+        } catch (MetricTraceLogWriteException e) {
+            throw new ServicesUnloadingException(e);
         } finally {
             getEnclaveContext().getEnclaveToken().restoreToken();
         }
     }
 
     // it was called in service's proxy handler.
-    Object InvokeEnclaveMethod(EnclaveInvocationContext input) throws EnclaveMethodInvokingException {
+    EnclaveInvocationResult InvokeEnclaveMethod(EnclaveInvocationContext input) throws EnclaveMethodInvokingException {
         if (!getEnclaveContext().getEnclaveToken().tryAcquireToken()) {
             throw new EnclaveMethodInvokingException("enclave was destroyed.");
         }
         try {
             EnclaveInvocationResult resultWrapper;
-            try {
-                resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(invokeMethodNative(input));
-            } catch (IOException | ClassNotFoundException e) {
-                throw new EnclaveMethodInvokingException("EnclaveInvokeResultWrapper deserialization failed.", e);
-            }
-            Throwable exception = resultWrapper.getException();
-            if (exception != null) {
-                EnclaveMethodInvokingException e = new EnclaveMethodInvokingException("method invoke exception happened in enclave.");
-                e.initCause(exception);
-                throw e;
-            }
-            return resultWrapper.getResult();
+            resultWrapper = (EnclaveInvocationResult) SerializationHelper.deserialize(invokeMethodNative(input));
+            return resultWrapper;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new EnclaveMethodInvokingException("EnclaveInvokeResultWrapper deserialization failed.", e);
         } finally {
             getEnclaveContext().getEnclaveToken().restoreToken();
         }
@@ -151,26 +183,20 @@ abstract class AbstractEnclave implements Enclave {
             throw new ServicesLoadingException("service type: " + service.getTypeName() + " is not an interface type.");
         }
 
-        // If enclave type is MOCK_IN_JVM, loading services by JDK SPI mechanism directly.
-        if (enclaveContext.getEnclaveType() == EnclaveType.MOCK_IN_JVM) {
-            ServiceLoader<T> loader = ServiceLoader.load(service);
-            return loader.iterator();
+        Iterator<T> serviceProxies;
+        switch (enclaveContext.getEnclaveType()) {
+            // If enclave type is MOCK_IN_JVM, loading services by JDK SPI mechanism directly.
+            case MOCK_IN_JVM:
+                serviceProxies = loadProxyServiceMockJVM(service);
+                break;
+            // Loading services in enclave and creating proxy for them.
+            case MOCK_IN_SVM:
+            case TEE_SDK:
+            case EMBEDDED_LIB_OS:
+            default:
+                serviceProxies = loadProxyService(service);
         }
-
-        // Loading services in enclave and creating proxy for them.
-        Class<?>[] serviceInterface = new Class[1];
-        serviceInterface[0] = service;
-
-        List<T> serviceProxies = new ArrayList<>();
-        ServiceHandler[] services = loadService(service);
-        for (ServiceHandler serviceHandler : services) {
-            ProxyEnclaveInvocationHandler handler = new ProxyEnclaveInvocationHandler(this, serviceHandler);
-            T proxy = (T) Proxy.newProxyInstance(service.getClassLoader(), serviceInterface, handler);
-            serviceProxies.add(proxy);
-            // Register proxy handler for enclave's corresponding service gc recycling.
-            enclaveContext.getEnclaveServicesRecycler().registerProxyHandler(proxy, handler);
-        }
-        return serviceProxies.iterator();
+        return serviceProxies;
     }
 
     /**

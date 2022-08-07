@@ -31,7 +31,6 @@ class MockInSvmEnclave extends AbstractEnclave {
     MockInSvmEnclave() throws EnclaveCreatingException {
         // Set EnclaveContext for this enclave instance.
         super(EnclaveType.MOCK_IN_SVM, new EnclaveServicesRecycler());
-
         // Extract jni .so and svm sdk .so from .jar file.
         if (extractTempPath == null) {
             synchronized (MockInSvmEnclave.class) {
@@ -113,12 +112,18 @@ class MockInSvmEnclave extends AbstractEnclave {
     public void destroy() throws EnclaveDestroyingException {
         // destroyToken will wait for all ongoing enclave invocations finished.
         if (this.getEnclaveContext().getEnclaveToken().destroyToken()) {
-            // interrupt enclave services' recycler firstly.
-            this.getEnclaveContext().getEnclaveServicesRecycler().interruptServiceRecycler();
-            // destroy svm isolate.
-            nativeSvmDetachIsolate(enclaveSvmSdkHandle, isolateThreadHandle);
-            nativeDestroyEnclave(enclaveSvmSdkHandle);
-            EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
+            try (MetricTraceContext trace = new MetricTraceContext(
+                    this.getEnclaveInfo(),
+                    MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_DESTROYING_PATTERN)) {
+                // interrupt enclave services' recycler firstly.
+                this.getEnclaveContext().getEnclaveServicesRecycler().interruptServiceRecycler();
+                // destroy svm isolate.
+                nativeSvmDetachIsolate(enclaveSvmSdkHandle, isolateThreadHandle);
+                nativeDestroyEnclave(enclaveSvmSdkHandle);
+                EnclaveInfoManager.getEnclaveInfoManagerInstance().removeEnclave(this);
+            } catch (MetricTraceLogWriteException e) {
+                throw new EnclaveDestroyingException(e);
+            }
         }
     }
 

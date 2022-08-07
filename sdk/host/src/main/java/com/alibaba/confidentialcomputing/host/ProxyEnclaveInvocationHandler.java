@@ -1,9 +1,9 @@
 package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.common.EnclaveInvocationContext;
+import com.alibaba.confidentialcomputing.common.EnclaveInvocationResult;
 import com.alibaba.confidentialcomputing.common.ServiceHandler;
 import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
-import com.alibaba.confidentialcomputing.host.exception.EnclaveMethodInvokingException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.InvocationHandler;
@@ -45,13 +45,14 @@ class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
         }
 
         // Handle service method invocation exception.
-        Object result;
-        try {
-            result = enclave.InvokeEnclaveMethod(methodInvokeMetaWrapper);
-        } catch (EnclaveMethodInvokingException e) {
-            // Get cause exception if it has one.
-            Throwable causeException = e.getCause();
-            if (causeException instanceof ConfidentialComputingException) {
+        try (MetricTraceContext trace = new MetricTraceContext(
+                enclave.getEnclaveInfo(),
+                MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_SERVICE_INVOKING_PATTERN,
+                method.getName())) {
+            EnclaveInvocationResult result = enclave.InvokeEnclaveMethod(methodInvokeMetaWrapper);
+            trace.setCostInnerEnclave(result.getCost());
+            Throwable causeException = result.getException();
+            if (causeException != null && causeException instanceof ConfidentialComputingException) {
                 Throwable enclaveCauseException = causeException.getCause();
                 Class<?>[] exceptionTypes = method.getExceptionTypes();
                 if (enclaveCauseException instanceof InvocationTargetException) {
@@ -70,9 +71,8 @@ class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
                     }
                 }
             }
-            throw e;
+            return result.getResult();
         }
-        return result;
     }
 
     AbstractEnclave getEnclave() {
