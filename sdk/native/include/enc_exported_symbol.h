@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+int create_isolate_with_params(int argc, char** parameters, graal_isolate_t** isolate, graal_isolatethread_t** thread);
+
 int java_loadservice_invoke(graal_isolate_t* thread, enc_data_t* input, enc_data_t* result, callbacks_t* callBacks);
 
 int java_enclave_invoke(graal_isolate_t* thread, enc_data_t* input, enc_data_t* result, callbacks_t* callBacks);

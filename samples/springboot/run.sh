@@ -4,7 +4,7 @@
 mvn --settings /root/tools/settings.xml -Pnative clean package
 
 # step2: startup springboot application service.
-java -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar com.alibaba.confidentialcomputing.samples.springboot.host.Application &
+OCCLUM_RELEASE_ENCLAVE=true java -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar com.alibaba.confidentialcomputing.samples.springboot.host.Application &
 sleep 5
 # shellcheck disable=SC2006
 # shellcheck disable=SC2009

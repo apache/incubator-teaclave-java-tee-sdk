@@ -17,7 +17,7 @@ typedef int (*mock_enclave_stub)(graal_isolate_t*, enc_data_t*, enc_data_t*, cal
 
 static JNINativeMethod mock_in_svm_methods[] = {
     {"nativeCreateEnclave",       "(Ljava/lang/String;)I",           (void *)&JavaEnclave_MockSVMNativeCreateEnclave},
-    {"nativeSvmAttachIsolate",    "(J)I",                            (void *)&JavaEnclave_MockSVMNativeSvmAttachIsolate},
+    {"nativeSvmAttachIsolate",    "(JLjava/lang/String;)I",          (void *)&JavaEnclave_MockSVMNativeSvmAttachIsolate},
     {"nativeLoadService",         "(JJ[B)[B",                        (void *)&JavaEnclave_MockSVMNativeLoadService},
     {"nativeInvokeMethod",        "(JJ[B)[B",                        (void *)&JavaEnclave_MockSVMNativeInvokeMethod},
     {"nativeUnloadService",       "(JJ[B)[B",                        (void *)&JavaEnclave_MockSVMNativeUnloadService},
@@ -122,21 +122,28 @@ JavaEnclave_MockSVMNativeCreateEnclave(JNIEnv *env, jobject obj, jstring path) {
 }
 
 JNIEXPORT jint JNICALL
-JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler) {
+JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler, jstring args) {
     graal_isolate_t* isolate_t;
-    graal_create_isolate_params_t p;
     graal_isolatethread_t* isolate_thread_t;
 
-    int (*graal_create_isolate)(graal_create_isolate_params_t* params, graal_isolate_t** isolate, graal_isolatethread_t** thread);
-    graal_create_isolate = (int (*)(graal_create_isolate_params_t*, graal_isolate_t**, graal_isolatethread_t**)) dlsym((void *)enclave_handler, "graal_create_isolate");
-    if (!graal_create_isolate) {
+    int (*create_isolate_with_params)(int argc, char** parameters, graal_isolate_t** isolate, graal_isolatethread_t** thread);
+    create_isolate_with_params = (int (*)(int, char**, graal_isolate_t**, graal_isolatethread_t**)) dlsym((void *)enclave_handler, "create_isolate_with_params");
+    if (!create_isolate_with_params) {
         THROW_EXCEPTION(env, ENCLAVE_CREATING_EXCEPTION, "create isolate dlsym error.")
     }
 
-    if (graal_create_isolate(NULL, &isolate_t, &isolate_thread_t) != 0) {
+    char *args_str = (*env)->GetStringUTFChars(env, args, 0);
+    int argc = 2;
+    char* parameters[2];
+    parameters[0] = NULL;
+    parameters[1] = args_str;
+
+    if (create_isolate_with_params(argc, parameters, &isolate_t, &isolate_thread_t) != 0) {
+        (*env)->ReleaseStringUTFChars(env, args, args_str);
         THROW_EXCEPTION(env, ENCLAVE_CREATING_EXCEPTION, "graal_create_isolate create error.")
     }
 
+    (*env)->ReleaseStringUTFChars(env, args, args_str);
     // set isolate_t and isolate_thread_t back to MockInSvmEnclave.isolateHandle and MockInSvmEnclave.isolateThreadHandle
     jclass class_enclave = (*env)->GetObjectClass(env, obj);
     set_long_field_value(env, class_enclave, obj, "isolateHandle", (jlong)isolate_t);

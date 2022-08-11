@@ -1,6 +1,9 @@
 package com.alibaba.confidentialcomputing.host;
 
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
+import com.alibaba.confidentialcomputing.host.exception.MetricTraceLogWriteException;
+
+import java.io.IOException;
 
 /**
  * Factory class for {@link Enclave}.
@@ -33,7 +36,14 @@ public final class EnclaveFactory {
      *                                  create failed.
      */
     public static Enclave create() throws EnclaveCreatingException {
-        return EnclaveConfigure.create();
+        // create an enclave without specific enclave type.
+        // if -Dcom.alibaba.enclave.type is not set, TEE_SDK
+        // type enclave will be created.
+        try {
+            return create(EnclaveConfigure.getInstance().getDefaultEnclaveType());
+        } catch (IOException e) {
+            throw new EnclaveCreatingException(e);
+        }
     }
 
     /**
@@ -43,6 +53,41 @@ public final class EnclaveFactory {
      *                                  create failed.
      */
     public static Enclave create(EnclaveType type) throws EnclaveCreatingException {
-        return EnclaveConfigure.create(type);
+        // create an enclave with specific enclave type.
+        try (MetricTraceContext trace = new MetricTraceContext(MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_CREATING_PATTERN)) {
+            Enclave enclave;
+            switch (type) {
+                case MOCK_IN_JVM:
+                    enclave = new MockInJvmEnclave();
+                    break;
+                case MOCK_IN_SVM:
+                    enclave = new MockInSvmEnclave();
+                    break;
+                case TEE_SDK:
+                    // TEE_SDK only support hardware mode, not support simulate mode.
+                    if (EnclaveConfigure.getInstance().isEnclaveDebuggable()) {
+                        enclave = new TeeSdkEnclave(EnclaveDebug.DEBUG);
+                    } else {
+                        enclave = new TeeSdkEnclave(EnclaveDebug.RELEASE);
+                    }
+                    break;
+                case EMBEDDED_LIB_OS:
+                    // EMBEDDED_LIB_OS only support hardware mode, not support simulate mode.
+                    if (EmbeddedLibOSEnclaveConfigure.getInstance().isEnclaveDebuggable()) {
+                        enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EnclaveDebug.DEBUG, EnclaveSimulate.HARDWARE);
+                    } else {
+                        enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EnclaveDebug.RELEASE, EnclaveSimulate.HARDWARE);
+                    }
+                    break;
+                case NONE:
+                default:
+                    throw new EnclaveCreatingException("enclave type: " + type + " is not supported.");
+            }
+            trace.setEnclaveInfo(enclave.getEnclaveInfo());
+            EnclaveInfoManager.getEnclaveInfoManagerInstance().addEnclave(enclave);
+            return enclave;
+        } catch (IOException | MetricTraceLogWriteException e) {
+            throw new EnclaveCreatingException(e);
+        }
     }
 }

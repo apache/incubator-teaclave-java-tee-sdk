@@ -45,9 +45,9 @@ JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeCreateEnclave(JNIEnv *, jobject,
 /*
  * Class:     JavaEnclave_MockSVMNativeSvmAttachIsolate
  * Method:    nativeSvmAttachIsolate
- * Signature: (J)I
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *, jobject, jlong);
+JNIEXPORT jint JNICALL JavaEnclave_MockSVMNativeSvmAttachIsolate(JNIEnv *, jobject, jlong, jstring);
 
 /*
  * Class:     JavaEnclave_MockSVMNativeLoadService

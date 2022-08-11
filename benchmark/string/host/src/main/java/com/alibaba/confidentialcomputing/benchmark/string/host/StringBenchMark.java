@@ -16,136 +16,108 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 4, time = 2)
-@Threads(8)
+@Threads(4)
 @Fork(1)
-@State(value = Scope.Benchmark)
+@State(value = Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class StringBenchMark {
-    @Param(value = {"5"})
-    private int iterator;
+    private int regexWeight = 5000;
+    private int concatWeight = 50_000;
+    private int splitWeight = 5000;
 
-    @State(Scope.Benchmark)
-    public static class MockJVMEnclave {
-        private Enclave enclave = null;
-        private StringOperationMetric service = null;
+    @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK", "EMBEDDED_LIB_OS"})
+    private String enclaveServiceInstance;
+    @Param(value = {"regex", "concat", "split"})
+    private String stringOpt;
 
-        @Setup(Level.Trial)
+    private String regexContext = "abcd_ed123.t12y@haha.com";
+    private String regexPattern = "^[\\w._]+@\\w+\\.[a-zA-Z]+$";
+    private String concatContext = "Hello World!";
+    private String concatPattern = "abc";
+    private String splitContext = "word1, word2 word3@word4?word5.word6";
+    private String splitPattern = "[, ?.@]+";
+
+    @State(Scope.Thread)
+    public static class EnclaveBenchmark {
+        private Enclave mockJVMEnclave = null;
+        private StringOperationMetric mockJVMService = null;
+        private Enclave mockSVMEnclave = null;
+        private StringOperationMetric mockSVMService = null;
+        private Enclave teeSDKEnclave = null;
+        private StringOperationMetric teeSDKService = null;
+        private Enclave embeddedLibOSEnclave = null;
+        private StringOperationMetric embeddedLibOSService = null;
+
+        @Setup
         public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.MOCK_IN_JVM);
-            service = enclave.load(StringOperationMetric.class).next();
+            mockJVMEnclave = EnclaveFactory.create(EnclaveType.MOCK_IN_JVM);
+            mockJVMService = mockJVMEnclave.load(StringOperationMetric.class).next();
+            mockSVMEnclave = EnclaveFactory.create(EnclaveType.MOCK_IN_SVM);
+            mockSVMService = mockSVMEnclave.load(StringOperationMetric.class).next();
+            teeSDKEnclave = EnclaveFactory.create(EnclaveType.TEE_SDK);
+            teeSDKService = teeSDKEnclave.load(StringOperationMetric.class).next();
+            embeddedLibOSEnclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
+            embeddedLibOSService = embeddedLibOSEnclave.load(StringOperationMetric.class).next();
         }
 
-        public StringOperationMetric getServiceInstance() {
-            return this.service;
-        }
-    }
-
-    @State(Scope.Benchmark)
-    public static class MockSVMEnclave {
-        private Enclave enclave = null;
-        private StringOperationMetric service = null;
-
-        @Setup(Level.Trial)
-        public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.MOCK_IN_SVM);
-            service = enclave.load(StringOperationMetric.class).next();
+        @TearDown
+        public void destroyEnclave() throws Exception {
+            mockJVMEnclave.destroy();
+            mockSVMEnclave.destroy();
+            teeSDKEnclave.destroy();
+            embeddedLibOSEnclave.destroy();
         }
 
-        public StringOperationMetric getServiceInstance() {
-            return this.service;
-        }
-    }
-
-    @State(Scope.Benchmark)
-    public static class TeeSDKEnclave {
-        private Enclave enclave = null;
-        private StringOperationMetric service = null;
-
-        @Setup(Level.Trial)
-        public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.TEE_SDK);
-            service = enclave.load(StringOperationMetric.class).next();
+        public StringOperationMetric getMockJVMServiceInstance() {
+            return mockJVMService;
         }
 
-        public StringOperationMetric getServiceInstance() {
-            return this.service;
+        public StringOperationMetric getMockSVMServiceInstance() {
+            return mockSVMService;
+        }
+
+        public StringOperationMetric getTeeSDKServiceInstance() {
+            return teeSDKService;
+        }
+
+        public StringOperationMetric getEmbeddedLibOSServiceInstance() {
+            return embeddedLibOSService;
         }
     }
 
-    @State(Scope.Benchmark)
-    public static class EmbeddedLibOSEnclave {
-        private Enclave enclave = null;
-        private StringOperationMetric service = null;
-
-        @Setup(Level.Trial)
-        public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
-            service = enclave.load(StringOperationMetric.class).next();
+    private void stringBenchMarkImpl(EnclaveBenchmark enclave, String enclaveServiceInstance, String stringOpt) {
+        StringOperationMetric service = null;
+        switch (enclaveServiceInstance) {
+            case "MOCK_IN_JVM":
+                service = enclave.getMockJVMServiceInstance();
+                break;
+            case "MOCK_IN_SVM":
+                service = enclave.getMockSVMServiceInstance();
+                break;
+            case "TEE_SDK":
+                service = enclave.getTeeSDKServiceInstance();
+                break;
+            case "EMBEDDED_LIB_OS":
+                service = enclave.getEmbeddedLibOSServiceInstance();
+                break;
         }
 
-        public StringOperationMetric getServiceInstance() {
-            return this.service;
+        switch (stringOpt) {
+            case "regex":
+                service.stringRegex(regexContext, regexPattern, regexWeight);
+                break;
+            case "concat":
+                service.stringConcat(concatContext, concatPattern, concatWeight);
+                break;
+            case "split":
+                service.stringSplit(splitContext, splitPattern, splitWeight);
+                break;
         }
     }
 
     @Benchmark
-    public void stringRegexMockJVMBenchMark(MockJVMEnclave enclave) {
-        enclave.getServiceInstance().stringRegex("abcd_ed123.t12y@haha.com", "^[\\w._]+@\\w+\\.[a-zA-Z]+$", iterator);
-    }
-
-    @Benchmark
-    public void stringRegexMockSVMBenchMark(MockSVMEnclave enclave) {
-        enclave.getServiceInstance().stringRegex("abcd_ed123.t12y@haha.com", "^[\\w._]+@\\w+\\.[a-zA-Z]+$", iterator);
-    }
-
-    @Benchmark
-    public void stringRegexTeeSDKBenchMark(TeeSDKEnclave enclave) {
-        enclave.getServiceInstance().stringRegex("abcd_ed123.t12y@haha.com", "^[\\w._]+@\\w+\\.[a-zA-Z]+$", iterator);
-    }
-
-    @Benchmark
-    public void stringRegexEmbeddedLibOSBenchMark(EmbeddedLibOSEnclave enclave) {
-        enclave.getServiceInstance().stringRegex("abcd_ed123.t12y@haha.com", "^[\\w._]+@\\w+\\.[a-zA-Z]+$", iterator);
-    }
-
-    @Benchmark
-    public void stringConcatMockJVMBenchMark(MockJVMEnclave enclave) {
-        enclave.getServiceInstance().stringConcat("Hello World!", "abc", iterator);
-    }
-
-    @Benchmark
-    public void stringConcatMockSVMBenchMark(MockSVMEnclave enclave) {
-        enclave.getServiceInstance().stringConcat("Hello World!", "abc", iterator);
-    }
-
-    @Benchmark
-    public void stringConcatTeeSDKBenchMark(TeeSDKEnclave enclave) {
-        enclave.getServiceInstance().stringConcat("Hello World!", "abc", iterator);
-    }
-
-    @Benchmark
-    public void stringConcatEmbeddedLibOSBenchMark(EmbeddedLibOSEnclave enclave) {
-        enclave.getServiceInstance().stringConcat("Hello World!", "abc", iterator);
-    }
-
-    @Benchmark
-    public void stringSplitMockJVMBenchMark(MockJVMEnclave enclave) {
-        enclave.getServiceInstance().stringSplit("word1, word2 word3@word4?word5.word6", "[, ?.@]+", iterator);
-    }
-
-    @Benchmark
-    public void stringSplitMockSVMBenchMark(MockSVMEnclave enclave) {
-        enclave.getServiceInstance().stringSplit("word1, word2 word3@word4?word5.word6", "[, ?.@]+", iterator);
-    }
-
-    @Benchmark
-    public void stringSplitTeeSDKBenchMark(TeeSDKEnclave enclave) {
-        enclave.getServiceInstance().stringSplit("word1, word2 word3@word4?word5.word6", "[, ?.@]+", iterator);
-    }
-
-    @Benchmark
-    public void stringSplitEmbeddedLibOSBenchMark(EmbeddedLibOSEnclave enclave) {
-        enclave.getServiceInstance().stringSplit("word1, word2 word3@word4?word5.word6", "[, ?.@]+", iterator);
+    public void stringBenchMark(EnclaveBenchmark enclave) {
+        stringBenchMarkImpl(enclave, enclaveServiceInstance, stringOpt);
     }
 
     public static void main(String[] args) throws RunnerException {

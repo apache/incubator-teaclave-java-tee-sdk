@@ -4,7 +4,7 @@ import com.alibaba.confidentialcomputing.common.annotations.EnclaveService;
 
 @EnclaveService
 public interface StringOperationMetric {
-    boolean stringRegex(String source, String pattern, int iterator);
-    String stringConcat(String source, String split, int iterator);
-    String[] stringSplit(String source, String concat, int iterator);
+    boolean stringRegex(String source, String pattern, int weight);
+    String stringConcat(String source, String split, int weight);
+    String[] stringSplit(String source, String concat, int weight);
 }

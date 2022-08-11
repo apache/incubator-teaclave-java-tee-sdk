@@ -33,8 +33,8 @@ public class TestEnclaveInfo {
         enclaveInfo = enclave.getEnclaveInfo();
         assertEquals(enclaveInfo.getEnclaveType(), EnclaveType.TEE_SDK);
         assertEquals(enclaveInfo.isEnclaveDebuggable(), false);
-        assertEquals(enclaveInfo.getEnclaveEPCMemorySizeBytes(), 0x20000000);
-        assertEquals(enclaveInfo.getEnclaveMaxThreadsNumber(), 15);
+        assertEquals(enclaveInfo.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
+        assertEquals(enclaveInfo.getEnclaveMaxThreadsNumber(), 50);
         enclave.destroy();
 
         // it's related to config file in test project.
@@ -42,8 +42,8 @@ public class TestEnclaveInfo {
         enclaveInfo = enclave.getEnclaveInfo();
         assertEquals(enclaveInfo.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
         assertEquals(enclaveInfo.isEnclaveDebuggable(), false);
-        assertEquals(enclaveInfo.getEnclaveEPCMemorySizeBytes(), 1200 * 1024 * 1024);
-        assertEquals(enclaveInfo.getEnclaveMaxThreadsNumber(), 60);
+        assertEquals(enclaveInfo.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
+        assertEquals(enclaveInfo.getEnclaveMaxThreadsNumber(), 50);
         enclave.destroy();
     }
 }

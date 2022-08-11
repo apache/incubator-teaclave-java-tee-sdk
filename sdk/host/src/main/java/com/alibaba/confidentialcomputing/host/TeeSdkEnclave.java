@@ -11,6 +11,8 @@ import java.io.IOException;
  * TeeSdkEnclave is a sgx2 enclave based on Alibaba cloud's tee sdk.
  */
 class TeeSdkEnclave extends AbstractEnclave {
+    private final static long KB = 1 * 1024;
+    private final static long MB = KB * 1024;
     private final static String JNI_EXTRACTED_PACKAGE_PATH = "jni/lib_jni_tee_sdk_svm.so";
     private final static String TEE_SDK_SIGNED_PACKAGE_PATH = "lib_tee_sdk_svm_load.signed";
     private static volatile TeeSdkExtractTempPath extractTempPath;
@@ -24,9 +26,7 @@ class TeeSdkEnclave extends AbstractEnclave {
     private long isolateThreadHandle;
     private SGXEnclaveInfo enclaveInfo;
 
-    TeeSdkEnclave(EnclaveDebug mode) throws EnclaveCreatingException {
-        // Set EnclaveContext for this enclave instance.
-        super(EnclaveType.TEE_SDK, mode, new EnclaveServicesRecycler());
+    private void extractNativeResource() throws EnclaveCreatingException {
         // Extract jni .so and signed tee .so from .jar file.
         // Only once extract and load operation.
         if (extractTempPath == null) {
@@ -48,21 +48,40 @@ class TeeSdkEnclave extends AbstractEnclave {
                 }
             }
         }
+    }
 
+    private String buildSVMHeapConf() throws IOException {
+        long enclaveMaxHeapSize = TeeSdkEnclaveConfigure.getInstance().getEnclaveSVMMaxHeapSize();
+        if ( enclaveMaxHeapSize > 0) {
+            long size = enclaveMaxHeapSize / MB;
+            if (size == 0) size = 1;
+            return "-Xmx" + size + "m";
+        }
+        return "-Xmx" + 0 + "m";
+    }
+
+    TeeSdkEnclave(EnclaveDebug mode) throws EnclaveCreatingException {
+        // Set EnclaveContext for this enclave instance.
+        super(EnclaveType.TEE_SDK, mode, new EnclaveServicesRecycler());
+        extractNativeResource();
         // Create tee sdk enclave by native call, enclaveHandler is set in jni in nativeHandlerContext.
         nativeCreateEnclave(mode.getValue(), extractTempPath.getTeeSdkSignedFilePath());
-        // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
-        nativeSvmAttachIsolate(enclaveHandle);
-        // Create enclave info.
-        boolean isDebuggable = true;
-        if (mode.getValue() == 0x2) {
-            isDebuggable = false;
+        try {
+            // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
+            nativeSvmAttachIsolate(enclaveHandle, TeeSdkEnclaveConfigure.getInstance().isEnableTeeSDKSymbolTracing(), buildSVMHeapConf());
+            // Create enclave info.
+            boolean isDebuggable = true;
+            if (mode.getValue() == 0x2) {
+                isDebuggable = false;
+            }
+            enclaveInfo = new SGXEnclaveInfo(
+                    EnclaveType.TEE_SDK,
+                    isDebuggable,
+                    TeeSdkEnclaveConfigure.getInstance().getMaxEnclaveEPCMemorySizeBytes(),
+                    TeeSdkEnclaveConfigure.getInstance().getMaxEnclaveThreadNum());
+        } catch (IOException e) {
+            throw new EnclaveCreatingException(e);
         }
-        enclaveInfo = new SGXEnclaveInfo(
-                EnclaveType.TEE_SDK,
-                isDebuggable,
-                TeeSdkEnclaveConfig.getTeeSdkEnclaveConfigInstance().getHeapMaxSizeBytes(),
-                TeeSdkEnclaveConfig.getTeeSdkEnclaveConfigInstance().getThreadMaxNumber());
     }
 
     private static native void registerNatives();
@@ -71,7 +90,7 @@ class TeeSdkEnclave extends AbstractEnclave {
 
     private native TeeSdkAttestationReport nativeGenerateAttestationReport(long enclaveHandler, byte[] userData) throws RemoteAttestationException;
 
-    private native int nativeSvmAttachIsolate(long enclaveHandler) throws EnclaveCreatingException;
+    private native int nativeSvmAttachIsolate(long enclaveHandler, int flag, String args) throws EnclaveCreatingException;
 
     private native byte[] nativeLoadService(long enclaveHandler, long isolateHandler, byte[] serviceHandler) throws ServicesLoadingException;
 

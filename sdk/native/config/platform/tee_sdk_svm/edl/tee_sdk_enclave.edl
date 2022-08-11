@@ -8,7 +8,7 @@ enclave {
 
     trusted {
         // create a graal isolate;
-        public int enclave_svm_isolate_create([out, size=8] void* isolate, [out, size=8] void* isolateThread);
+        public int enclave_svm_isolate_create([out, size=8] void* isolate, [out, size=8] void* isolateThread, int flag, [string, in] char* args);
         // load enclave services instance;
         public int load_enclave_svm_services(uint64_t isolate, [in, size=len0] void* input,  size_t len0, [out, size=8] void* output, [out, size=8] size_t* len1);
         // invoke enclave instance's services;

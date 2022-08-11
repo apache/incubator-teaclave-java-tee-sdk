@@ -4,7 +4,7 @@ import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SM3Digest;
 
 class SM3ServiceImpl {
-    static byte[] sm3Service(String plainText) throws Exception {
+    byte[] sm3Service(String plainText) throws Exception {
         byte[] messages = plainText.getBytes();
         Digest md = new SM3Digest();
         md.update(messages, 0, messages.length);

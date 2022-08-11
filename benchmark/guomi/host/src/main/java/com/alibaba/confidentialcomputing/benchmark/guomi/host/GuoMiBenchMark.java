@@ -15,135 +15,106 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 3, time = 1)
-@Measurement(iterations = 5, time = 2)
-@Threads(8)
+@Measurement(iterations = 4, time = 1)
+@Threads(4)
 @Fork(1)
-@State(value = Scope.Benchmark)
+@State(value = Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class GuoMiBenchMark {
+    private int sm2Weight = 10;
+    private int sm3Weight = 20_000;
+    private int sm4Weight = 300;
 
-    @State(Scope.Benchmark)
-    public static class MockJVMEnclave {
-        private Enclave enclave = null;
-        private SMService service = null;
+    private String sm2Context = "abcd_ed123.t12y@haha.com";
+    private String sm3Context = "Hello World!";
+    private String sm4Context = "word1, word2 word3@word4?word5.word6";
 
-        @Setup(Level.Trial)
+    @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK", "EMBEDDED_LIB_OS"})
+    private String enclaveServiceInstance;
+    @Param(value = {"SM2", "SM3", "SM4"})
+    private String smAlgo;
+
+    @State(Scope.Thread)
+    public static class EnclaveBenchmark {
+        private Enclave mockJVMEnclave = null;
+        private SMService mockJVMService = null;
+        private Enclave mockSVMEnclave = null;
+        private SMService mockSVMService = null;
+        private Enclave teeSDKEnclave = null;
+        private SMService teeSDKService = null;
+        private Enclave embeddedLibOSEnclave = null;
+        private SMService embeddedLibOSService = null;
+
+        @Setup
         public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.MOCK_IN_JVM);
-            service = enclave.load(SMService.class).next();
+            mockJVMEnclave = EnclaveFactory.create(EnclaveType.MOCK_IN_JVM);
+            mockJVMService = mockJVMEnclave.load(SMService.class).next();
+            mockSVMEnclave = EnclaveFactory.create(EnclaveType.MOCK_IN_SVM);
+            mockSVMService = mockSVMEnclave.load(SMService.class).next();
+            teeSDKEnclave = EnclaveFactory.create(EnclaveType.TEE_SDK);
+            teeSDKService = teeSDKEnclave.load(SMService.class).next();
+            embeddedLibOSEnclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
+            embeddedLibOSService = embeddedLibOSEnclave.load(SMService.class).next();
         }
 
-        public SMService getServiceInstance() {
-            return this.service;
-        }
-    }
-
-    @State(Scope.Benchmark)
-    public static class MockSVMEnclave {
-        private Enclave enclave = null;
-        private SMService service = null;
-
-        @Setup(Level.Trial)
-        public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.MOCK_IN_SVM);
-            service = enclave.load(SMService.class).next();
+        @TearDown
+        public void destroyEnclave() throws Exception {
+            mockJVMEnclave.destroy();
+            mockSVMEnclave.destroy();
+            teeSDKEnclave.destroy();
+            embeddedLibOSEnclave.destroy();
         }
 
-        public SMService getServiceInstance() {
-            return this.service;
-        }
-    }
-
-    @State(Scope.Benchmark)
-    public static class TeeSDKEnclave {
-        private Enclave enclave = null;
-        private SMService service = null;
-
-        @Setup(Level.Trial)
-        public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.TEE_SDK);
-            service = enclave.load(SMService.class).next();
+        public SMService getMockJVMServiceInstance() {
+            return mockJVMService;
         }
 
-        public SMService getServiceInstance() {
-            return this.service;
+        public SMService getMockSVMServiceInstance() {
+            return mockSVMService;
+        }
+
+        public SMService getTeeSDKServiceInstance() {
+            return teeSDKService;
+        }
+
+        public SMService getEmbeddedLibOSServiceInstance() {
+            return embeddedLibOSService;
         }
     }
 
-    @State(Scope.Benchmark)
-    public static class EmbeddedLibOSEnclave {
-        private Enclave enclave = null;
-        private SMService service = null;
-
-        @Setup(Level.Trial)
-        public void createEnclave() throws Exception {
-            enclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
-            service = enclave.load(SMService.class).next();
+    private void smBenchmarkImpl(EnclaveBenchmark enclave, String serviceName, String smAlgo) throws Exception {
+        SMService service = null;
+        switch (serviceName) {
+            case "MOCK_IN_JVM":
+                service = enclave.getMockJVMServiceInstance();
+                break;
+            case "MOCK_IN_SVM":
+                service = enclave.getMockSVMServiceInstance();
+                break;
+            case "TEE_SDK":
+                service = enclave.getTeeSDKServiceInstance();
+                break;
+            case "EMBEDDED_LIB_OS":
+                service = enclave.getEmbeddedLibOSServiceInstance();
+                break;
         }
 
-        public SMService getServiceInstance() {
-            return this.service;
+        switch (smAlgo) {
+            case "SM2":
+                service.sm2Service(sm2Context, sm2Weight);
+                break;
+            case "SM3":
+                service.sm3Service(sm3Context, sm3Weight);
+                break;
+            case "SM4":
+                service.sm4Service(sm4Context, sm4Weight);
+                break;
         }
     }
 
     @Benchmark
-    public void sm2TeeSDKBenchMark(TeeSDKEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm2Service("abcd_ed123.t12y@haha.com");
-    }
-
-    @Benchmark
-    public void sm2MockJVMBenchMark(MockJVMEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm2Service("abcd_ed123.t12y@haha.com");
-    }
-
-    @Benchmark
-    public void sm2MockSVMBenchMark(MockSVMEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm2Service("abcd_ed123.t12y@haha.com");
-    }
-
-    @Benchmark
-    public void sm2EmbeddedLibOSBenchMark(EmbeddedLibOSEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm2Service("abcd_ed123.t12y@haha.com");
-    }
-
-    @Benchmark
-    public void sm3MockJVMBenchMark(MockJVMEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm3Service("Hello World!");
-    }
-
-    @Benchmark
-    public void sm3MockSVMBenchMark(MockSVMEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm3Service("Hello World!");
-    }
-
-    @Benchmark
-    public void sm3TeeSDKBenchMark(TeeSDKEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm3Service("Hello World!");
-    }
-
-    @Benchmark
-    public void sm3EmbeddedLibOSBenchMark(EmbeddedLibOSEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm3Service("Hello World!");
-    }
-
-    @Benchmark
-    public void sm4MockJVMBenchMark(MockJVMEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm4Service("word1, word2 word3@word4?word5.word6");
-    }
-
-    @Benchmark
-    public void sm4MockSVMBenchMark(MockSVMEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm4Service("word1, word2 word3@word4?word5.word6");
-    }
-
-    @Benchmark
-    public void sm4TeeSDKBenchMark(TeeSDKEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm4Service("word1, word2 word3@word4?word5.word6");
-    }
-
-    @Benchmark
-    public void sm4EmbeddedLibOSBenchMark(EmbeddedLibOSEnclave enclave) throws Exception {
-        enclave.getServiceInstance().sm4Service("word1, word2 word3@word4?word5.word6");
+    public void smBenchMark(EnclaveBenchmark enclave) throws Exception {
+        smBenchmarkImpl(enclave, enclaveServiceInstance, smAlgo);
     }
 
     public static void main(String[] args) throws RunnerException {

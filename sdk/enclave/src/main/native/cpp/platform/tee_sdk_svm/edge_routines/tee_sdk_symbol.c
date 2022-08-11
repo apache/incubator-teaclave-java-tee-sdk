@@ -1,6 +1,8 @@
 #include "tee_sdk_enclave_t.h"
 #include "tee_sdk_symbol.h"
 
+int enable_trace_symbol_calling = 0x0;
+
 void __fxstat() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __fxstat64() {TRACE_SYMBOL_CALL(); ASSERT();}
 void __isnan() {TRACE_SYMBOL_CALL(); ASSERT();}

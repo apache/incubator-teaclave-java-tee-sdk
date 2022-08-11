@@ -60,16 +60,16 @@ public class TestEnclaveInfoMXBean {
         EnclaveInfo enclaveInfoTEE = enclaveTEE.getEnclaveInfo();
         assertEquals(enclaveInfoTEE.getEnclaveType(), EnclaveType.TEE_SDK);
         assertEquals(enclaveInfoTEE.isEnclaveDebuggable(), false);
-        assertEquals(enclaveInfoTEE.getEnclaveEPCMemorySizeBytes(), 0x20000000);
-        assertEquals(enclaveInfoTEE.getEnclaveMaxThreadsNumber(), 15);
+        assertEquals(enclaveInfoTEE.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
+        assertEquals(enclaveInfoTEE.getEnclaveMaxThreadsNumber(), 50);
 
         // it's related to config file in test project.
         Enclave enclaveLIBOS = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
         EnclaveInfo enclaveInfoLIBOS = enclaveLIBOS.getEnclaveInfo();
         assertEquals(enclaveInfoLIBOS.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
         assertEquals(enclaveInfoLIBOS.isEnclaveDebuggable(), false);
-        assertEquals(enclaveInfoLIBOS.getEnclaveEPCMemorySizeBytes(), 1200 * 1024 * 1024);
-        assertEquals(enclaveInfoLIBOS.getEnclaveMaxThreadsNumber(), 60);
+        assertEquals(enclaveInfoLIBOS.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
+        assertEquals(enclaveInfoLIBOS.getEnclaveMaxThreadsNumber(), 50);
 
         enclaveInfoMXBeanStub = new ObjectName(DOMAIN_NAME + ":name=" + ENCLAVE_MX_BEAN_STUB);
         mxBeanService = ManagementFactory.getPlatformMBeanServer();
@@ -120,12 +120,9 @@ public class TestEnclaveInfoMXBean {
                     assertEquals((int)enclaveInfo.get("enclaveMaxThreadsNumber"), -1);
                     break;
                 case "TEE_SDK":
-                    assertEquals((long)enclaveInfo.get("enclaveEPCMemorySizeBytes"), 0x20000000);
-                    assertEquals((int)enclaveInfo.get("enclaveMaxThreadsNumber"), 15);
-                    break;
                 case "EMBEDDED_LIB_OS":
-                    assertEquals((long)enclaveInfo.get("enclaveEPCMemorySizeBytes"), 1200 * 1024 * 1024);
-                    assertEquals((int)enclaveInfo.get("enclaveMaxThreadsNumber"), 60);
+                    assertEquals((long)enclaveInfo.get("enclaveEPCMemorySizeBytes"), 1500 * 1024 * 1024);
+                    assertEquals((int)enclaveInfo.get("enclaveMaxThreadsNumber"), 50);
                     break;
                 case "NONE":
                     assert (false);

@@ -15,6 +15,8 @@ import java.io.IOException;
  * important to debug issue.
  */
 class MockInSvmEnclave extends AbstractEnclave {
+    private final static long KB = 1 * 1024;
+    private final static long MB = KB * 1024;
     private final static String JNI_EXTRACTED_PACKAGE_PATH = "jni/lib_jni_mock_svm.so";
     private final static String ENCLAVE_SVM_PACKAGE_PATH = "lib_mock_svm_load.so";
     private static volatile MockInSvmExtractTempPath extractTempPath;
@@ -28,9 +30,7 @@ class MockInSvmEnclave extends AbstractEnclave {
     private long isolateThreadHandle;
     private final MockEnclaveInfo enclaveInfo;
 
-    MockInSvmEnclave() throws EnclaveCreatingException {
-        // Set EnclaveContext for this enclave instance.
-        super(EnclaveType.MOCK_IN_SVM, new EnclaveServicesRecycler());
+    private void extractNativeResource() throws EnclaveCreatingException {
         // Extract jni .so and svm sdk .so from .jar file.
         if (extractTempPath == null) {
             synchronized (MockInSvmEnclave.class) {
@@ -53,12 +53,32 @@ class MockInSvmEnclave extends AbstractEnclave {
                 }
             }
         }
+    }
 
+    private String buildSVMHeapConf() throws IOException {
+        long enclaveMaxHeapSize = MockInSvmEnclaveConfigure.getInstance().getEnclaveSVMMaxHeapSize();
+        if (enclaveMaxHeapSize > 0) {
+            long size = enclaveMaxHeapSize / MB;
+            if (size == 0) size = 1;
+            return "-Xmx" + size + "m";
+        }
+        return "-Xmx" + 0 + "m";
+    }
+
+    MockInSvmEnclave() throws EnclaveCreatingException {
+        // Set EnclaveContext for this enclave instance.
+        super(EnclaveType.MOCK_IN_SVM, new EnclaveServicesRecycler());
+        extractNativeResource();
         // Create svm sdk enclave by native call, enclaveSvmSdkHandle are set in jni in nativeHandlerContext.
         nativeCreateEnclave(extractTempPath.getEnclaveSvmFilePath());
         // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
-        nativeSvmAttachIsolate(enclaveSvmSdkHandle);
-        enclaveInfo = new MockEnclaveInfo(EnclaveType.MOCK_IN_SVM, true, -1, -1);
+        try {
+            nativeSvmAttachIsolate(enclaveSvmSdkHandle, buildSVMHeapConf());
+            enclaveInfo = new MockEnclaveInfo(EnclaveType.MOCK_IN_SVM, true, -1, -1);
+        } catch (IOException e) {
+            throw new EnclaveCreatingException(e);
+        }
+
     }
 
     @Override
@@ -131,7 +151,7 @@ class MockInSvmEnclave extends AbstractEnclave {
 
     private native int nativeCreateEnclave(String path) throws EnclaveCreatingException;
 
-    private native int nativeSvmAttachIsolate(long enclaveSvmSdkHandle) throws EnclaveCreatingException;
+    private native int nativeSvmAttachIsolate(long enclaveSvmSdkHandle, String args) throws EnclaveCreatingException;
 
     private native byte[] nativeLoadService(long enclaveSvmSdkHandle, long isolateHandler, byte[] serviceHandler) throws ServicesLoadingException;
 

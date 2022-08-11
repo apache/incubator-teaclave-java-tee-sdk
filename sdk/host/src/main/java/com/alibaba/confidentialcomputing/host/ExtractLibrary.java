@@ -17,6 +17,19 @@ import java.util.zip.GZIPInputStream;
  */
 public final class ExtractLibrary {
     /**
+     * check file exist in the .jar or not.
+     *
+     * @param classLoader define the search scope for lib .so.
+     * @param file        lib.so's name in the jar file.
+     * @return exist or not.
+     */
+    public static boolean isFileExist(ClassLoader classLoader, String file) throws IOException {
+        try (InputStream in = classLoader.getResourceAsStream(file)) {
+            return in != null;
+        }
+    }
+
+    /**
      * get the temp file's full path.
      *
      * @param classLoader define the search scope for lib .so.

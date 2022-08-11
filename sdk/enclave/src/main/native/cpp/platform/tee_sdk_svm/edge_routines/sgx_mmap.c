@@ -40,14 +40,15 @@ void* mmap(void *hint, int size, int prot, int flags) {
     } else if (flags == 0x32) {
         ptr = hint;
     } else {
-        // printf("JavaEnclave Warning: unsupported mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
+        if(enable_trace_symbol_calling == 0x1) printf("JavaEnclave Warning: unsupported mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
         ASSERT();
     }
-    // printf("JavaEnclave Warning: mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
+    if(enable_trace_symbol_calling == 0x1) printf("JavaEnclave Warning: mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
     return ptr;
 }
 
 int munmap(void *addr, int size) {
     TRACE_SYMBOL_CALL();
+    if(enable_trace_symbol_calling == 0x1) printf("JavaEnclave Warning: unmmap operation in tee sdk enclave: addr is: %p, size is: %d\n", addr, size);
     return _munmap(addr, size);
 }

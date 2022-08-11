@@ -1,0 +1,8 @@
+{
+  "debuggable": false,
+  "enclave_type": "TEE_SDK",
+  "metric_trace_enable": false,
+  "metric_trace_file_path": "",
+  "enclave_max_thread": 50,
+  "enclave_max_epc_memory_size_MB": 2500
+}

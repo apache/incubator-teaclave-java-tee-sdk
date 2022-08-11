@@ -33,15 +33,18 @@ ifeq ($(TEE_SDK), TRUE)
 	-fpie -ljava -lzip -lnio -lnet -l$(LIB_SUNEC) -ljvm -lfdlibm -llibchelper \
 	$(TS_ENCLAVE_LDFLAGS) -Wl,--version-script=/opt/javaenclave/config/platform/tee_sdk_svm/edl/tee_sdk_enclave.lds
 
+    # create tee_sdk.conf
+	/bin/bash ${BUILD_SCRIPT_DIR}/create_tee_sdk_configure.sh ${ENCLAVE_BASE_DIR}/src/main/resources ${ENCLAVE_BASE_DIR}/target/enclave_workspace
+
     ifeq ($(ENCLAVE_PRIVATE_PEM_PATH), )
 		openssl genrsa -out ${ENCLAVE_BASE_DIR}/target/enclave_workspace/private.pem -3 3072
 		$(SGX_ENCLAVE_SIGNER) sign -enclave ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load \
 		-out ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load.signed \
-		-config ${ENCLAVE_BASE_DIR}/src/main/resources/tee_sdk_svm.conf -key ${ENCLAVE_BASE_DIR}/target/enclave_workspace/private.pem
+		-config ${ENCLAVE_BASE_DIR}/target/enclave_workspace/TeeSDK.conf -key ${ENCLAVE_BASE_DIR}/target/enclave_workspace/private.pem
     else
 		$(SGX_ENCLAVE_SIGNER) sign -enclave ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load \
         -out ${ENCLAVE_BASE_DIR}/target/svm-output/lib_tee_sdk_svm_load.signed \
-        -config ${ENCLAVE_BASE_DIR}/src/main/resources/tee_sdk_svm.conf -key $(ENCLAVE_PRIVATE_PEM_PATH)
+        -config ${ENCLAVE_BASE_DIR}/target/enclave_workspace/TeeSDK.conf -key $(ENCLAVE_PRIVATE_PEM_PATH)
     endif
 endif
 

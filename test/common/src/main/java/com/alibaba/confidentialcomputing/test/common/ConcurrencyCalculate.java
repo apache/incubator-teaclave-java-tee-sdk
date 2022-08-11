@@ -6,4 +6,6 @@ import com.alibaba.confidentialcomputing.common.annotations.EnclaveService;
 public interface ConcurrencyCalculate {
     void add(int delta);
     long sum();
+    void addSync(int delta);
+    long sumSync();
 }

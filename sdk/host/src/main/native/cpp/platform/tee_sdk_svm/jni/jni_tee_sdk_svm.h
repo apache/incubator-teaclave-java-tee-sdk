@@ -52,9 +52,9 @@ JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeCreateEnclave(JNIEnv *, jobjec
 /*
  * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
  * Method:    nativeSvmAttachIsolate
- * Signature: (J)I
+ * Signature: (JILjava/lang/String;)I
  */
-JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate(JNIEnv *, jobject, jlong);
+JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate(JNIEnv *, jobject, jlong, jint, jstring);
 
 /*
  * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave

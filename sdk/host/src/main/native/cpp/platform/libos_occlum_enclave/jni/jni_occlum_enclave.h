@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#define ENCLAVE_CREATING_SIGNATURE         "(IIIILcom/alibaba/confidentialcomputing/host/EmbeddedLibOSEnclaveConfig;Ljava/lang/String;)I"
+#define ENCLAVE_CREATING_SIGNATURE         "(IIIILcom/alibaba/confidentialcomputing/host/EmbeddedLibOSEnclaveConfigure;Ljava/lang/String;)I"
 #define ENCLAVE_CREATING_EXCEPTION         "com/alibaba/confidentialcomputing/host/exception/EnclaveCreatingException"
 #define ENCLAVE_DESTROYING_EXCEPTION       "com/alibaba/confidentialcomputing/host/exception/EnclaveDestroyingException"
 
@@ -41,7 +41,7 @@ JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_host_EmbeddedLibOS
 /*
  * Class:     com_alibaba_confidentialcomputing_host_EmbeddedLibOSEnclave
  * Method:    nativeCreateEnclave
- * Signature: (IIIILcom/alibaba/confidentialcomputing/host/EmbeddedLibOSEnclaveConfig;Ljava/lang/String;)I
+ * Signature: (IIIILcom/alibaba/confidentialcomputing/host/EmbeddedLibOSEnclaveConfigure;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL JavaEnclave_TeeLibOSNativeCreateEnclave
   (JNIEnv *, jobject, jint, jint, jint, jint, jobject, jstring);

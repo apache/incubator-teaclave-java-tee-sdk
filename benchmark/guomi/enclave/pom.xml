@@ -49,6 +49,8 @@
                                     <buildArgs>
                                         <buildArg>--shared</buildArg>
                                         <buildArg>--no-fallback</buildArg>
+                                        <buildArg>-R:MaxHeapSize=2g</buildArg>
+                                        <buildArg>-H:-AllowVMInternalThreads</buildArg>
                                         <buildArg>-H:Path=svm-output</buildArg>
                                     </buildArgs>
                                 </configuration>
@@ -64,6 +66,7 @@
                                     <buildArgs>
                                         <buildArg>--shared</buildArg>
                                         <buildArg>--no-fallback</buildArg>
+                                        <buildArg>-R:MaxHeapSize=2g</buildArg>
                                         <buildArg>-H:-AllowVMInternalThreads</buildArg>
                                         <buildArg>-H:+RunInEnclave</buildArg>
                                         <buildArg>-H:Path=svm-output</buildArg>

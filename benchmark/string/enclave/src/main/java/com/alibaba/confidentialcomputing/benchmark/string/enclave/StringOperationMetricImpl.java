@@ -7,38 +7,31 @@ import java.util.regex.Pattern;
 
 @AutoService(StringOperationMetric.class)
 public class StringOperationMetricImpl implements StringOperationMetric {
-    private final long INNER_MAX_ITERATOR = 50;
 
     @Override
-    public String stringConcat(String source, String concat, int iterator) {
+    public String stringConcat(String source, String concat, int weight) {
         String result = null;
-        for (int i = 0x0; i < iterator; i++) {
-            for (int j = 0x0; j < INNER_MAX_ITERATOR; j++) {
-                result = source.concat(concat).toLowerCase().trim().replace('a', 'b');
-            }
+        for (int i = 0x0; i < weight; i++) {
+            result = source.concat(concat).toLowerCase().trim().replace('a', 'b');
         }
         return result;
     }
 
     @Override
-    public boolean stringRegex(String source, String pattern, int iterator) {
+    public boolean stringRegex(String source, String pattern, int weight) {
         boolean matched = false;
-        for (int i = 0x0; i < iterator; i++) {
-            for (int j = 0x0; j < INNER_MAX_ITERATOR; j++) {
-                Pattern p = Pattern.compile(pattern);
-                matched = p.matcher(source).matches();
-            }
+        for (int i = 0x0; i < weight; i++) {
+            Pattern p = Pattern.compile(pattern);
+            matched = p.matcher(source).matches();
         }
         return matched;
     }
 
     @Override
-    public String[] stringSplit(String source, String split, int iterator) {
+    public String[] stringSplit(String source, String split, int weight) {
         String[] result = null;
-        for (int i = 0x0; i < iterator; i++) {
-            for (int j = 0x0; j < INNER_MAX_ITERATOR; j++) {
-                result = source.split(split);
-            }
+        for (int i = 0x0; i < weight; i++) {
+            result = source.split(split);
         }
         return result;
     }

@@ -5,9 +5,11 @@
 #include <stdio.h>
 #include <assert.h>
 
-//#define ENABLE_TRACE_SYSCALL
+extern int enable_trace_symbol_calling;
+
+#define ENABLE_TRACE_SYSCALL
 #if defined(ENABLE_TRACE_SYSCALL)
-#define TRACE_SYMBOL_CALL()  printf("JavaEnclave Warning: %s is called in enclave svm.\n", __FUNCTION__);
+#define TRACE_SYMBOL_CALL()  if(enable_trace_symbol_calling == 0x1) printf("JavaEnclave Warning: %s is called in enclave svm.\n", __FUNCTION__);
 #else
 #define TRACE_SYMBOL_CALL()
 #endif

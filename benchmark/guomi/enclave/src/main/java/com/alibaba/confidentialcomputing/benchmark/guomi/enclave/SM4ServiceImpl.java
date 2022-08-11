@@ -12,9 +12,9 @@ import java.security.SecureRandom;
 import java.security.Security;
 
 public class SM4ServiceImpl {
-    private static final String ALGORITHM_NAME = "SM4";
-    private static final String ALGORITHM_ECB_PKCS5PADDING = "SM4/ECB/PKCS5Padding";
-    private static final int DEFAULT_KEY_SIZE = 128;
+    private final String ALGORITHM_NAME = "SM4";
+    private final String ALGORITHM_ECB_PKCS5PADDING = "SM4/ECB/PKCS5Padding";
+    private final int DEFAULT_KEY_SIZE = 128;
 
     static {
         Provider provider = Security.getProvider("BC");

@@ -11,28 +11,21 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public abstract class MetricTrace implements AutoCloseable {
-    private final static String PRIORITY_METRIC_LOG_PATH = "com.alibaba.enclave.metric.path";
-    private final static String PRIORITY_ENABLE_METRIC_LOG = "com.alibaba.enclave.metric.on";
-
     private static boolean enableEnclaveMetricTrace = false;
-    private final static String DEFAULT_METRIC_LOG_PATH =
-            "JavaEnclave_Metric_Log_" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ".log";
-    private static volatile String logPath;
+    private static volatile String logPath = "JavaEnclave_Metric_Log_" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ".log";
     private static volatile BufferedWriter logFile;
     private static DecimalFormat formatter = new DecimalFormat("###,###");
 
     private final long start = System.nanoTime();
 
     static {
-        String metricLogFlag = System.getProperty(PRIORITY_ENABLE_METRIC_LOG);
-        if ("true".equals(metricLogFlag) || "1".equals(metricLogFlag)) {
-            enableEnclaveMetricTrace = true;
-        }
-        String priorityLogPath = System.getProperty(PRIORITY_METRIC_LOG_PATH);
-        if (priorityLogPath != null) {
-            logPath = priorityLogPath;
-        } else {
-            logPath = DEFAULT_METRIC_LOG_PATH;
+        try {
+            boolean enableEnclaveMetricTraceTemp = EnclaveConfigure.getInstance().isEnableMetricTrace();
+            String logPathTemp = EnclaveConfigure.getInstance().getMetricTraceFilePath();
+            enableEnclaveMetricTrace = enableEnclaveMetricTraceTemp;
+            logPath = logPathTemp;
+        } catch (IOException e) {
+            ; // if exception happen, use original init value.
         }
     }
 
@@ -65,7 +58,11 @@ public abstract class MetricTrace implements AutoCloseable {
         try {
             if (isEnableEnclaveMetricTrace()) {
                 if (logFile == null) {
-                    logFile = new BufferedWriter(new FileWriter(this.logPath));
+                    synchronized (MetricTrace.class) {
+                        if (logFile == null) {
+                            logFile = new BufferedWriter(new FileWriter(this.logPath));
+                        }
+                    }
                 }
                 metricTracing(getEnclaveInfo(), getMetricKeyName(), System.nanoTime() - start, getCostInnerEnclave());
             }

@@ -8,6 +8,7 @@
 #include <enc_environment.h>
 #include <enc_exported_symbol.h>
 
+#include "tee_sdk_symbol.h"
 #include "tee_sdk_wrapper.h"
 
 typedef int (*enclave_calling_stub)(uint64_t isolate, enc_data_t* input, enc_data_t* output, callbacks_t* callback);
@@ -32,12 +33,17 @@ int tee_sdk_random(void* data, long size) {
     return (int)sgx_read_rand(data, (size_t)size);
 }
 
-int enclave_svm_isolate_create(void* isolate, void* isolateThread) {
+int enclave_svm_isolate_create(void* isolate, void* isolateThread, int flag, char* args) {
     graal_isolate_t* isolate_t;
     graal_isolatethread_t* thread_t;
 
     // Implicitly set graal_create_isolate_params_t param as NULL.
-    int ret = graal_create_isolate(NULL, &isolate_t, &thread_t);
+    enable_trace_symbol_calling = flag;
+    int argc = 2;
+    char* parameters[2];
+    parameters[0] = NULL;
+    parameters[1] = args;
+    int ret = create_isolate_with_params(argc, parameters, &isolate_t, &thread_t);
     *(uint64_t*)isolate = (uint64_t)isolate_t;
     *(uint64_t*)isolateThread = (uint64_t)thread_t;
     return ret;

@@ -23,13 +23,13 @@ void set_long_field_value(JNIEnv *env, jclass class_mirror, jobject obj, const c
 
 jint parse_http_handler_thread_pool_size(JNIEnv *env, jobject config) {
     jclass config_class = (*env)->GetObjectClass(env, config);
-    jmethodID get_thread_pool_id = (*env)->GetMethodID(env, config_class, "getAgentHttpHandlerThreadPoolSize", "()I");
+    jmethodID get_thread_pool_id = (*env)->GetMethodID(env, config_class, "getEnclaveAgentThreadPoolSize", "()I");
     return (*env)->CallObjectMethod(env, config, get_thread_pool_id);
 }
 
 jstring parse_log_level(JNIEnv *env, jobject config) {
     jclass config_class = (*env)->GetObjectClass(env, config);
-    jmethodID get_log_level_id = (*env)->GetMethodID(env, config_class, "getLibOSLogLevel", "()Ljava/lang/String;");
+    jmethodID get_log_level_id = (*env)->GetMethodID(env, config_class, "getLogLevel", "()Ljava/lang/String;");
     return (*env)->CallObjectMethod(env, config, get_log_level_id);
 }
 

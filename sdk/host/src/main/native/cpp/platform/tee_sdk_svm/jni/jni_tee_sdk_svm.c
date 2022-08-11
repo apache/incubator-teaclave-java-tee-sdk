@@ -18,7 +18,7 @@
 
 static JNINativeMethod tee_sdk_svm_methods[] = {
     {"nativeCreateEnclave",             "(ILjava/lang/String;)I",                    (void *)&JavaEnclave_TeeSDKSVMNativeCreateEnclave},
-    {"nativeSvmAttachIsolate",          "(J)I",                                      (void *)&JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate},
+    {"nativeSvmAttachIsolate",          "(JILjava/lang/String;)I",                   (void *)&JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate},
     {"nativeLoadService",               TEE_SDK_SVM_NATIVE_CALL_SIGNATURE,           (void *)&JavaEnclave_TeeSDKSVMNativeLoadService},
     {"nativeInvokeMethod",              TEE_SDK_SVM_NATIVE_CALL_SIGNATURE,           (void *)&JavaEnclave_TeeSDKSVMNativeInvokeMethod},
     {"nativeUnloadService",             TEE_SDK_SVM_NATIVE_CALL_SIGNATURE,           (void *)&JavaEnclave_TeeSDKSVMNativeUnloadService},
@@ -108,16 +108,20 @@ JavaEnclave_TeeSDKSVMNativeCreateEnclave(JNIEnv *env, jobject obj, jint mode, js
 }
 
 JNIEXPORT jint JNICALL
-JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler) {
+JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate(JNIEnv *env, jobject obj, jlong enclave_handler, jint flag, jstring args) {
     // create an isolate in enclave.
     uint64_t isolate = 0;
     uint64_t isolateThread = 0;
     int ret = 0;
-    enclave_svm_isolate_create((size_t)enclave_handler, &ret, (void *)(&isolate), (void *)(&isolateThread));
+
+    char *args_str = (*env)->GetStringUTFChars(env, args, 0);
+    enclave_svm_isolate_create((size_t)enclave_handler, &ret, (void *)(&isolate), (void *)(&isolateThread), flag, args_str);
     if (ret != 0) {
+        (*env)->ReleaseStringUTFChars(env, args, args_str);
         THROW_EXCEPTION(env, ENCLAVE_CREATING_EXCEPTION, "attach native svm failed when creating an enclave.")
     }
 
+    (*env)->ReleaseStringUTFChars(env, args, args_str);
     jclass enclave_class = (*env)->GetObjectClass(env, obj);
     // set isolate back to isolateHandle field.
     set_long_field_value(env, enclave_class, obj, "isolateHandle", (jlong)isolate);
