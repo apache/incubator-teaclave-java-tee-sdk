@@ -79,10 +79,29 @@ jboolean isCopy;
 	return retVal;
 }
 
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate
+JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate__
    (JNIEnv *env, jclass clazz){
        if (graal_create_isolate(NULL, &isolate, &thread) != 0) {
          fprintf(stderr, "error on isolate creation or attach\n");
+       }
+}
+
+JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate___3Ljava_lang_String_2
+  (JNIEnv *env, jclass clazz, jobjectArray argv){
+       int size = (*env)->GetArrayLength(env, argv);
+       char** parameters = (char **)malloc(size * sizeof(char*));
+       jstring* jstr_array = (jstring *)malloc(size * sizeof(jstring));
+       jstring jstr;
+       for(int i = 0 ; i < size ; i++){
+            jstr = (*env)->GetObjectArrayElement(env, argv, i);
+            jstr_array[i] = jstr;
+            parameters[i] = (*env)->GetStringUTFChars(env, jstr, 0);
+       }
+       if (create_isolate_with_params(size, parameters, &isolate, &thread) != 0){
+          fprintf(stderr, "error on creating isolate with parameters\n");
+       }
+       for( int i=0; i < size; i++){
+            (*env)->ReleaseStringUTFChars(env, jstr_array[i], parameters[i]);
        }
 }
 

@@ -36,8 +36,16 @@ JNIEXPORT jbyteArray JNICALL Java_com_alibaba_confidentialcomputing_enclave_Encl
  * Method:    createIsolate
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate
+JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate__
   (JNIEnv *, jclass);
+
+/*
+ * Class:     com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper
+ * Method:    createIsolate
+ * Signature: ([Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate___3Ljava_lang_String_2
+  (JNIEnv *, jclass, jobjectArray);
 
 /*
  * Class:     com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper

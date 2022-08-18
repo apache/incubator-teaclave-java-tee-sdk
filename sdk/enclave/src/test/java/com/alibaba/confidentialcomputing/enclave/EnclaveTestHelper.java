@@ -39,6 +39,8 @@ public class EnclaveTestHelper {
 
     public static native void createIsolate();
 
+    public static native void createIsolate(String... argv);
+
     public static native void destroyIsolate();
 
     public static boolean isInNativeImage() {
