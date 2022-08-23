@@ -2,12 +2,12 @@ package com.alibaba.confidentialcomputing.host;
 
 import javax.management.ConstructorParameters;
 
-class MockEnclaveInfo implements EnclaveInfo {
+final class MockEnclaveInfo implements EnclaveInfo {
     private final EnclaveType enclaveType;
-    private boolean isEnclaveDebuggable;
-    private long enclaveEPCMemorySizeBytes; // Bytes.
-    private int enclaveMaxThreadsNumber;
-    private int enclaveID;
+    private final boolean isEnclaveDebuggable;
+    private final long enclaveEPCMemorySizeBytes; // Bytes.
+    private final int enclaveMaxThreadsNumber;
+    private final int enclaveID;
 
     @ConstructorParameters({"enclaveType", "isEnclaveDebuggable", "enclaveEPCMemorySizeBytes", "enclaveMaxThreadsNumber"})
     MockEnclaveInfo(EnclaveType enclaveType, boolean isEnclaveDebuggable, long enclaveEPCMemorySizeBytes, int enclaveMaxThreadsNumber) {

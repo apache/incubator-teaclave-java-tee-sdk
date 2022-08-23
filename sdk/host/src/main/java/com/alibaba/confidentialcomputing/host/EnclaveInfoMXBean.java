@@ -5,13 +5,13 @@ import java.util.List;
 /**
  * EnclaveInfoMXBean help query created all existed enclave's detail information.
  * Such as existed enclave instance number, every enclave's type info, is debuggable,
- * and enclave's epc memory size and so on.
+ * and enclave's epc memory size.
  */
 public interface EnclaveInfoMXBean {
     /**
-     * get all existed enclaves' number.
+     * get the number of all existed enclaves.
      *
-     * @return int existed enclaves' number.
+     * @return number of all existed enclaves.
      */
     int getEnclaveInstanceNumber();
 

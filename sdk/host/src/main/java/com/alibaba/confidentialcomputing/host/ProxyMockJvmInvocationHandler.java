@@ -4,7 +4,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ProxyMockJvmInvocationHandler<T> implements InvocationHandler, Runnable {
+/**
+ * ProxyMockJvmInvocationHandler define a service's proxy invocation handler.
+ * It mainly helps to metric trace the cost of a service invocation for
+ * MOCK_IN_JVM enclave.
+ */
+final class ProxyMockJvmInvocationHandler<T> implements InvocationHandler, Runnable {
     private final AbstractEnclave enclave;
     private final T proxyService;
 

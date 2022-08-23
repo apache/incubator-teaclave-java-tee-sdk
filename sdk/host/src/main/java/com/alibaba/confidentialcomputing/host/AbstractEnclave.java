@@ -204,7 +204,7 @@ abstract class AbstractEnclave implements Enclave {
      * enclave type and debug mode, and each enclave instance has a service
      * resource recycle processor.
      */
-    class EnclaveContext {
+    static class EnclaveContext {
         // enclave's type.
         private final EnclaveType type;
         // enclave's debug mode.

@@ -15,7 +15,7 @@ import java.util.zip.GZIPInputStream;
  * decompress .tgz file into target temp path from the jar file.
  * it's very convenient for deployment.
  */
-public final class ExtractLibrary {
+final class ExtractLibrary {
     /**
      * check file exist in the .jar or not.
      *
@@ -83,9 +83,9 @@ public final class ExtractLibrary {
                         entryFile.mkdir();
                     }
                     subEntries = entry.getDirectoryEntries();
-                    for (int i = 0; i < subEntries.length; i++) {
+                    for (TarArchiveEntry subEntry : subEntries) {
                         try (OutputStream out = new FileOutputStream(subEntryFile)) {
-                            subEntryFile = new File(entryFileName + File.separator + subEntries[i].getName());
+                            subEntryFile = new File(entryFileName + File.separator + subEntry.getName());
                             IOUtils.copy(tis, out);
                         }
                     }

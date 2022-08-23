@@ -82,8 +82,8 @@ public class SUNECReplaceFeature extends JNIRegistrationUtil implements Feature 
         // LibCBase instance has been set in LibCFeature#afterRegistration, so it's safe to get it now.
         command.add(LibCBase.singleton().getTargetCompiler());
         command.add("-fPIC");
-        command.add("-I" + GRAALVM_HOME.resolve("include").toAbsolutePath().toString());
-        command.add("-I" + GRAALVM_HOME.resolve("include/linux").toAbsolutePath().toString());
+        command.add("-I" + GRAALVM_HOME.resolve("include").toAbsolutePath());
+        command.add("-I" + GRAALVM_HOME.resolve("include/linux").toAbsolutePath());
         command.add("-I.");
         command.add("-L.");
         command.add("ECC_JNI.c");

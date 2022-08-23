@@ -2,8 +2,8 @@ package com.alibaba.confidentialcomputing.host;
 
 import java.io.IOException;
 
-public class MockInSvmEnclaveConfigure {
-    private final static long KB = 1 * 1024;
+final class MockInSvmEnclaveConfigure {
+    private final static long KB = 1024;
     private final static long MB = KB * 1024;
     private final static String MOCK_IN_SVM_MAX_HEAP_SIZE_PROPERTY = "com.alibaba.enclave.mockinsvm.maxheap_MB";
     private static EnclaveConfigure enclaveConfigure;

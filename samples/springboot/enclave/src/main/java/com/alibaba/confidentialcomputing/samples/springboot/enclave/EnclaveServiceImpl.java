@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.util.Base64;
+import java.util.Objects;
 
 @AutoService(SBEnclaveService.class)
 public class EnclaveServiceImpl implements SBEnclaveService {
@@ -97,6 +98,6 @@ public class EnclaveServiceImpl implements SBEnclaveService {
 
     @Override
     public String encryptAndDecryptData(String data) {
-        return new String(decoder(encode(data, publicKey), privateKey));
+        return new String(Objects.requireNonNull(decoder(encode(data, publicKey), privateKey)));
     }
 }

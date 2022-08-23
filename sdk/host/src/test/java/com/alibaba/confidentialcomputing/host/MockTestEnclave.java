@@ -30,7 +30,7 @@ class MockTestEnclave extends AbstractEnclave {
             try {
                 parametersClass.add(nameToType(p));
             } catch (ClassNotFoundException e) {
-                assertTrue(false);
+                fail();
             }
         });
         return parametersClass.toArray(new Class<?>[0]);
@@ -67,7 +67,7 @@ class MockTestEnclave extends AbstractEnclave {
         throw new RemoteAttestationException("MockTestEnclave enclave doesn't support remote attestation generation.");
     }
 
-    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
+    static int verifyAttestationReport(byte[] ignoredReport) throws RemoteAttestationException {
         throw new RemoteAttestationException("MockTestEnclave enclave doesn't support remote attestation verification.");
     }
 
@@ -78,14 +78,12 @@ class MockTestEnclave extends AbstractEnclave {
         EnclaveInvocationResult result;
         try {
             Class<?> service = Class.forName(interfaceName);
-            Iterator<?> services = ServiceLoader.load(service).iterator();
-            while (services.hasNext()) {
+            for (Object o : ServiceLoader.load(service)) {
                 String identity = String.valueOf(instanceIdentity.addAndGet(1));
-                Object instance = services.next();
-                ServiceHandler sm = new ServiceHandler(interfaceName, instance.getClass().getName(), identity);
+                ServiceHandler sm = new ServiceHandler(interfaceName, o.getClass().getName(), identity);
                 handlers.add(sm);
                 cacheServiceHandler.add(sm);
-                instancesRegisterCenter.put(identity, instance);
+                instancesRegisterCenter.put(identity, o);
             }
         } catch (ClassNotFoundException e) {
             exception = e;
@@ -102,11 +100,10 @@ class MockTestEnclave extends AbstractEnclave {
 
     @Override
     byte[] unloadServiceNative(ServiceHandler handler) throws ServicesUnloadingException {
-        Throwable exception = null;
         EnclaveInvocationResult result;
 
         instancesRegisterCenter.remove(handler.getInstanceIdentity());
-        result = new EnclaveInvocationResult(null, exception);
+        result = new EnclaveInvocationResult(null, null);
 
         try {
             return SerializationHelper.serialize(result);
@@ -127,7 +124,7 @@ class MockTestEnclave extends AbstractEnclave {
             Object[] args = invocationContext.getArguments();
             Object instance = instancesRegisterCenter.get(invocationContext.getServiceHandler().getInstanceIdentity());
             assertNotNull(instance);
-            assertTrue(className.equals(instance.getClass().getName()));
+            assertEquals(className, instance.getClass().getName());
             Class<?> service = Class.forName(className);
             Method method = service.getDeclaredMethod(methodName, parseParamClass(parameterTypes));
             method.setAccessible(true);
@@ -151,7 +148,7 @@ class MockTestEnclave extends AbstractEnclave {
     }
 
     @Override
-    public void destroy() throws EnclaveDestroyingException {
+    public void destroy() {
         // destroyToken will wait for all ongoing enclave invocations finished.
         if (this.getEnclaveContext().getEnclaveToken().destroyToken()) {
             // interrupt enclave services' recycler firstly.

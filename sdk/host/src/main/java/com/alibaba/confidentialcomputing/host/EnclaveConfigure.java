@@ -4,14 +4,14 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class EnclaveConfigure {
+final class EnclaveConfigure {
     private final static double RATIO = 0.8;
-    private final static long KB = 1 * 1024;
+    private final static long KB = 1024;
     private final static long MB = KB * 1024;
     private final static long GB = MB * 1024;
     // TEE_SDK/EMBEDDED_LIB_OS/MOCK_IN_JVM/MOCK_IN_SVM
@@ -42,7 +42,6 @@ class EnclaveConfigure {
     private boolean enableMetricTrace = false;
     // config metric trace file path.
     private String metricTraceFilePath = DEFAULT_METRIC_LOG_PATH;
-    private String configFilePath;
     private int maxEnclaveThreadNum = 50;
     private long maxEnclaveEPCMemorySize = 1500 * MB;
     private long referenceEnclaveMaxHeapSize = (long) (maxEnclaveEPCMemorySize * RATIO);
@@ -97,7 +96,7 @@ class EnclaveConfigure {
 
     private void parseConfigureFile(String path) throws IOException {
         File file = new File(path);
-        String content = Files.readString(file.toPath(), Charset.forName("UTF-8"));
+        String content = Files.readString(file.toPath(), StandardCharsets.UTF_8);
         JSONObject jsonObject = new JSONObject(content);
         this.debuggable = jsonObject.getBoolean(ENCLAVE_DEBUGGABLE_CONFIG_FILE_KEY);
         parseEnclaveType(jsonObject.getString(ENCLAVE_TYPE_CONFIG_FILE_KEY));
@@ -115,7 +114,7 @@ class EnclaveConfigure {
     private void parseUserConfigureFile() throws IOException {
         // only parse configure file when it exists in .jar.
         if (ExtractLibrary.isFileExist(EnclaveConfigure.class.getClassLoader(), JAVA_ENCLAVE_CONFIG_FILE)) {
-            configFilePath = ExtractLibrary.extractLibrary(EnclaveConfigure.class.getClassLoader(), JAVA_ENCLAVE_CONFIG_FILE);
+            String configFilePath = ExtractLibrary.extractLibrary(EnclaveConfigure.class.getClassLoader(), JAVA_ENCLAVE_CONFIG_FILE);
             parseConfigureFile(configFilePath);
         }
     }

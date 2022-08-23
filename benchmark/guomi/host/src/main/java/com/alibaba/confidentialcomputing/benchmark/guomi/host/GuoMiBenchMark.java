@@ -11,6 +11,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
@@ -21,13 +22,8 @@ import java.util.concurrent.TimeUnit;
 @State(value = Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class GuoMiBenchMark {
-    private int sm2Weight = 10;
-    private int sm3Weight = 20_000;
-    private int sm4Weight = 300;
 
-    private String sm2Context = "abcd_ed123.t12y@haha.com";
-    private String sm3Context = "Hello World!";
-    private String sm4Context = "word1, word2 word3@word4?word5.word6";
+    public final String sm3Context = "Hello World!";
 
     @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK", "EMBEDDED_LIB_OS"})
     private String enclaveServiceInstance;
@@ -99,15 +95,20 @@ public class GuoMiBenchMark {
                 break;
         }
 
+        int sm2Weight = 10;
+        int sm3Weight = 20_000;
+        int sm4Weight = 300;
+        String sm2Context = "abcd_ed123.t12y@haha.com";
+        String sm4Context = "word1, word2 word3@word4?word5.word6";
         switch (smAlgo) {
             case "SM2":
-                service.sm2Service(sm2Context, sm2Weight);
+                Objects.requireNonNull(service).sm2Service(sm2Context, sm2Weight);
                 break;
             case "SM3":
-                service.sm3Service(sm3Context, sm3Weight);
+                Objects.requireNonNull(service).sm3Service(sm3Context, sm3Weight);
                 break;
             case "SM4":
-                service.sm4Service(sm4Context, sm4Weight);
+                Objects.requireNonNull(service).sm4Service(sm4Context, sm4Weight);
                 break;
         }
     }

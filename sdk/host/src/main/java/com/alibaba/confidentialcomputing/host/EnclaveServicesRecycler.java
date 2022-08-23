@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * to recycle the corresponding service loaded in enclave side.
  * EnclaveServicesRecycle starts a new thread to recycle enclave's services asynchronously.
  */
-class EnclaveServicesRecycler extends BaseEnclaveServicesRecycler {
+final class EnclaveServicesRecycler extends BaseEnclaveServicesRecycler {
     private final Cleaner cleaner = Cleaner.create();
     // toBeReleasedEnclaveServices stores a service proxy handler when it's recycled
     // by gc in host side.

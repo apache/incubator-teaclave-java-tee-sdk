@@ -13,9 +13,8 @@ import java.io.IOException;
  * From software's point, there are SGX-SDK, OpenEnclave, TeeSDK and so on.
  * JavaEnclave is committed to make java enclave development easy and efficient.
  * <p>
- * Java developer don't need to care too much about enclave's underlying technology stack.
- * And JavaEnclave will help java programmer develop a java enclave service as the same as
- * a common java service.
+ * Java developer does not need to care too much about enclave's underlying technology stack.
+ * And JavaEnclave will help java programmer develop a java enclave service as a common java service.
  * <pre>
  * try {
  *     Enclave enclave = EnclaveFactory.create();
@@ -74,9 +73,9 @@ public final class EnclaveFactory {
                 case EMBEDDED_LIB_OS:
                     // EMBEDDED_LIB_OS only support hardware mode, not support simulate mode.
                     if (EmbeddedLibOSEnclaveConfigure.getInstance().isEnclaveDebuggable()) {
-                        enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EnclaveDebug.DEBUG, EnclaveSimulate.HARDWARE);
+                        enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EnclaveDebug.DEBUG);
                     } else {
-                        enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EnclaveDebug.RELEASE, EnclaveSimulate.HARDWARE);
+                        enclave = EmbeddedLibOSEnclave.getEmbeddedLibOSEnclaveInstance(EnclaveDebug.RELEASE);
                     }
                     break;
                 case NONE:

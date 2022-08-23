@@ -2,7 +2,8 @@ package com.alibaba.confidentialcomputing.host;
 
 /**
  * An enumeration of enclave type.
- * JavaEnclave supports three kinds of enclave, they are mock_jvm、mock_svm and tee_sdk.
+ * JavaEnclave supports three kinds of enclave, they are mock_in_jvm、mock_in_svm、tee_sdk
+ * and embedded_lib_os.
  */
 public enum EnclaveType {
     NONE,

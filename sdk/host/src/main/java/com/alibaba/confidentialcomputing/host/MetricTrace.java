@@ -10,11 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * MetricTrace is JavaEnclave's internal mechanism to trace metric of key enclave operation.
+ * For example, MetricTrace could metric and record the cost of enclave creation, also could
+ * trace an enclave service invocation cost and so on.
+ */
 public abstract class MetricTrace implements AutoCloseable {
     private static boolean enableEnclaveMetricTrace = false;
     private static volatile String logPath = "JavaEnclave_Metric_Log_" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ".log";
     private static volatile BufferedWriter logFile;
-    private static DecimalFormat formatter = new DecimalFormat("###,###");
+    private static final DecimalFormat formatter = new DecimalFormat("###,###");
 
     private final long start = System.nanoTime();
 
@@ -25,14 +30,25 @@ public abstract class MetricTrace implements AutoCloseable {
             enableEnclaveMetricTrace = enableEnclaveMetricTraceTemp;
             logPath = logPathTemp;
         } catch (IOException e) {
-            ; // if exception happen, use original init value.
+            // if exception happen, use original init value.
         }
     }
 
+    /**
+     * turn on/off metric trace for JavaEnclave.
+     *
+     * @param flag turn on/off metric trace.
+     */
     public static void setEnclaveMetricTraceSwitch(boolean flag) {
         enableEnclaveMetricTrace = flag;
     }
 
+
+    /**
+     * check metric trace is on or off.
+     *
+     * @return metric trace is on or off.
+     */
     public static boolean isEnableEnclaveMetricTrace() {
         return enableEnclaveMetricTrace;
     }
@@ -60,7 +76,7 @@ public abstract class MetricTrace implements AutoCloseable {
                 if (logFile == null) {
                     synchronized (MetricTrace.class) {
                         if (logFile == null) {
-                            logFile = new BufferedWriter(new FileWriter(this.logPath));
+                            logFile = new BufferedWriter(new FileWriter(logPath));
                         }
                     }
                 }

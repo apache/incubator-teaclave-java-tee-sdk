@@ -5,12 +5,10 @@ import com.alibaba.confidentialcomputing.host.EnclaveFactory;
 import com.alibaba.confidentialcomputing.host.EnclaveType;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveCreatingException;
 import com.alibaba.confidentialcomputing.host.exception.EnclaveDestroyingException;
-import com.alibaba.confidentialcomputing.host.exception.RemoteAttestationException;
 import com.alibaba.confidentialcomputing.host.exception.ServicesLoadingException;
 import com.alibaba.confidentialcomputing.test.common.SayHelloService;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestHelloWorld {
 
     private String sayHelloService(EnclaveType type, String plain) throws
-            EnclaveCreatingException, ServicesLoadingException, EnclaveDestroyingException, RemoteAttestationException, IOException {
+            EnclaveCreatingException, ServicesLoadingException, EnclaveDestroyingException {
         Enclave enclave = EnclaveFactory.create(type);
         assertNotNull(enclave);
         Iterator<SayHelloService> userServices = enclave.load(SayHelloService.class);

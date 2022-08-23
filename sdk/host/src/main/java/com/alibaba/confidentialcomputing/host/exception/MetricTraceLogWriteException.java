@@ -1,11 +1,13 @@
 package com.alibaba.confidentialcomputing.host.exception;
 
+import com.alibaba.confidentialcomputing.common.exception.ConfidentialComputingException;
+
 /**
  * MetricTraceLogWriteException {@link MetricTraceLogWriteException} is thrown when an enclave metric trace
  * write into log file.
  * Programmers need to handle MetricTraceLogWriteException seriously.
  */
-public class MetricTraceLogWriteException extends EnclaveCreatingException {
+public class MetricTraceLogWriteException extends ConfidentialComputingException {
     /**
      * @param info exception information.
      */

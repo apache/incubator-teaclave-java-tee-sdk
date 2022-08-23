@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @AutoService(ConcurrencyCalculate.class)
 public class ConcurrencyCalculateImpl implements ConcurrencyCalculate {
-    private AtomicLong sum = new AtomicLong();
+    private final AtomicLong sum = new AtomicLong();
     private long sumSync = 0x0;
 
     @Override

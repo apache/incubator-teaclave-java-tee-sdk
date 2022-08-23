@@ -6,7 +6,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Provider;
@@ -33,25 +32,17 @@ public class SM4ServiceImpl implements SM4Service {
         return kg.generateKey().getEncoded();
     }
 
-    private byte[] sm4EncryptAndDecrypt(byte[] data, byte[] key, String sm4mode, byte[] iv, int mode) throws Exception {
-        IvParameterSpec ivParameterSpec = null;
-        if (null != iv) {
-            ivParameterSpec = new IvParameterSpec(iv);
-        }
+    private byte[] sm4EncryptAndDecrypt(byte[] data, byte[] key, int mode) throws Exception {
         SecretKeySpec sm4Key = new SecretKeySpec(key, ALGORITHM_NAME);
-        Cipher cipher = Cipher.getInstance(sm4mode, BouncyCastleProvider.PROVIDER_NAME);
-        if (null == ivParameterSpec) {
-            cipher.init(mode, sm4Key);
-        } else {
-            cipher.init(mode, sm4Key, ivParameterSpec);
-        }
+        Cipher cipher = Cipher.getInstance(SM4ServiceImpl.ALGORITHM_ECB_PKCS5PADDING, BouncyCastleProvider.PROVIDER_NAME);
+        cipher.init(mode, sm4Key);
         return cipher.doFinal(data);
     }
 
     @Override
     public String sm4Service(String plaintext) throws Exception {
         byte[] key = generateKey();
-        byte[] encryptResult = sm4EncryptAndDecrypt(plaintext.getBytes(StandardCharsets.UTF_8), key, ALGORITHM_ECB_PKCS5PADDING, null, Cipher.ENCRYPT_MODE);
-        return new String(sm4EncryptAndDecrypt(encryptResult, key, ALGORITHM_ECB_PKCS5PADDING, null, Cipher.DECRYPT_MODE), StandardCharsets.UTF_8);
+        byte[] encryptResult = sm4EncryptAndDecrypt(plaintext.getBytes(StandardCharsets.UTF_8), key, Cipher.ENCRYPT_MODE);
+        return new String(sm4EncryptAndDecrypt(encryptResult, key, Cipher.DECRYPT_MODE), StandardCharsets.UTF_8);
     }
 }

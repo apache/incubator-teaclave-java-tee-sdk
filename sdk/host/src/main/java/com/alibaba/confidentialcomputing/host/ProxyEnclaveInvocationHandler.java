@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 /**
  * ProxyEnclaveInvocationHandler define a service's proxy invocation handler.
  */
-class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
+final class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
     private final AbstractEnclave enclave;
     private final ServiceHandler serviceHandler;
 
@@ -52,7 +52,7 @@ class ProxyEnclaveInvocationHandler implements InvocationHandler, Runnable {
             EnclaveInvocationResult result = enclave.InvokeEnclaveMethod(methodInvokeMetaWrapper);
             trace.setCostInnerEnclave(result.getCost());
             Throwable causeException = result.getException();
-            if (causeException != null && causeException instanceof ConfidentialComputingException) {
+            if (causeException instanceof ConfidentialComputingException) {
                 Throwable enclaveCauseException = causeException.getCause();
                 Class<?>[] exceptionTypes = method.getExceptionTypes();
                 if (enclaveCauseException instanceof InvocationTargetException) {

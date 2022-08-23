@@ -29,7 +29,7 @@ class TestAbstractEnclave {
         Service service = (Service) services.next();
         service.doNothing();
         assertEquals(200, service.add(20, 180));
-        assertTrue("Hello World".equals(service.saySomething("Hello World")));
+        assertEquals("Hello World", service.saySomething("Hello World"));
         assertThrows(ServiceExceptionTest.class, () -> service.throwException("something is wrong"));
         Queue<?> queue = ((MockTestEnclave) enclave).getCachedServiceHandler();
         assertEquals(1, queue.size());

@@ -10,7 +10,7 @@ import java.io.IOException;
  * MockInJvmEnclave is a mock jvm enclave. Both host and enclave codes run
  * in one jvm. It was used for test and debug.
  */
-class MockInJvmEnclave extends AbstractEnclave {
+final class MockInJvmEnclave extends AbstractEnclave {
     private final MockEnclaveInfo enclaveInfo;
 
     MockInJvmEnclave() throws IOException {
@@ -24,22 +24,22 @@ class MockInJvmEnclave extends AbstractEnclave {
         throw new RemoteAttestationException("MOCK_IN_JVM enclave doesn't support remote attestation generation.");
     }
 
-    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
+    static int verifyAttestationReport(byte[] ignoredReport) throws RemoteAttestationException {
         throw new RemoteAttestationException("MOCK_IN_JVM enclave doesn't support remote attestation verification.");
     }
 
     @Override
-    byte[] loadServiceNative(String service) throws ServicesLoadingException {
+    byte[] loadServiceNative(String service) {
         return null;
     }
 
     @Override
-    byte[] unloadServiceNative(ServiceHandler handler) throws ServicesUnloadingException {
+    byte[] unloadServiceNative(ServiceHandler handler) {
         return null;
     }
 
     @Override
-    byte[] invokeMethodNative(EnclaveInvocationContext context) throws EnclaveMethodInvokingException {
+    byte[] invokeMethodNative(EnclaveInvocationContext context) {
         return null;
     }
 

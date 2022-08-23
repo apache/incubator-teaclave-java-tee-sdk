@@ -10,11 +10,11 @@ import com.alibaba.confidentialcomputing.common.*;
 import com.alibaba.confidentialcomputing.host.exception.*;
 
 /**
- * EmbeddedLibOSEnclave is a sgx2 enclave based on Ant's Occlum libos.
+ * EmbeddedLibOSEnclave is a sgx2 enclave based on Ant's Occlum lib_os.
  * EmbeddedLibOSEnclave is a singleton object module, there is only one
  * EmbeddedLibOSEnclave object in a process.
  */
-public class EmbeddedLibOSEnclave extends AbstractEnclave {
+final class EmbeddedLibOSEnclave extends AbstractEnclave {
     private static final String EMBEDDED_LIB_OS_ENCLAVE_STARTUP_THREAD_NAME = "lib_os_enclave_agent_thread";
     private static final String HTTP_SERVER_PREFIX = "http://localhost:";
     private static final String HTTP_SERVER_NAME = "/enclaveAgent";
@@ -26,16 +26,15 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
 
     // enclaveHandle stores created enclave's handle id.
     private long enclaveHandle;
-    private int portHost;
-    private int portEnclave;
-    private URL url;
-    private String httpURL;
-    private SGXEnclaveInfo enclaveInfo;
+    private final int portHost;
+    private final int portEnclave;
+    private final URL url;
+    private final SGXEnclaveInfo enclaveInfo;
 
-    static EmbeddedLibOSEnclave getEmbeddedLibOSEnclaveInstance(EnclaveDebug mode, EnclaveSimulate sim) throws EnclaveCreatingException {
+    static EmbeddedLibOSEnclave getEmbeddedLibOSEnclaveInstance(EnclaveDebug mode) throws EnclaveCreatingException {
         synchronized (EmbeddedLibOSEnclave.class) {
             if (singleInstance == null) {
-                singleInstance = new EmbeddedLibOSEnclave(mode, sim);
+                singleInstance = new EmbeddedLibOSEnclave(mode, EnclaveSimulate.HARDWARE);
             }
             return singleInstance;
         }
@@ -72,7 +71,7 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
         try {
             portHost = getFreePort();
             portEnclave = getFreePort();
-            httpURL = HTTP_SERVER_PREFIX + portEnclave + HTTP_SERVER_NAME;
+            String httpURL = HTTP_SERVER_PREFIX + portEnclave + HTTP_SERVER_NAME;
             url = new URL(httpURL);
             // Attach to target enclave service by rmi.
             attachToEnclaveAgent(mode, sim);
@@ -94,16 +93,14 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
         }
     }
 
-    private Future<EnclaveCreatingException> startupLibOSEnclaveAsync(EnclaveDebug mode, EnclaveSimulate sim) {
+    private void startupLibOSEnclaveAsync(EnclaveDebug mode, EnclaveSimulate sim) {
         // Create embedded lib os enclave by native call asynchronously.
         // Occlum embedded start up interface is occlum_pal_exec, it blocks until progress exit in enclave.
-        return Executors.newFixedThreadPool(1, new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread thread = new Thread(r);
-                thread.setName(EMBEDDED_LIB_OS_ENCLAVE_STARTUP_THREAD_NAME);
-                thread.setDaemon(true);
-                return thread;
-            }
+        Executors.newFixedThreadPool(1, r -> {
+            Thread thread = new Thread(r);
+            thread.setName(EMBEDDED_LIB_OS_ENCLAVE_STARTUP_THREAD_NAME);
+            thread.setDaemon(true);
+            return thread;
         }).submit(() -> {
             EnclaveCreatingException exception = null;
             try {
@@ -221,8 +218,6 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
                     report.getMrSigner(),
                     report.getMrEnclave(),
                     report.getUserData());
-        } catch (InterruptedException | IOException | ClassNotFoundException e) {
-            throw new RemoteAttestationException(e);
         } catch (Throwable e) {
             throw new RemoteAttestationException(e);
         }
@@ -252,7 +247,7 @@ public class EmbeddedLibOSEnclave extends AbstractEnclave {
         }
     }
 
-    class LibOSExtractTempPath {
+    static class LibOSExtractTempPath {
         private final String jniTempFilePath;
         private final String libOsSignedFilePath;
 

@@ -14,8 +14,8 @@ import java.io.IOException;
  * The work mechanism in this mode is very closed to tee sdk enclave, so it's very
  * important to debug issue.
  */
-class MockInSvmEnclave extends AbstractEnclave {
-    private final static long KB = 1 * 1024;
+final class MockInSvmEnclave extends AbstractEnclave {
+    private final static long KB = 1024;
     private final static long MB = KB * 1024;
     private final static String JNI_EXTRACTED_PACKAGE_PATH = "jni/lib_jni_mock_svm.so";
     private final static String ENCLAVE_SVM_PACKAGE_PATH = "lib_mock_svm_load.so";
@@ -42,7 +42,7 @@ class MockInSvmEnclave extends AbstractEnclave {
                         String enclaveSvmFilePath = ExtractLibrary.extractLibrary(
                                 MockInSvmEnclave.class.getClassLoader(),
                                 ENCLAVE_SVM_PACKAGE_PATH);
-                        extractTempPath = new MockInSvmEnclave.MockInSvmExtractTempPath(
+                        extractTempPath = new MockInSvmExtractTempPath(
                                 jniTempFilePath,
                                 enclaveSvmFilePath);
                         System.load(extractTempPath.getJniTempFilePath());
@@ -86,7 +86,7 @@ class MockInSvmEnclave extends AbstractEnclave {
         throw new RemoteAttestationException("MOCK_IN_SVM enclave doesn't support remote attestation generation.");
     }
 
-    static int verifyAttestationReport(byte[] report) throws RemoteAttestationException {
+    static int verifyAttestationReport(byte[] ignoredReport) throws RemoteAttestationException {
         throw new RemoteAttestationException("MOCK_IN_SVM enclave doesn't support remote attestation verification.");
     }
 
@@ -163,7 +163,7 @@ class MockInSvmEnclave extends AbstractEnclave {
 
     private native int nativeDestroyEnclave(long enclaveSvmSdkHandle) throws EnclaveDestroyingException;
 
-    class MockInSvmExtractTempPath {
+    static class MockInSvmExtractTempPath {
         private final String jniTempFilePath;
         private final String enclaveSvmFilePath;
 

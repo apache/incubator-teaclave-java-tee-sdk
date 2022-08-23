@@ -32,7 +32,7 @@ public class EnclaveAgentServiceImpl {
         ret.setCost(System.nanoTime() - start);
         try {
             return SerializationHelper.serialize(ret);
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
         }
         return null;
     }
@@ -63,7 +63,7 @@ public class EnclaveAgentServiceImpl {
         } catch (IOException e) {
             try {
                 return SerializationHelper.serialize(new EnclaveInvocationResult(null, e));
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }
         }
         return null;
@@ -73,7 +73,7 @@ public class EnclaveAgentServiceImpl {
         EnclaveShutDown.shutDownNotify();
         try {
             return SerializationHelper.serialize(new EnclaveInvocationResult(true, null));
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return null;
     }

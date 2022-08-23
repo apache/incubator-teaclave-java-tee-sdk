@@ -12,13 +12,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 class EnclaveAgent {
     private static final String HTTP_EXECUTE_THREAD_NAME = "enclave_http_remote_invoking_thread";
     private static final String HTTP_SERVER_NAME = "/enclaveAgent";
-    private static volatile EnclaveAgentServiceImpl service = new EnclaveAgentServiceImpl();
+    private static final EnclaveAgentServiceImpl service = new EnclaveAgentServiceImpl();
     private static volatile HttpServer httpServer = null;
 
     // socket service port is from host side.
@@ -40,13 +40,11 @@ class EnclaveAgent {
         // create http connection and wait for request from host.
         httpServer = HttpServer.create(new InetSocketAddress(portEnclave), 0);
         httpServer.createContext(HTTP_SERVER_NAME, new EnclaveHttpHandler());
-        httpServer.setExecutor(Executors.newScheduledThreadPool(threadPoolSize, new ThreadFactory() {
-            public Thread newThread(Runnable r) {
-                Thread thread = new Thread(r);
-                thread.setName(HTTP_EXECUTE_THREAD_NAME);
-                thread.setDaemon(true);
-                return thread;
-            }
+        httpServer.setExecutor(Executors.newScheduledThreadPool(threadPoolSize, r -> {
+            Thread thread = new Thread(r);
+            thread.setName(HTTP_EXECUTE_THREAD_NAME);
+            thread.setDaemon(true);
+            return thread;
         }));
         httpServer.start();
         // notify host that enclave jvm had started up.
@@ -79,7 +77,7 @@ class EnclaveAgent {
                 e.printStackTrace();
             }
 
-            switch (context.getAgentServiceName()) {
+            switch (Objects.requireNonNull(context).getAgentServiceName()) {
                 case SocketEnclaveInvocationContext.SERVICE_LOADING:
                     writeBackResponse(exchange, service.loadService(context.getServiceHandler().getServiceInterfaceName()));
                     break;

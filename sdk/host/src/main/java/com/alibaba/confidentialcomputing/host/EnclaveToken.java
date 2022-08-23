@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * EnclaveToken avoids an enclave's invocation happen when it's being destroyed.
  */
-class EnclaveToken {
-    private volatile AtomicBoolean alive = new AtomicBoolean(true);
+final class EnclaveToken {
+    private final AtomicBoolean alive = new AtomicBoolean(true);
     private final int MAX_CONCURRENCY_INVOKER = 999999;
     private final Semaphore tokens = new Semaphore(MAX_CONCURRENCY_INVOKER);
 
@@ -37,7 +37,7 @@ class EnclaveToken {
             try {
                 tokens.acquire(MAX_CONCURRENCY_INVOKER);
             } catch (InterruptedException e) {
-                ; // Should never happen, do nothing here.
+                // Should never happen, do nothing here.
             }
             return true;
         }

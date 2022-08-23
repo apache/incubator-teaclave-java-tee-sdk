@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 class EnclaveShutDown {
     private static final int SHUTDOWN_DELAY_DURATION = 1000; // TimeUnit.MilliSecond
-    private static BlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
 
     static void shutDownNotify() {
         boolean interrupted = false;

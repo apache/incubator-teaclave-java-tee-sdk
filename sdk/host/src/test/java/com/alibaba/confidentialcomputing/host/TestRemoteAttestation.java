@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +26,7 @@ class TestRemoteAttestation {
         method.setAccessible(true);
 
         byte[] parameter = null;
-        Object result = method.invoke(null, (Object) parameter);
+        Object result = method.invoke(null, parameter);
         assertEquals(((byte[]) result).length, 64);
 
         parameter = new byte[32];
@@ -39,9 +40,7 @@ class TestRemoteAttestation {
     @Test
     void testAttestationReport() {
         byte[] quote = new byte[4];
-        for (int index = 0; index < quote.length; index++) {
-            quote[index] = (byte) 0x5f;
-        }
+        Arrays.fill(quote, (byte) 0x5f);
         AttestationReport report = new AttestationReport(EnclaveType.TEE_SDK, quote);
         byte[] serializedReport = report.toByteArray();
         AttestationReport deserializedReport = AttestationReport.fromByteArray(serializedReport);

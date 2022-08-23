@@ -2,8 +2,8 @@ package com.alibaba.confidentialcomputing.host;
 
 import java.io.IOException;
 
-class TeeSdkEnclaveConfigure {
-    private final static long KB = 1 * 1024;
+final class TeeSdkEnclaveConfigure {
+    private final static long KB = 1024;
     private final static long MB = KB * 1024;
     private final static String TEE_SDK_SVM_MAX_HEAP_SIZE_PROPERTY = "com.alibaba.enclave.teesdk.maxheap_MB";
     private final static String TEE_SDK_SYMBOL_TRACE_ENABLE_PROPERTY = "com.alibaba.enclave.teesdk.symbol.trace";

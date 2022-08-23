@@ -13,23 +13,19 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestEnclaveInfoMXBean {
     private static final String DOMAIN_NAME = "EnclaveMXBean";
     private static final String ENCLAVE_MX_BEAN_STUB = "enclaveInfoMXBeanStub";
 
-    private CountDownLatch cl0 = new CountDownLatch(1);
-    private CountDownLatch cl1 = new CountDownLatch(1);
+    private final CountDownLatch cl0 = new CountDownLatch(1);
+    private final CountDownLatch cl1 = new CountDownLatch(1);
 
-    private int rmiPort = getFreePort();
+    private final int rmiPort = getFreePort();
     ObjectName enclaveInfoMXBeanStub;
-    private Registry registry;
-    private MBeanServer mxBeanService;
-    private JMXConnectorServer jmxConnector;
 
     private int getFreePort() {
         try (ServerSocket serverSocket = new ServerSocket(0)) {
@@ -44,14 +40,14 @@ public class TestEnclaveInfoMXBean {
         Enclave enclaveJVM = EnclaveFactory.create(EnclaveType.MOCK_IN_JVM);
         EnclaveInfo enclaveInfoJVM = enclaveJVM.getEnclaveInfo();
         assertEquals(enclaveInfoJVM.getEnclaveType(), EnclaveType.MOCK_IN_JVM);
-        assertEquals(enclaveInfoJVM.isEnclaveDebuggable(), true);
+        assertTrue(enclaveInfoJVM.isEnclaveDebuggable());
         assertEquals(enclaveInfoJVM.getEnclaveEPCMemorySizeBytes(), -1);
         assertEquals(enclaveInfoJVM.getEnclaveMaxThreadsNumber(), -1);
 
         Enclave enclaveSVM = EnclaveFactory.create(EnclaveType.MOCK_IN_SVM);
         EnclaveInfo enclaveInfoSVM = enclaveSVM.getEnclaveInfo();
         assertEquals(enclaveInfoSVM.getEnclaveType(), EnclaveType.MOCK_IN_SVM);
-        assertEquals(enclaveInfoSVM.isEnclaveDebuggable(), true);
+        assertTrue(enclaveInfoSVM.isEnclaveDebuggable());
         assertEquals(enclaveInfoSVM.getEnclaveEPCMemorySizeBytes(), -1);
         assertEquals(enclaveInfoSVM.getEnclaveMaxThreadsNumber(), -1);
 
@@ -59,7 +55,7 @@ public class TestEnclaveInfoMXBean {
         Enclave enclaveTEE = EnclaveFactory.create(EnclaveType.TEE_SDK);
         EnclaveInfo enclaveInfoTEE = enclaveTEE.getEnclaveInfo();
         assertEquals(enclaveInfoTEE.getEnclaveType(), EnclaveType.TEE_SDK);
-        assertEquals(enclaveInfoTEE.isEnclaveDebuggable(), false);
+        assertFalse(enclaveInfoTEE.isEnclaveDebuggable());
         assertEquals(enclaveInfoTEE.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
         assertEquals(enclaveInfoTEE.getEnclaveMaxThreadsNumber(), 50);
 
@@ -67,19 +63,19 @@ public class TestEnclaveInfoMXBean {
         Enclave enclaveLIBOS = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
         EnclaveInfo enclaveInfoLIBOS = enclaveLIBOS.getEnclaveInfo();
         assertEquals(enclaveInfoLIBOS.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
-        assertEquals(enclaveInfoLIBOS.isEnclaveDebuggable(), false);
+        assertFalse(enclaveInfoLIBOS.isEnclaveDebuggable());
         assertEquals(enclaveInfoLIBOS.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
         assertEquals(enclaveInfoLIBOS.getEnclaveMaxThreadsNumber(), 50);
 
         enclaveInfoMXBeanStub = new ObjectName(DOMAIN_NAME + ":name=" + ENCLAVE_MX_BEAN_STUB);
-        mxBeanService = ManagementFactory.getPlatformMBeanServer();
+        MBeanServer mxBeanService = ManagementFactory.getPlatformMBeanServer();
         mxBeanService.registerMBean(
                 EnclaveInfoManager.getEnclaveInfoManagerInstance(),
                 enclaveInfoMXBeanStub);
 
-        registry = LocateRegistry.createRegistry(rmiPort);
+        LocateRegistry.createRegistry(rmiPort);
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + rmiPort + "/" + DOMAIN_NAME);
-        jmxConnector = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mxBeanService);
+        JMXConnectorServer jmxConnector = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mxBeanService);
         jmxConnector.start();
 
         cl0.countDown();

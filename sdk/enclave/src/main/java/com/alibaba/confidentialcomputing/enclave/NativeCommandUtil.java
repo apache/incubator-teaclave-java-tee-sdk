@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NativeCommandUtil {
     public static final Path GRAALVM_HOME = Paths.get(System.getenv("GRAALVM_HOME"));
@@ -18,7 +17,7 @@ public class NativeCommandUtil {
         }
         ProcessBuilder pb = new ProcessBuilder(command).directory(workDir.toFile());
         pb.redirectErrorStream(true);
-        String oneLineCommand = command.stream().collect(Collectors.joining(" "));
+        String oneLineCommand = String.join(" ", command);
         System.out.println(oneLineCommand);
         Process p = null;
         try {
@@ -33,7 +32,7 @@ public class NativeCommandUtil {
             int exitCode = p.waitFor();
             if (exitCode != 0) {
                 throw new RuntimeException("Failed to execute command:\n " + oneLineCommand +
-                        "\n Working directory is :" + workDir.toString() + "\n The exit code is " + exitCode+
+                        "\n Working directory is :" + workDir + "\n The exit code is " + exitCode+
                         "\n");
             }
             return 0;

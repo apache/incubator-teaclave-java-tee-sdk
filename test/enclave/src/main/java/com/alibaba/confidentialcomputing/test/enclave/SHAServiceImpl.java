@@ -13,10 +13,10 @@ public class SHAServiceImpl implements SHAService {
         MessageDigest md = MessageDigest.getInstance(SHAType);
         byte[] messageDigest = md.digest(plaintext.getBytes());
         BigInteger no = new BigInteger(1, messageDigest);
-        String hashtext = no.toString(16);
-        while (hashtext.length() < 32) {
-            hashtext = "0" + hashtext;
+        StringBuilder hashText = new StringBuilder(no.toString(16));
+        while (hashText.length() < 32) {
+            hashText.insert(0, "0");
         }
-        return hashtext;
+        return hashText.toString();
     }
 }

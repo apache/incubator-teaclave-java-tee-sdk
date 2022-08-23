@@ -3,7 +3,7 @@ package com.alibaba.confidentialcomputing.host;
 final class MetricTraceContext extends MetricTrace {
     private EnclaveInfo info;
     private long costInnerEnclave = 0x0;
-    private String pattern;
+    private final String pattern;
 
     MetricTraceContext(EnclaveInfo info, LogPrefix prefix) {
         this.info = info;
@@ -12,7 +12,7 @@ final class MetricTraceContext extends MetricTrace {
 
     MetricTraceContext(EnclaveInfo info, LogPrefix prefix, String service) {
         this.info = info;
-        pattern = new StringBuilder().append(prefix.toString()).append(":").append(service).toString();
+        pattern = prefix.toString() + ":" + service;
     }
 
     MetricTraceContext(LogPrefix prefix) {

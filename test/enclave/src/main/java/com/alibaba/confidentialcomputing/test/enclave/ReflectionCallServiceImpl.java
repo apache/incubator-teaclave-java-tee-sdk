@@ -25,9 +25,7 @@ public class ReflectionCallServiceImpl implements ReflectionCallService {
     public int add(int a, int b) {
         try {
             return (int) addMethod.invoke(null, a, b);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return -1;
@@ -37,9 +35,7 @@ public class ReflectionCallServiceImpl implements ReflectionCallService {
     public int sub(int a, int b) {
         try {
             return (int) subMethod.invoke(null, a, b);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return -1;

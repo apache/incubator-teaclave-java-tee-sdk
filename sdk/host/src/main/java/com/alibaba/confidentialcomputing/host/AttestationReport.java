@@ -3,7 +3,7 @@ package com.alibaba.confidentialcomputing.host;
 import java.io.Serializable;
 
 /**
- * AttestationReport wraps enclave's type and generated remote attestation report.
+ * AttestationReport includes an enclave's type and generated remote attestation report.
  */
 public class AttestationReport implements Serializable {
     private static final long serialVersionUID = -2781780414647128479L;
@@ -60,7 +60,6 @@ public class AttestationReport implements Serializable {
         byte[] report = new byte[attestationReport.length - 1];
         switch (attestationReport[0]) {
             case 0:
-                enclaveType = EnclaveType.NONE;
                 break;
             case 1:
                 enclaveType = EnclaveType.MOCK_IN_JVM;

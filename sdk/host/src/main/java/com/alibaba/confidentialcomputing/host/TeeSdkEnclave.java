@@ -10,8 +10,8 @@ import java.io.IOException;
 /**
  * TeeSdkEnclave is a sgx2 enclave based on Alibaba cloud's tee sdk.
  */
-class TeeSdkEnclave extends AbstractEnclave {
-    private final static long KB = 1 * 1024;
+final class TeeSdkEnclave extends AbstractEnclave {
+    private final static long KB = 1024;
     private final static long MB = KB * 1024;
     private final static String JNI_EXTRACTED_PACKAGE_PATH = "jni/lib_jni_tee_sdk_svm.so";
     private final static String TEE_SDK_SIGNED_PACKAGE_PATH = "lib_tee_sdk_svm_load.signed";
@@ -24,7 +24,7 @@ class TeeSdkEnclave extends AbstractEnclave {
     private long isolateHandle;
     // isolateThreadHandle stores the first attached isolateThread Handle.
     private long isolateThreadHandle;
-    private SGXEnclaveInfo enclaveInfo;
+    private final SGXEnclaveInfo enclaveInfo;
 
     private void extractNativeResource() throws EnclaveCreatingException {
         // Extract jni .so and signed tee .so from .jar file.
@@ -70,10 +70,7 @@ class TeeSdkEnclave extends AbstractEnclave {
             // Create svm attach isolate and isolateThread, and they are set in jni in nativeHandlerContext.
             nativeSvmAttachIsolate(enclaveHandle, TeeSdkEnclaveConfigure.getInstance().isEnableTeeSDKSymbolTracing(), buildSVMHeapConf());
             // Create enclave info.
-            boolean isDebuggable = true;
-            if (mode.getValue() == 0x2) {
-                isDebuggable = false;
-            }
+            boolean isDebuggable = mode.getValue() != 0x2;
             enclaveInfo = new SGXEnclaveInfo(
                     EnclaveType.TEE_SDK,
                     isDebuggable,

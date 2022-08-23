@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.util.Base64;
+import java.util.Objects;
 
 import com.alibaba.confidentialcomputing.test.common.SM2Service;
 import com.google.auto.service.AutoService;
@@ -85,7 +86,7 @@ public class SM2ServiceImpl implements SM2Service {
     }
 
     @Override
-    public String encryptAndDecryptWithPlaintext(String plaintext) throws Exception {
-        return new String(decoder(encode(plaintext, publicKey), privateKey));
+    public String encryptAndDecryptWithPlaintext(String plaintext) {
+        return new String(Objects.requireNonNull(decoder(encode(plaintext, publicKey), privateKey)));
     }
 }

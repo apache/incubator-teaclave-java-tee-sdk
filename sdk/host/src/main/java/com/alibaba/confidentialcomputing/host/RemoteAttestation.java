@@ -10,7 +10,7 @@ import java.util.Random;
 public final class RemoteAttestation {
     // normalizeUserData format userData to make sure it's a buffer with 64 bytes.
     private static byte[] normalizeUserData(byte[] userData) throws RemoteAttestationException {
-        byte[] result = null;
+        byte[] result;
         if (userData == null) {
             result = new byte[64];
             new Random().nextBytes(result);

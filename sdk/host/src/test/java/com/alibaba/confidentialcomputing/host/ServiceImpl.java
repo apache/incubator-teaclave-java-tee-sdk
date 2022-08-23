@@ -6,7 +6,7 @@ import com.google.auto.service.AutoService;
 public class ServiceImpl implements Service {
     @Override
     public void doNothing() {
-        ; // Do nothing;
+        // Do nothing;
     }
 
     @Override

@@ -23,18 +23,15 @@ public class TestEnclaveConcurrency {
         assertTrue(services.hasNext());
         ConcurrencyCalculate service = services.next();
         for (int i = 0; i < concurrency; i++) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        latch0.await();
-                        for (int i = 0; i < workload; i++) {
-                            service.add(1);
-                        }
-                        latch1.countDown();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    latch0.await();
+                    for (int i1 = 0; i1 < workload; i1++) {
+                        service.add(1);
                     }
+                    latch1.countDown();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
@@ -59,16 +56,13 @@ public class TestEnclaveConcurrency {
         assertTrue(services.hasNext());
         ConcurrencyCalculate service = services.next();
         for (int i = 0; i < concurrency; i++) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        latch0.await();
-                        service.addSync(workload);
-                        latch1.countDown();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                try {
+                    latch0.await();
+                    service.addSync(workload);
+                    latch1.countDown();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }).start();
         }

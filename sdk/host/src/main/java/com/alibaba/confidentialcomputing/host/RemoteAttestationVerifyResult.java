@@ -1,9 +1,9 @@
 package com.alibaba.confidentialcomputing.host;
 
-class RemoteAttestationVerifyResult {
-    private volatile int status;
-    private volatile int versionCheck;
-    private volatile int verifyFlag;
+final class RemoteAttestationVerifyResult {
+    private final int status;
+    private final int versionCheck;
+    private final int verifyFlag;
 
     RemoteAttestationVerifyResult(int status, int versionCheck, int verifyFlag) {
         this.status = status;

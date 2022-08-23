@@ -3,9 +3,9 @@ package com.alibaba.confidentialcomputing.test.common;
 import java.io.Serializable;
 
 public class AESSealedTest implements Serializable, Comparable<AESSealedTest> {
-    private String name;
-    private int age;
-    private int level;
+    private final String name;
+    private final int age;
+    private final int level;
 
     public AESSealedTest(String name, int age, int level) {
         this.name = name;

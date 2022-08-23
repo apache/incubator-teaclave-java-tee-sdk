@@ -11,6 +11,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
@@ -21,21 +22,11 @@ import java.util.concurrent.TimeUnit;
 @State(value = Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class StringBenchMark {
-    private int regexWeight = 5000;
-    private int concatWeight = 50_000;
-    private int splitWeight = 5000;
 
     @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK", "EMBEDDED_LIB_OS"})
     private String enclaveServiceInstance;
     @Param(value = {"regex", "concat", "split"})
     private String stringOpt;
-
-    private String regexContext = "abcd_ed123.t12y@haha.com";
-    private String regexPattern = "^[\\w._]+@\\w+\\.[a-zA-Z]+$";
-    private String concatContext = "Hello World!";
-    private String concatPattern = "abc";
-    private String splitContext = "word1, word2 word3@word4?word5.word6";
-    private String splitPattern = "[, ?.@]+";
 
     @State(Scope.Thread)
     public static class EnclaveBenchmark {
@@ -102,15 +93,24 @@ public class StringBenchMark {
                 break;
         }
 
+        int regexWeight = 5000;
+        int concatWeight = 50_000;
+        int splitWeight = 5000;
+        String regexContext = "abcd_ed123.t12y@haha.com";
+        String regexPattern = "^[\\w._]+@\\w+\\.[a-zA-Z]+$";
+        String concatContext = "Hello World!";
+        String concatPattern = "abc";
+        String splitContext = "word1, word2 word3@word4?word5.word6";
+        String splitPattern = "[, ?.@]+";
         switch (stringOpt) {
             case "regex":
-                service.stringRegex(regexContext, regexPattern, regexWeight);
+                Objects.requireNonNull(service).stringRegex(regexContext, regexPattern, regexWeight);
                 break;
             case "concat":
-                service.stringConcat(concatContext, concatPattern, concatWeight);
+                Objects.requireNonNull(service).stringConcat(concatContext, concatPattern, concatWeight);
                 break;
             case "split":
-                service.stringSplit(splitContext, splitPattern, splitWeight);
+                Objects.requireNonNull(service).stringSplit(splitContext, splitPattern, splitWeight);
                 break;
         }
     }

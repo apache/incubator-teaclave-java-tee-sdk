@@ -2,7 +2,7 @@ package com.alibaba.confidentialcomputing.host.exception;
 
 /**
  * EnclaveNativeInvokingException defines all kinds of possible exceptions towards an
- * enclave's native operation. Basically there are two kinds error about enclave operation,
+ * enclave's native invocation. Basically there are two kinds error about enclave invocation,
  * one kind is native calling return an unexpected value, the other kind is an exception
  * happen in enclave and transform into host side. If a native invoking into enclave returns
  * an error value, enum of EnclaveNativeInvokingException will add extra error message details

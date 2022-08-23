@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-class EmbeddedLibOSEnclaveConfigure {
+final class EmbeddedLibOSEnclaveConfigure {
     private final static String AGENT_HTTP_THREAD_POOL_SIZE_PROPERTY = "com.alibaba.enclave.agent.thread.pool.size";
     private final static String ENCLAVE_STARTUP_TIMEOUT_MS_PROPERTY = "com.alibaba.enclave.embedded.startup.timeout_ms";
     private final static String ENCLAVE_DEBUG_LOG_LEVEL_PROPERTY = "com.alibaba.enclave.embedded.log.level";
@@ -54,11 +54,11 @@ class EmbeddedLibOSEnclaveConfigure {
     }
 
     private void parseThreadPoolSize(String size) {
-        if (size != null) this.threadPoolSize = Integer.valueOf(size);
+        if (size != null) this.threadPoolSize = Integer.parseInt(size);
     }
 
     private void parseStartupTimeout(String timeout) {
-        if (timeout != null) this.startupTimeout = Integer.valueOf(timeout);
+        if (timeout != null) this.startupTimeout = Integer.parseInt(timeout);
     }
 
     private void parseLogLevel(String logLevel) {
@@ -70,23 +70,23 @@ class EmbeddedLibOSEnclaveConfigure {
     }
 
     private void parseHttpConnectTimeout(String args) {
-        if (args != null) this.agentHttpConnectTimeout = Integer.valueOf(args);
+        if (args != null) this.agentHttpConnectTimeout = Integer.parseInt(args);
     }
 
     private void parseHttpReadTimeout(String args) {
-        if (args != null) this.agentHttpReadTimeout = Integer.valueOf(args);
+        if (args != null) this.agentHttpReadTimeout = Integer.parseInt(args);
     }
 
     private void parseHttpRATimeout(String args) {
-        if (args != null) this.agentHttpRATimeout = Integer.valueOf(args);
+        if (args != null) this.agentHttpRATimeout = Integer.parseInt(args);
     }
 
     private void parseHttpKeepAliveTimeout(String args) {
-        if (args != null) this.agentHttpKeepAliveTimeout = Integer.valueOf(args);
+        if (args != null) this.agentHttpKeepAliveTimeout = Integer.parseInt(args);
     }
 
     private void parseHttpKeepAliveMax(String args) {
-        if (args != null) this.agentHttpKeepAliveMax = Integer.valueOf(args);
+        if (args != null) this.agentHttpKeepAliveMax = Integer.parseInt(args);
     }
 
     boolean isEnclaveDebuggable() {
