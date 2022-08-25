@@ -1,0 +1,7 @@
+FROM javaenclave_base:v0.1.0 as javaenclave_release
+
+LABEL maintainer="Junshao Wang <jeffery.wsj@alibaba-inc.com>"
+
+# Install JavaEnclave SDK
+WORKDIR /opt
+ADD ["javaenclave.tar.gz", "."]
