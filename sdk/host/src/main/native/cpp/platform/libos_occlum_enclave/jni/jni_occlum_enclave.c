@@ -1,3 +1,20 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 #include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +31,7 @@
 #define OCCLUM_CMD_PATH               "/usr/lib/dragonwell11/jre/bin/java"
 #define OCCLUM_JVM_CMD_CP             "-cp"
 #define OCCLUM_JVM_CMD_JAR_PATH       "/usr/app/*"
-#define OCCLUM_JVM_CMD_MAIN_CLASS     "com.alibaba.confidentialcomputing.enclave.agent.EnclaveAgent"
+#define OCCLUM_JVM_CMD_MAIN_CLASS     "org.apache.teaclave.javasdk.enclave.agent.EnclaveAgent"
 
 void set_long_field_value(JNIEnv *env, jclass class_mirror, jobject obj, const char *field_name, jlong value) {
     jfieldID field_id = (*env)->GetFieldID(env, class_mirror, field_name, "J");
@@ -45,7 +62,7 @@ static JNINativeMethod tee_lib_os_methods[] = {
 };
 
 JNIEXPORT void JNICALL
-Java_com_alibaba_confidentialcomputing_host_EmbeddedLibOSEnclave_registerNatives(JNIEnv *env, jclass cls) {
+Java_org_apache_teaclave_javasdk_host_EmbeddedLibOSEnclave_registerNatives(JNIEnv *env, jclass cls) {
     (*env)->RegisterNatives(env, cls, tee_lib_os_methods, sizeof(tee_lib_os_methods)/sizeof(tee_lib_os_methods[0]));
 }
 

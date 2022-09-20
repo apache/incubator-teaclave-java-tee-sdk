@@ -1,6 +1,23 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 FROM ubuntu:18.04 as javaenclave_base
 
-LABEL maintainer="Junshao Wang <jeffery.wsj@alibaba-inc.com>"
+LABEL maintainer="Junshao Wang"
 
 ENV GRAALVM_HOME="/root/tools/graalvm-ce-java11-22.2.0"
 ENV JAVA_HOME="/root/tools/graalvm-ce-java11-22.2.0"
@@ -10,11 +27,10 @@ ENV CC=/usr/local/occlum/bin/occlum-gcc
 ARG PSW_VERSION=2.17.100.3
 ARG DCAP_VERSION=1.14.100.3
 
-ADD ["tmpDownloadDir/graalvm-ce-java11-22.2.0.tar", "/root/tools/"]
+ADD ["tmpDownloadDir/graalvm-ce-java11-22.2.0.tar.gz", "/root/tools/"]
 ADD ["tmpDownloadDir/zlib-1.2.11.tar.gz", "/root/tools/"]
-ADD ["tmpDownloadDir/settings.xml", "/root/tools/"]
-ADD ["tmpDownloadDir/Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz", "/root/tools"]
-ADD ["tmpDownloadDir/sgx_linux_x64_sdk_2.17.100.1.bin", "/root/tools/"]
+ADD ["tmpDownloadDir/Alibaba_Dragonwell_Standard_11.0.16.12.8_x64_alpine-linux.tar.gz", "/root/tools"]
+ADD ["tmpDownloadDir/sgx_linux_x64_sdk_2.17.101.1.bin", "/root/tools/"]
 
 # install necessary tools.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y gdb gnupg wget aptitude libfuse-dev libtool tzdata jq && \
@@ -33,13 +49,11 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y gdb gnup
     libsgx-dcap-quote-verify-dev=${DCAP_VERSION}-bionic1 \
     libsgx-dcap-ql-dev=${DCAP_VERSION}-bionic1 \
     libsgx-dcap-default-qpl=${DCAP_VERSION}-bionic1 && \
-    echo -e 'yes\n' | DEBIAN_FRONTEND=noninteractive apt-get install -y maven && \
-    echo -e 'yes\n' | DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential libz-dev zlib1g-dev && \
     cd /root/tools/zlib-1.2.11 && ./configure --prefix=/opt/occlum/toolchains/gcc/x86_64-linux-musl && make && make install && \
-    cd /root/tools && chmod 777 sgx_linux_x64_sdk_2.17.100.1.bin && echo -e 'no\n/opt/teesdk\n' | ./sgx_linux_x64_sdk_2.17.100.1.bin
+    cd /root/tools && chmod 777 sgx_linux_x64_sdk_2.17.101.1.bin && echo -e 'no\n/opt/teesdk\n' | ./sgx_linux_x64_sdk_2.17.101.1.bin
 
 # copy dcap_occlum lib from occlum docker image.
-COPY --from=occlum/occlum:0.26.4-ubuntu18.04 /opt/occlum/toolchains/dcap_lib /opt/occlum/toolchains/dcap_lib
+COPY --from=docker.io/occlum/occlum:0.26.4-ubuntu18.04 /opt/occlum/toolchains/dcap_lib /opt/occlum/toolchains/dcap_lib
 
 # fix occlum aesm service issue.
 RUN sed -i '/"Error: AESM service is not started yet. Need to start it first"/{N;s/.*//}' /opt/occlum/build/bin/occlum

@@ -1,3 +1,20 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 #include <jni.h>
 
 #ifndef _Included_jni_mock_in_svm
@@ -8,12 +25,12 @@ typedef struct {
     jbyteArray result;
 } enclave_calling_stub_result;
 
-#define REMOTE_ATTESTATION_CLASS_NAME                "com/alibaba/confidentialcomputing/host/exception/RemoteAttestationException"
-#define ENCLAVE_CREATING_EXCEPTION                   "com/alibaba/confidentialcomputing/host/exception/EnclaveCreatingException"
-#define ENCLAVE_DESTROYING_EXCEPTION                 "com/alibaba/confidentialcomputing/host/exception/EnclaveDestroyingException"
-#define ENCLAVE_SERVICE_LOADING_EXCEPTION            "com/alibaba/confidentialcomputing/host/exception/ServicesLoadingException"
-#define ENCLAVE_SERVICE_UNLOADING_EXCEPTION          "com/alibaba/confidentialcomputing/host/exception/ServicesUnloadingException"
-#define ENCLAVE_SERVICE_INVOKING_EXCEPTION           "com/alibaba/confidentialcomputing/host/exception/EnclaveMethodInvokingException"
+#define REMOTE_ATTESTATION_CLASS_NAME                "org/apache/teaclave/javasdk/host/exception/RemoteAttestationException"
+#define ENCLAVE_CREATING_EXCEPTION                   "org/apache/teaclave/javasdk/host/exception/EnclaveCreatingException"
+#define ENCLAVE_DESTROYING_EXCEPTION                 "org/apache/teaclave/javasdk/host/exception/EnclaveDestroyingException"
+#define ENCLAVE_SERVICE_LOADING_EXCEPTION            "org/apache/teaclave/javasdk/host/exception/ServicesLoadingException"
+#define ENCLAVE_SERVICE_UNLOADING_EXCEPTION          "org/apache/teaclave/javasdk/host/exception/ServicesUnloadingException"
+#define ENCLAVE_SERVICE_INVOKING_EXCEPTION           "org/apache/teaclave/javasdk/host/exception/EnclaveMethodInvokingException"
 
 #define MOCK_IN_SVM_NATIVE_CALL_SIGNATURE            "(JJ[B)[B"
 
@@ -21,7 +38,7 @@ typedef struct {
 {                                                                              \
     jclass ra_class = (*env)->FindClass(env, exception);                       \
     if (ra_class == NULL) {                                                    \
-        fprintf(stderr, "JavaEnclave Error:  ");                               \
+        fprintf(stderr, "Teaclave-java-tee-sdk Error:  ");                     \
         fprintf(stderr, exception);                                            \
         fprintf(stderr, " class loading failed.\n");                           \
         return;                                                                \
@@ -33,7 +50,7 @@ typedef struct {
 #ifdef __cplusplus
 extern "C" {
 #endif
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_host_MockInSvmEnclave_registerNatives(JNIEnv *env, jclass cls);
+JNIEXPORT void JNICALL Java_org_apache_teaclave_javasdk_host_MockInSvmEnclave_registerNatives(JNIEnv *env, jclass cls);
 
 /*
  * Class:     JavaEnclave_MockSVMNativeCreateEnclave

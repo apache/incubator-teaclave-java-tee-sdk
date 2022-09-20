@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +13,7 @@
     <url>http://maven.apache.org</url>
     <properties>
         <svm.maven.version>0.9.13</svm.maven.version>
-        <com.alibaba.enclave.privatePem.path></com.alibaba.enclave.privatePem.path>
+        <org.apache.teaclave.javasdk.enclave.privatePem.path></org.apache.teaclave.javasdk.enclave.privatePem.path>
     </properties>
     <profiles>
         <profile>
@@ -93,8 +92,8 @@
                                     <arguments>
                                         <argument>/opt/javaenclave/build_app/make.sh</argument>
                                         <argument>${project.basedir}</argument>
-                                        <argument>${com.alibaba.enclave.platform}</argument>
-                                        <argument>${com.alibaba.enclave.privatePem.path}</argument>
+                                        <argument>${org.apache.teaclave.javasdk.platform}</argument>
+                                        <argument>${org.apache.teaclave.javasdk.enclave.privatePem.path}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -150,7 +149,7 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.alibaba.confidentialcomputing</groupId>
+            <groupId>org.apache.teaclave.javasdk</groupId>
             <artifactId>enclave</artifactId>
         </dependency>
         <dependency>

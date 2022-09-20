@@ -1,15 +1,15 @@
 [
   {
-  "name":"com.alibaba.confidentialcomputing.common.EnclaveInvocationContext"
+  "name":"org.apache.teaclave.javasdk.common.EnclaveInvocationContext"
   },
   {
-    "name":"com.alibaba.confidentialcomputing.common.EnclaveInvocationResult"
+    "name":"org.apache.teaclave.javasdk.common.EnclaveInvocationResult"
   },
   {
-  "name":"com.alibaba.confidentialcomputing.common.ServiceHandler"
+  "name":"org.apache.teaclave.javasdk.common.ServiceHandler"
   },
   {
-    "name": "[Lcom.alibaba.confidentialcomputing.common.ServiceHandler;"
+    "name": "[Lorg.apache.teaclave.javasdk.common.ServiceHandler;"
   },
   {
   "name":"java.lang.String"

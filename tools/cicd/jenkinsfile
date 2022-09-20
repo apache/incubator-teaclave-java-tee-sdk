@@ -6,9 +6,9 @@ pipeline {
              }
          }
          stages {
-                 stage('Test and Build JavaEnclave SDK') {
+                 stage('Test and Build Teaclave-java-tee-sdk') {
                  steps {
-                     echo 'Build JavaEnclave SDK:'
+                     echo 'Build Teaclave-java-tee-sdk:'
                      sh "./tools/cicd/make.sh"
                  }
                  post {
@@ -17,7 +17,7 @@ pipeline {
                              execPattern: 'sdk/**/target/jacoco.exec',
                              classPattern: 'sdk/**/target/classes',
                              sourcePattern: 'sdk/**/src/main/java',
-                             sourceInclusionPattern: 'com/alibaba/confidentialcomputing/**/*.java,com/alibaba/confidentialcomputing/**/**/*.java',
+                             sourceInclusionPattern: 'org/apache/teaclave/javasdk/**/*.java,org/apache/teaclave/javasdk/**/**/*.java',
                           )
                      }
                  }

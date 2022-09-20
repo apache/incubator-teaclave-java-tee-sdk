@@ -1,3 +1,20 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 #include "jni_remote_attestation_verify.h"
 
 #define QUOTE_VERIFICATION_STATUS_SUCCESS                 0
@@ -36,12 +53,12 @@ verify_result_wrapper ecdsa_quote_verification_qvl(const uint8_t* quote, uint32_
     // Step one, get supplemental_data_size.
     dcap_ret = sgx_qv_get_quote_supplemental_data_size(&supplemental_data_size);
     if (dcap_ret != SGX_QL_SUCCESS) {
-        // printf("JavaEnclave Remote Attestation Error: sgx_qv_get_quote_supplemental_data_size failed: 0x%04x\n", dcap_ret);
+        // printf("Teaclave-java-tee-sdk Remote Attestation Error: sgx_qv_get_quote_supplemental_data_size failed: 0x%04x\n", dcap_ret);
         result.status = QUOTE_VERIFICATION_STATUS_GET_DATA_SIZE_FAILED;
         return result;
     }
     if (supplemental_data_size != sizeof(sgx_ql_qv_supplemental_t)) {
-        // printf("JavaEnclave Remote Attestation Warning: sgx_qv_get_quote_supplemental_data_size returned size is not same with header definition in SGX SDK, please make sure you are using same version of SGX SDK and DCAP QVL.\n");
+        // printf("Teaclave-java-tee-sdk Remote Attestation Warning: sgx_qv_get_quote_supplemental_data_size returned size is not same with header definition in SGX SDK, please make sure you are using same version of SGX SDK and DCAP QVL.\n");
         result.version_check = QUOTE_VERIFICATION_VERSION_CHECK_FAILED;
         return result;
     }
@@ -97,7 +114,7 @@ verify_result_wrapper ecdsa_quote_verification_qvl(const uint8_t* quote, uint32_
     return result;
 }
 
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_host_SGXRemoteAttestationVerify_registerNatives(JNIEnv *env, jclass cls) {
+JNIEXPORT void JNICALL Java_org_apache_teaclave_javasdk_host_SGXRemoteAttestationVerify_registerNatives(JNIEnv *env, jclass cls) {
     (*env)->RegisterNatives(env, cls, sgx_remote_attestation_verify_methods, sizeof(sgx_remote_attestation_verify_methods)/sizeof(sgx_remote_attestation_verify_methods[0]));
 }
 

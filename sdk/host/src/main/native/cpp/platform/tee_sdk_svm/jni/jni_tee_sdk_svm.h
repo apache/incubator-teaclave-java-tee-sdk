@@ -1,3 +1,20 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 #include <jni.h>
 
 #include "generate_attestation_report.h"
@@ -12,22 +29,22 @@ typedef struct {
     jbyteArray result;
 } enclave_calling_stub_result;
 
-#define REMOTE_ATTESTATION_CLASS_NAME                "com/alibaba/confidentialcomputing/host/exception/RemoteAttestationException"
-#define ENCLAVE_CREATING_EXCEPTION                   "com/alibaba/confidentialcomputing/host/exception/EnclaveCreatingException"
-#define ENCLAVE_DESTROYING_EXCEPTION                 "com/alibaba/confidentialcomputing/host/exception/EnclaveDestroyingException"
-#define ENCLAVE_SERVICE_LOADING_EXCEPTION            "com/alibaba/confidentialcomputing/host/exception/ServicesLoadingException"
-#define ENCLAVE_SERVICE_UNLOADING_EXCEPTION          "com/alibaba/confidentialcomputing/host/exception/ServicesUnloadingException"
-#define ENCLAVE_SERVICE_INVOKING_EXCEPTION           "com/alibaba/confidentialcomputing/host/exception/EnclaveMethodInvokingException"
+#define REMOTE_ATTESTATION_CLASS_NAME                "org/apache/teaclave/javasdk/host/exception/RemoteAttestationException"
+#define ENCLAVE_CREATING_EXCEPTION                   "org/apache/teaclave/javasdk/host/exception/EnclaveCreatingException"
+#define ENCLAVE_DESTROYING_EXCEPTION                 "org/apache/teaclave/javasdk/host/exception/EnclaveDestroyingException"
+#define ENCLAVE_SERVICE_LOADING_EXCEPTION            "org/apache/teaclave/javasdk/host/exception/ServicesLoadingException"
+#define ENCLAVE_SERVICE_UNLOADING_EXCEPTION          "org/apache/teaclave/javasdk/host/exception/ServicesUnloadingException"
+#define ENCLAVE_SERVICE_INVOKING_EXCEPTION           "org/apache/teaclave/javasdk/host/exception/EnclaveMethodInvokingException"
 
 #define TEE_SDK_SVM_NATIVE_CALL_SIGNATURE            "(JJ[B)[B"
-#define TEE_SDK_REMOTE_ATTESTATION_REPORT_SIGNATURE  "(J[B)Lcom/alibaba/confidentialcomputing/host/TeeSdkAttestationReport;"
-#define TEE_SDK_REMOTE_ATTESTATION_REPORT_CLASS_NAME "com/alibaba/confidentialcomputing/host/TeeSdkAttestationReport"
+#define TEE_SDK_REMOTE_ATTESTATION_REPORT_SIGNATURE  "(J[B)Lorg/apache/teaclave/javasdk/host/TeeSdkAttestationReport;"
+#define TEE_SDK_REMOTE_ATTESTATION_REPORT_CLASS_NAME "org/apache/teaclave/javasdk/host/TeeSdkAttestationReport"
 
 #define THROW_EXCEPTION(env, exception, info)                                  \
 {                                                                              \
     jclass ra_class = (*env)->FindClass(env, exception);                       \
     if (ra_class == NULL) {                                                    \
-        fprintf(stderr, "JavaEnclave Error:  ");                               \
+        fprintf(stderr, "Teaclave-java-tee-sdk Error:  ");                     \
         fprintf(stderr, exception);                                            \
         fprintf(stderr, " class loading failed.\n");                           \
         return;                                                                \
@@ -40,61 +57,61 @@ typedef struct {
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_host_TeeSdkEnclave_registerNatives(JNIEnv *env, jclass cls);
+JNIEXPORT void JNICALL Java_org_apache_teaclave_javasdk_host_TeeSdkEnclave_registerNatives(JNIEnv *env, jclass cls);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeCreateEnclave
  * Signature: (ILjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeCreateEnclave(JNIEnv *, jobject, jint, jstring);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeSvmAttachIsolate
  * Signature: (JILjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeSvmAttachIsolate(JNIEnv *, jobject, jlong, jint, jstring);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeLoadService
  * Signature: (JJ[B)[B
  */
 JNIEXPORT jbyteArray JNICALL JavaEnclave_TeeSDKSVMNativeLoadService(JNIEnv *, jobject, jlong, jlong, jbyteArray);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeInvokeMethod
  * Signature: (JJ[B)[B
  */
 JNIEXPORT jbyteArray JNICALL JavaEnclave_TeeSDKSVMNativeInvokeMethod(JNIEnv *, jobject, jlong, jlong, jbyteArray);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeUnloadService
  * Signature: (JJ[B)[B
  */
 JNIEXPORT jbyteArray JNICALL JavaEnclave_TeeSDKSVMNativeUnloadService(JNIEnv *, jobject, jlong, jlong, jbyteArray);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeSvmDetachIsolate
  * Signature: (JJ)I
  */
 JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeSvmDetachIsolate(JNIEnv *, jobject, jlong, jlong);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeDestroyEnclave
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL JavaEnclave_TeeSDKSVMNativeDestroyEnclave(JNIEnv *, jobject, jlong);
 
 /*
- * Class:     com_alibaba_confidentialcomputing_host_TeeSdkEnclave
+ * Class:     org_apache_teaclave_javasdk_host_TeeSdkEnclave
  * Method:    nativeGenerateAttestationReport
- * Signature: (J[B)Lcom/alibaba/confidentialcomputing/host/TeeSdkAttestationReport;
+ * Signature: (J[B)Lorg/apache/teaclave/javasdk/host/TeeSdkAttestationReport;
  */
 JNIEXPORT jobject JNICALL JavaEnclave_TeeSDK_REMOTE_ATTESTATION_REPORT(JNIEnv *, jobject, jlong, jbyteArray);
 

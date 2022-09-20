@@ -1,0 +1,3 @@
+org.apache.teaclave.javasdk.enclave.testservice.NumericMath
+org.apache.teaclave.javasdk.enclave.testservice.PointMath
+org.apache.teaclave.javasdk.enclave.testservice.IntegerMath

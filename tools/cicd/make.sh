@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 STAGE=$1
 
 BASE_IMAGE=javaenclave_base
@@ -18,13 +35,20 @@ PCCS_URL='https://sgx-dcap-server.cn-beijing.aliyuncs.com/sgx/certification/v3/'
 function build_base_image() {
   # check base image exist or not, build it if not.
   if [[ "$(docker images -q ${BASE_IMAGE}:${BASE_TAG} 2> /dev/null)" == "" ]]; then
+    echo "prepare for dependency"
+    rm -rf tmpDownloadDir && mkdir -p tmpDownloadDir
+    # download intel-sgx(branch: stdc_ex) and build it for tee sdk.
+    ./teesdk/make.sh && cp -r ./teesdk/sgx_linux_x64_sdk_*.bin ./tmpDownloadDir
+    # cp -r ./teesdk/sgx_linux_x64_sdk_*.bin ./tmpDownloadDir
+    # download graalvm_22.2.0
+    ./graalvm/make.sh && cp -r ./graalvm/graalvm-ce-java11-22.2.0.tar.gz ./tmpDownloadDir
+    # cp -r ./graalvm/graalvm-ce-java11-22.2.0.tar.gz ./tmpDownloadDir
+    # download zlib-1.2.11.tar.gz
+    wget -P tmpDownloadDir https://zlib.net/fossils/zlib-1.2.11.tar.gz
+    # download Alibaba Dragonwell_11_alpine
+    wget -P tmpDownloadDir https://github.com/alibaba/dragonwell11/releases/download/dragonwell-standard-11.0.16.12_jdk-11.0.16-ga/Alibaba_Dragonwell_Standard_11.0.16.12.8_x64_alpine-linux.tar.gz
+
     echo "build base image"
-    # We have built and packaged GraalVM 22.2.0 from source code and then uploaded to OSS, the official release of GraalVM CE required to manually install native-image component.
-    wget -P tmpDownloadDir http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/JDK11-22.2.0/graalvm-ce-java11-22.2.0.tar
-    wget -P tmpDownloadDir http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/zlib-1.2.11.tar.gz
-    wget -P tmpDownloadDir https://dragonwell.oss-cn-shanghai.aliyuncs.com/11/tee_java/dependency/sgx_linux_x64_sdk_2.17.100.1.bin
-    wget -P tmpDownloadDir https://dragonwell.oss-cn-shanghai.aliyuncs.com/11.0.15.11.9/Alibaba_Dragonwell_11.0.15.11.9_x64_alpine-linux.tar.gz
-    wget http://graal.oss-cn-beijing.aliyuncs.com/graal-enclave/settings_taobao.xml -O tmpDownloadDir/settings.xml
     # Build JavaEnclave Base Image.
     docker build -t ${BASE_IMAGE}:${BASE_TAG} -f dockerfile_base .
     rm -rf tmpDownloadDir
@@ -34,12 +58,13 @@ function build_base_image() {
 function build_javaenclave() {
   echo "build javaenclave"
   build_base_image
+  mkdir -p "${HOME}"/.m2
   docker run -i --rm --privileged --network host                    \
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -v /dev/sgx_enclave:/dev/sgx/enclave             \
   -v /dev/sgx_provision:/dev/sgx/provision         \
-  ${BASE_IMAGE}:${BASE_TAG} /bin/bash build.sh ${STAGE}
+  ${BASE_IMAGE}:${BASE_TAG} /bin/bash build.sh $1
 }
 
 function build_release_image() {
@@ -56,6 +81,7 @@ function build_release_image() {
 function test_javaenclave() {
   echo "test javaenclave"
   build_release_image
+  mkdir -p "${HOME}"/.m2
   # test JavaEnclave's unit test cases
   docker run -i --rm --privileged --network host                    \
   -w "${WORKDIR}"                                                   \
@@ -63,12 +89,27 @@ function test_javaenclave() {
   -e PCCS_URL=${PCCS_URL}                                           \
   -v /dev/sgx_enclave:/dev/sgx/enclave             \
   -v /dev/sgx_provision:/dev/sgx/provision         \
-  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh ${STAGE}
+  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
+}
+
+function collect_javaenclave_coverage() {
+  echo "collect and analysis javaenclave's test coverage"
+  build_release_image
+  mkdir -p "${HOME}"/.m2
+  # collect JavaEnclave's unit test code coverage
+  docker run -i --rm --privileged --network host                    \
+  -w "${WORKDIR}"                                                   \
+  -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
+  -e PCCS_URL=${PCCS_URL}                                           \
+  -v /dev/sgx_enclave:/dev/sgx/enclave             \
+  -v /dev/sgx_provision:/dev/sgx/provision         \
+  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
 function samples_javaenclave() {
   echo "samples javaenclave"
   build_release_image
+  mkdir -p "${HOME}"/.m2
   # samples JavaEnclave's samples
   docker run -i --rm --privileged --network host                    \
   -w "${WORKDIR}"                                                   \
@@ -76,12 +117,13 @@ function samples_javaenclave() {
   -e PCCS_URL=${PCCS_URL}                                           \
   -v /dev/sgx_enclave:/dev/sgx/enclave             \
   -v /dev/sgx_provision:/dev/sgx/provision         \
-  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh ${STAGE}
+  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
 function benchmark_javaenclave() {
   echo "benchmark javaenclave"
   build_release_image
+  mkdir -p "${HOME}"/.m2
   # benchmark JavaEnclave
   docker run -i --rm --privileged --network host                    \
   -w "${WORKDIR}"                                                   \
@@ -89,7 +131,7 @@ function benchmark_javaenclave() {
   -e PCCS_URL=${PCCS_URL}                                           \
   -v /dev/sgx_enclave:/dev/sgx/enclave             \
   -v /dev/sgx_provision:/dev/sgx/provision         \
-  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh ${STAGE}
+  ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
 function collect_javaenclave_release() {
@@ -120,6 +162,7 @@ function collect_javaenclave_release() {
 
 function develop_javaenclave() {
   echo "develop javaenclave"
+  mkdir -p "${HOME}"/.m2
   build_base_image
   docker run -it --rm --privileged --network host                   \
   -w "${WORKDIR}"                                                   \
@@ -133,6 +176,7 @@ function develop_javaenclave() {
 function develop_application() {
   echo "develop application based on JavaEnclave"
   build_release_image
+  mkdir -p "${HOME}"/.m2
   docker run -it --rm --privileged --network host                   \
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
@@ -159,24 +203,27 @@ if [ ! "$STAGE" ]; then
   # docker build javaenclave base image.
   # build JavaEnclave in javaenclave base image docker.
   # test JavaEnclave unit test case in javaenclave release image docker.
-  build_javaenclave
+  build_javaenclave build
   collect_javaenclave_release
-  test_javaenclave
+  test_javaenclave test
+  collect_javaenclave_coverage coverage
 elif [ "build" = "$STAGE" ]; then
   # docker build javaenclave base image.
-  build_javaenclave
+  build_javaenclave build
 elif [ "release" = "$STAGE" ]; then
   # docker build javaenclave release image.
   collect_javaenclave_release
 elif [ "test" = "$STAGE" ]; then
   # test JavaEnclave unit test case in javaenclave release image docker.
-  test_javaenclave
+  test_javaenclave test
+elif [ "coverage" = "$STAGE" ]; then
+  collect_javaenclave_coverage coverage
 elif [ "samples" = "$STAGE" ]; then
   # run samples in javaenclave release image docker.
-  samples_javaenclave
+  samples_javaenclave samples
 elif [ "benchmark" = "$STAGE" ]; then
   # run benchmark in javaenclave release image docker.
-  benchmark_javaenclave
+  benchmark_javaenclave benchmark
 elif [ "develop" = "$STAGE" ]; then
   # enter javaenclave base image docker and develop JavaEnclave.
   develop_javaenclave

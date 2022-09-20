@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>${groupId}</groupId>
@@ -11,22 +10,22 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <com.alibaba.enclave.platform>MOCK_IN_SVM:TEE_SDK:EMBEDDED_LIB_OS</com.alibaba.enclave.platform>
+        <org.apache.teaclave.javasdk.platform>MOCK_IN_SVM:TEE_SDK:EMBEDDED_LIB_OS</org.apache.teaclave.javasdk.platform>
     </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.alibaba.confidentialcomputing</groupId>
+                <groupId>org.apache.teaclave.javasdk</groupId>
                 <artifactId>common</artifactId>
                 <version>0.1.0</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.confidentialcomputing</groupId>
+                <groupId>org.apache.teaclave.javasdk</groupId>
                 <artifactId>enclave</artifactId>
                 <version>0.1.0</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.confidentialcomputing</groupId>
+                <groupId>org.apache.teaclave.javasdk</groupId>
                 <artifactId>host</artifactId>
                 <version>0.1.0</version>
             </dependency>

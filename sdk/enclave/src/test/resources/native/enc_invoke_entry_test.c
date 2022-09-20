@@ -1,6 +1,23 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 #include <stdlib.h>
 #include <string.h>
-#include "com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper.h"
+#include "org_apache_teaclave_javasdk_enclave_EnclaveTestHelper.h"
 #include "enc_environment.h"
 #ifdef MUSL
 #include "libmusl_svmenclavesdk.h"
@@ -79,14 +96,14 @@ jboolean isCopy;
 	return retVal;
 }
 
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate__
+JNIEXPORT void JNICALL Java_org_apache_teaclave_javasdk_enclave_EnclaveTestHelper_createIsolate__
    (JNIEnv *env, jclass clazz){
        if (graal_create_isolate(NULL, &isolate, &thread) != 0) {
          fprintf(stderr, "error on isolate creation or attach\n");
        }
 }
 
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_createIsolate___3Ljava_lang_String_2
+JNIEXPORT void JNICALL Java_org_apache_teaclave_javasdk_enclave_EnclaveTestHelper_createIsolate___3Ljava_lang_String_2
   (JNIEnv *env, jclass clazz, jobjectArray argv){
        int size = (*env)->GetArrayLength(env, argv);
        char** parameters = (char **)malloc(size * sizeof(char*));
@@ -105,23 +122,23 @@ JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTes
        }
 }
 
-JNIEXPORT void JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_destroyIsolate
+JNIEXPORT void JNICALL Java_org_apache_teaclave_javasdk_enclave_EnclaveTestHelper_destroyIsolate
      (JNIEnv *env, jclass clazz){
      //graal_tear_down_isolate(thread);
      graal_detach_all_threads_and_tear_down_isolate(thread);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_loadService
+JNIEXPORT jbyteArray JNICALL Java_org_apache_teaclave_javasdk_enclave_EnclaveTestHelper_loadService
 (JNIEnv* env, jclass clazz, jbyteArray data) {
     return enclave_call(env, clazz, data, java_loadservice_invoke);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_unloadService
+JNIEXPORT jbyteArray JNICALL Java_org_apache_teaclave_javasdk_enclave_EnclaveTestHelper_unloadService
   (JNIEnv* env, jclass clazz, jbyteArray data){
   return enclave_call(env, clazz, data, java_unloadservice_invoke);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_com_alibaba_confidentialcomputing_enclave_EnclaveTestHelper_invokeEnclave
+JNIEXPORT jbyteArray JNICALL Java_org_apache_teaclave_javasdk_enclave_EnclaveTestHelper_invokeEnclave
 (JNIEnv* env, jclass clazz, jbyteArray data) {
     return enclave_call(env, clazz, data, java_enclave_invoke);
 }
