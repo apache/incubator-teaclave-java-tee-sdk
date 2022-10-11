@@ -30,17 +30,17 @@
                 <version>0.1.0</version>
             </dependency>
             <dependency>
-                <groupId>${groupId}</groupId>
+                <groupId>${groupId}.${artifactId}</groupId>
                 <artifactId>common</artifactId>
                 <version>${version}</version>
             </dependency>
             <dependency>
-                <groupId>${groupId}</groupId>
+                <groupId>${groupId}.${artifactId}</groupId>
                 <artifactId>enclave</artifactId>
                 <version>${version}</version>
             </dependency>
             <dependency>
-                <groupId>${groupId}</groupId>
+                <groupId>${groupId}.${artifactId}</groupId>
                 <artifactId>host</artifactId>
                 <version>${version}</version>
             </dependency>

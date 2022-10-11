@@ -68,13 +68,13 @@ Teaclave-java-tee-sdk Docker provides a compilation and deployment environment f
 
 Teaclave-java-tee-sdk provides a java confidential computing archetype project to help us create a basic project structure.
 
-`mvn archetype:generate -DgroupId=com.sample.helloworld -DartifactId=helloworld -DarchetypeGroupId=org.apache.teaclave.javasdk -DarchetypeArtifactId=javaenclave-archetype -DarchetypeVersion=0.1.0 -DinteractiveMode=false`
+`mvn archetype:generate -DgroupId=com.sample -DartifactId=helloworld -DarchetypeGroupId=org.apache.teaclave.javasdk -DarchetypeArtifactId=javaenclave-archetype -DarchetypeVersion=0.1.0 -DinteractiveMode=false`
 
 archetype creates a maven project with three submodules, a host submodule enclave submodule, and a common submodule.
 
 #### 2. Define enclave service interface in the common submodule
 
-`cd helloworld/common/src/main/java/com/sample/helloworld/` and create a common package in this submodule `mkdir common`.
+`cd helloworld/common/src/main/java/com/sample/` and create a common package in this submodule `mkdir -p helloworld/common`.
 
 then create a Service.java file to define an enclave service interface.
 
@@ -93,7 +93,7 @@ Note that we have to annotate this service interface with `@EnclaveService` whic
 
 #### 3. Create enclave service interface provider in enclave submodule
 
-`cd helloworld/enclave/src/main/java/com/sample/helloworld` and create an enclave package in this submodule `mkdir enclave`.
+`cd helloworld/enclave/src/main/java/com/sample/` and create an enclave package in this submodule `mkdir -p helloworld/enclave`.
 
 then create ServiceImpl.java to implement the service interface defined in the common package.
 
@@ -116,7 +116,7 @@ Note that we have to annotate this class with the annotation `@AutoService(Inter
 
 #### 4. Develop host submodule to create and invoke enclave service
 
-`cd helloworld/host/src/main/java/com/sample/helloworld` and create an host package in this submodule `mkdir host`.
+`cd helloworld/host/src/main/java/com/sample/` and create an host package in this submodule `mkdir -p helloworld/host`.
 
 then create Main.java to show how to create and invoke an enclave service.
 
