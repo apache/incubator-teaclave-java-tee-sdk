@@ -1,10 +1,10 @@
 ## What's Teaclave-java-tee-sdk?
 
-Teaclave-java-tee-sdk is a Java confidential computing programming model. It follows the host-and-enclave partition programming model defined by Intel-SGX SDK. Teaclave-java-tee-sdk provides an elegant way to divide a java project into host and enclave modules, the enclave module is a provider of a user-defined service interface, it's similar to the SPI development model. Teaclave-java-tee-sdk could help you to develop and build a Java confidential computing project with high efficiency.
+Teaclave-java-tee-sdk is a Java confidential computing programming framework. It follows the host-and-enclave partition programming model defined by Intel-SGX SDK. Teaclave-java-tee-sdk provides an elegant way to divide a java project into host and enclave modules, where the enclave module is a provider of a user-defined service interface which is similar to the Java SPI model. Teaclave-java-tee-sdk could help you to develop and build a Java confidential computing project with high efficiency.
 
 ## Why do we need Teaclave-java-tee-sdk?
 
-Occlum and Gramine libOS solutions run the entire Java application inside the enclave. Although it's much easier for end users, it suffers from a large TCB(Trusted Computing Base) that may compromise the security to some degree. On the other hand, Intel-SGX and OpenEnclave SDKs are more secure by only running the sensitive code inside the enclave, but they are limited to C/C++ ecosystem, and the development experience for programmers is unfriendly. For Example, it requests the programmer to provide an unknown .edl file, which defines the interface between host and enclave. While Teaclave-java-tee-sdk provides a pure java development interface for programmers to develop a Java confidential computing application with high security, programmers do not need to provide any configured file, it also provides a concise API to create enclaves and invoke enclave service. In one word, Teaclave-java-tee-sdk makes SPI Provider a confidential computing service.
+Occlum and Gramine libOS solutions run the entire Java application inside the enclave. Although it's much easier for end users, it suffers from a large TCB(Trusted Computing Base) that may compromise the security to some degree. On the other hand, Intel-SGX and OpenEnclave SDKs are more secure by only running the sensitive code inside the enclave, but they are limited to C/C++ ecosystem, and the development experience for programmers is unfriendly. For Example, it requests the programmer to provide an unknown .edl file, which defines the interface between host and enclave. While Teaclave-java-tee-sdk provides a Pure Java SDK API for Java confidential computing application development. It eases the interactions between secured and unsecured environment with a few concise APIs. From user's aspect, creating an enclave environment and invoking confidential computing services would be as simple as invoking SPI services.
 
 ## Teaclave-java-tee-sdk architecture
 
@@ -24,15 +24,28 @@ Teaclave-java-tee-sdk provides seven components:
 
 - Teaclave-java-tee-sdk Docker, provides a standard build and execution environment for Java confidential computing applications.
 
-![avatar](./docs/resources/JavaEnclave_Architecture.png)
+<br />
+<div  align="center">
+<img src="./docs/resources/JavaEnclave_Architecture.png" width = "400" height = "400" alt="Teaclave-java-tee-sdk Architecture" align=center />
+</div>
+<center>Teaclave-java-tee-sdk Architecture</center>
+<br />
 
 ## Confidential computing Java project structure based on Teaclave-java-tee-sdk
 
 A Java confidential computing application project based on Teaclave-java-tee-sdk is a maven project which consists of three submodules, they are host submodule, enclave submodule, and common submodule. The common submodule contains the service interface definition, the enclave submodule implements the interface defined in the common submodule, host submodule contains the management of the enclave instance and service instance. We can view the enclave submodule as an SPI provider, Teaclave-java-tee-sdk will help to run the provider in an enclave, the provider could be compiled to a native image or a jar file.
 
-![avatar](./docs/resources/JavaEnclave_Application_Dependency.png)
-
-![avatar](./docs/resources/JavaEnclave_Project_Structure.png)
+<br />
+<div  align="center">
+<img src="./docs/resources/JavaEnclave_Application_Dependency.png" width = "400" height = "300" alt="Teaclave-java-tee-sdk Application Dependency" align=center />
+</div>
+<center>Teaclave-java-tee-sdk Application Dependency</center>
+<br />
+<div  align="center">
+<img src="./docs/resources/JavaEnclave_Project_Structure.png" width = "400" height = "400" alt="Teaclave-java-tee-sdk Project Structure" align=center />
+</div>
+<center>Teaclave-java-tee-sdk Project Structure</center>
+<br />
 
 ## Getting started
 
@@ -42,7 +55,7 @@ A Java confidential computing application project based on Teaclave-java-tee-sdk
 
 `apt install cpuid && cpuid -1 -l 0x12`
 
-![avatar](./docs/resources/SGX2_Supported_Check.png)
+<img src="./docs/resources/SGX2_Supported_Check.png" width = "300" height = "100" alt="Teaclave-java-tee-sdk Application Dependency" align=center />
 
 if SGX2 is not supported, only MOCK_IN_JVM and MOCK_IN_SVM enclave modes in Teaclave-java-tee-sdk could be run normally.
 
