@@ -20,7 +20,7 @@ package org.apache.teaclave.javasdk.common;
 import java.io.Serializable;
 
 /**
- * This class is used to transfer embedded lib os attestation report between Teaclave-java-tee-sdk's
+ * This class is used to transfer embedded lib os attestation report between Teaclave Java TEE SDK's
  * host and enclave module.
  */
 public final class EmbeddedLibOSInnerAttestationReport implements Serializable {

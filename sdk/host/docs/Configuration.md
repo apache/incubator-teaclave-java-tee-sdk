@@ -1,15 +1,15 @@
-# Teaclave-java-tee-sdk Configuration Illustration
+# Teaclave Java TEE SDK Configuration Illustration
 
 ## Configure file
 
-Teaclave-java-tee-sdk provides a `java_enclave_configure.json` template file for user to set customized parameters. It provides six parameters:
+Teaclave Java TEE SDK provides a `java_enclave_configure.json` template file for user to set customized parameters. It provides six parameters:
 
 | key                            | value(default) | illustration                                                                                                                                                                                                             |
 |--------------------------------|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | debuggable                     | false          | Allow `TEE_SDK` Enclave or `EMBEDDED_LIB_OS` Enclave to be debuggable or not, debuggable mode help to debug. Should make it to be not debuggable when the project is online service for security.                        |
 | enclave_type                   | TEE_SDK        | When creating an enclave instance with method `EnclaveFactory.create()`, TEE_SDK kind of Enclave will be created by default, key `enclave_type` could be one of `MOCK_IN_JVM` `MOCK_IN_SVM` `TEE_SDK` `EMBEDDED_LIB_OS`. |
-| metric_trace_enable            | false          | Enable Teaclave-java-tee-sdk performance metric or not.                                                                                                                                                                  |
-| metric_trace_file_path         | ""             | Customized Teaclave-java-tee-sdk metric log file path. Teaclave-java-tee-sdk Metric feature could help to measure the cost of every service invocation and service loading/unloading.                                    |
+| metric_trace_enable            | false          | Enable Teaclave Java TEE SDK performance metric or not.                                                                                                                                                                  |
+| metric_trace_file_path         | ""             | Customized Teaclave Java TEE SDK metric log file path. Teaclave Java TEE SDK Metric feature could help to measure the cost of every service invocation and service loading/unloading.                                    |
 | enclave_max_thread             | 50             | The max thread number which enclave allows to be e-called into `TEE_SDK` Enclave or `EMBEDDED_LIB_OS` Enclave.                                                                                                           |
 | enclave_max_epc_memory_size_MB | 1500           | The max physical epc memory size in `TEE_SDK`, `EMBEDDED_LIB_OS` Enclave                                                                                                                                                 |
 
@@ -17,7 +17,7 @@ Teaclave-java-tee-sdk provides a `java_enclave_configure.json` template file for
 
 ## Property Configuration Setting
 
-Teaclave-java-tee-sdk provides some customized property setting for different scene.
+Teaclave Java TEE SDK provides some customized property setting for different scene.
 
 | property                                          | value                                           | illustration                           |
 |---------------------------------------------------|-------------------------------------------------|----------------------------------------|

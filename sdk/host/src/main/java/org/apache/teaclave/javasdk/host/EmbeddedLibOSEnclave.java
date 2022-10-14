@@ -254,7 +254,7 @@ final class EmbeddedLibOSEnclave extends AbstractEnclave {
         synchronized (EmbeddedLibOSEnclave.class) {
             // Because enclave libos occlum doesn't support creating a new occlum instance even
             // destroy the pre-created occlum instance, Do nothing here.
-            // embedded lib os occlum instance in Teaclave-java-tee-sdk is similar with a singleton instance.
+            // embedded lib os occlum instance in Teaclave Java TEE SDK is similar with a singleton instance.
             try (MetricTraceContext trace = new MetricTraceContext(
                     this.getEnclaveInfo(),
                     MetricTraceContext.LogPrefix.METRIC_LOG_ENCLAVE_DESTROYING_PATTERN)) {

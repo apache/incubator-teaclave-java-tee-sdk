@@ -40,7 +40,7 @@ public class TestEnclaveException {
         assertNotNull(userServices);
         assertTrue(userServices.hasNext());
         EnclaveException service = userServices.next();
-        assertThrows(JavaEnclaveException.class, () -> service.enclaveException("Teaclave-java-tee-sdk Exception"));
+        assertThrows(JavaEnclaveException.class, () -> service.enclaveException("Teaclave Java TEE SDK Exception"));
         enclave.destroy();
     }
 

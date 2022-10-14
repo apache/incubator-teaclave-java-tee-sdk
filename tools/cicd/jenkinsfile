@@ -6,9 +6,9 @@ pipeline {
              }
          }
          stages {
-                 stage('Test and Build Teaclave-java-tee-sdk') {
+                 stage('Test and Build Teaclave Java TEE SDK') {
                  steps {
-                     echo 'Build Teaclave-java-tee-sdk:'
+                     echo 'Build Teaclave Java TEE SDK:'
                      sh "./tools/cicd/make.sh"
                  }
                  post {

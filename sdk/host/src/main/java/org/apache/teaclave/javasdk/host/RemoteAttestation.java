@@ -49,7 +49,7 @@ public final class RemoteAttestation {
      *
      * @param enclave  an enclave instance.
      * @param userData provided as user identification, its length must be 64 bytes.
-     *                 If userData is null, Teaclave-java-tee-sdk will generate a random buffer
+     *                 If userData is null, Teaclave Java TEE SDK will generate a random buffer
      *                 with 64 length bytes for it.
      *                 If userData's length exceeds 64 bytes, RemoteAttestationException
      *                 will be thrown.

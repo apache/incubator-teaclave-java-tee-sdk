@@ -25,7 +25,7 @@ import java.io.*;
 import java.util.zip.GZIPInputStream;
 
 /**
- * Teaclave-java-tee-sdk building tool will put native .so files or .tgz files into a java .jar file,
+ * Teaclave Java TEE SDK building tool will put native .so files or .tgz files into a java .jar file,
  * ExtractLibrary will extract tee sdk's jni .so and enclave signed .so into a temp path
  * from the jar file.
  * extractAndDeCompressTgz will extract embedded lib os enclave's compressed .tgz image and

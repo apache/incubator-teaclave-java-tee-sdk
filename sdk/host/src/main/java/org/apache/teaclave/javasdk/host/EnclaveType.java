@@ -19,7 +19,7 @@ package org.apache.teaclave.javasdk.host;
 
 /**
  * An enumeration of enclave type.
- * Teaclave-java-tee-sdk supports three kinds of enclave, they are mock_in_jvm、mock_in_svm、tee_sdk
+ * Teaclave Java TEE SDK supports three kinds of enclave, they are mock_in_jvm、mock_in_svm、tee_sdk
  * and embedded_lib_os.
  */
 public enum EnclaveType {

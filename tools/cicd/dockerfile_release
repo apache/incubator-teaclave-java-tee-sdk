@@ -19,6 +19,6 @@ FROM javaenclave_base:v0.1.0 as javaenclave_release
 
 LABEL maintainer="Junshao Wang"
 
-# Install Teaclave-java-tee-sdk
+# Install Teaclave Java TEE SDK
 WORKDIR /opt
 ADD ["javaenclave.tar.gz", "."]

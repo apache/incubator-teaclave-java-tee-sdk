@@ -33,7 +33,7 @@ extern "C" {
 {                                                                              \
     jclass ra_class = (*env)->FindClass(env, exception);                       \
     if (ra_class == NULL) {                                                    \
-        fprintf(stderr, "Teaclave-java-tee-sdk Error:  ");                     \
+        fprintf(stderr, "Teaclave Java TEE SDK Error:  ");                     \
         fprintf(stderr, exception);                                            \
         fprintf(stderr, " class loading failed.\n");                           \
         return;                                                                \

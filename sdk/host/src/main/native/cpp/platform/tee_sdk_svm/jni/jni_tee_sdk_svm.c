@@ -242,7 +242,7 @@ JavaEnclave_TeeSDK_REMOTE_ATTESTATION_REPORT(JNIEnv *env, jobject obj, jlong enc
     // Step five, clear up loaded qe.
     qe3_ret = unload_qe_signed_package();
     if (SGX_QL_SUCCESS != qe3_ret) {
-        printf("Teaclave-java-tee-sdk Warning: clear up loaded qe files failed");
+        printf("Teaclave Java TEE SDK Warning: clear up loaded qe files failed");
     }
 
     // create a quote byte array.

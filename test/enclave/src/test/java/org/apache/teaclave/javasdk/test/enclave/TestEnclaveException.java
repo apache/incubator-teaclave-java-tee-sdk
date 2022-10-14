@@ -26,6 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestEnclaveException {
     @Test
     public void testEnclaveException() {
-        assertThrows(JavaEnclaveException.class, () -> new EnclaveExceptionImpl().enclaveException("Teaclave-java-tee-sdk Exception"));
+        assertThrows(JavaEnclaveException.class, () -> new EnclaveExceptionImpl().enclaveException("Teaclave Java TEE SDK Exception"));
     }
 }

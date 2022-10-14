@@ -28,10 +28,10 @@ import java.io.IOException;
  * TEE is an abstract concept, it contains many kinds of confidential compute technology.
  * From hardware's point, there are Intel's SGX/TDX, Arm's TrustZone and so on.
  * From software's point, there are SGX-SDK, OpenEnclave, TeeSDK and so on.
- * Teaclave-java-tee-sdk is committed to make java enclave development easy and efficient.
+ * Teaclave Java TEE SDK is committed to make java enclave development easy and efficient.
  * <p>
  * Java developer does not need to care too much about enclave's underlying technology stack.
- * And Teaclave-java-tee-sdk will help java programmer develop a java enclave service as a common java service.
+ * And Teaclave Java TEE SDK will help java programmer develop a java enclave service as a common java service.
  * <pre>
  * try {
  *     Enclave enclave = EnclaveFactory.create();

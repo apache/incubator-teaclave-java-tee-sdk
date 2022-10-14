@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * MetricTrace is Teaclave-java-tee-sdk's internal mechanism to trace metric of key enclave operation.
+ * MetricTrace is Teaclave Java TEE SDK's internal mechanism to trace metric of key enclave operation.
  * For example, MetricTrace could metric and record the cost of enclave creation, also could
  * trace an enclave service invocation cost and so on.
  */
@@ -52,7 +52,7 @@ public abstract class MetricTrace implements AutoCloseable {
     }
 
     /**
-     * turn on/off metric trace for Teaclave-java-tee-sdk.
+     * turn on/off metric trace for Teaclave Java TEE SDK.
      *
      * @param flag turn on/off metric trace.
      */

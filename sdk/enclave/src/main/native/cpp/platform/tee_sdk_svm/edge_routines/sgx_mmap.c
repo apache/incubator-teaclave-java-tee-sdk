@@ -47,7 +47,7 @@ void* mmap(void *hint, int size, int prot, int flags) {
     void *ptr = 0;
     // flags == 0x4022, svm runtime expects to reserve a memory buffer with giving start address hint;
     // flags == 0x22 and hint == 0x0, svm runtime expects to reserve a memory buffer, the start address depends.
-    // Both the two scene, Teaclave-java-tee-sdk SDK view them as enclave memory allocation, while not memory space reserve.
+    // Both the two scene, Teaclave Java TEE SDK view them as enclave memory allocation, while not memory space reserve.
     if ((flags == 0x4022) || (flags == 0x22 && hint == 0x0 && prot == 0x3)) {
         // fd mapping is not supported in enclave, so the last two parameters of
         // (int fd, off_t offset) must be (-1, 0);
@@ -57,15 +57,15 @@ void* mmap(void *hint, int size, int prot, int flags) {
     } else if (flags == 0x32) {
         ptr = hint;
     } else {
-        if(enable_trace_symbol_calling == 0x1) printf("Teaclave-java-tee-sdk Warning: unsupported mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
+        if(enable_trace_symbol_calling == 0x1) printf("Teaclave Java TEE SDK Warning: unsupported mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
         ASSERT();
     }
-    if(enable_trace_symbol_calling == 0x1) printf("Teaclave-java-tee-sdk Warning: mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
+    if(enable_trace_symbol_calling == 0x1) printf("Teaclave Java TEE SDK Warning: mmap operation in tee sdk enclave: 0x%lx, ptr is: %p, size is: %d, prot is: 0x%x, flags is: 0x%x.\n", (uint64_t)hint, ptr, size, prot, flags);
     return ptr;
 }
 
 int munmap(void *addr, int size) {
     TRACE_SYMBOL_CALL();
-    if(enable_trace_symbol_calling == 0x1) printf("Teaclave-java-tee-sdk Warning: unmmap operation in tee sdk enclave: addr is: %p, size is: %d\n", addr, size);
+    if(enable_trace_symbol_calling == 0x1) printf("Teaclave Java TEE SDK Warning: unmmap operation in tee sdk enclave: addr is: %p, size is: %d\n", addr, size);
     return _munmap(addr, size);
 }

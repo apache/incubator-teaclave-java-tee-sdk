@@ -33,7 +33,7 @@ WORKDIR="$PWD"
 if [ ! "$STAGE" -o "build" = "$STAGE" ]; then
   # Install local graal-processor.jar
   mvn install:install-file -DgroupId=org.graalvm.compiler -DartifactId=graal-processor -Dversion=22.2.0 -Dpackaging=jar -Dfile="${GRAALVM_HOME}"/lib/graal/graal-processor.jar
-  # Build and Install Teaclave-java-tee-sdk.
+  # Build and Install Teaclave Java TEE SDK.
   pushd "${WORKDIR}"/sdk && mvn clean install && popd
   # Install BouncyCastle Native Package
   pushd "${WORKDIR}"/third-party-libs/bouncycastle-native && mvn clean install && popd

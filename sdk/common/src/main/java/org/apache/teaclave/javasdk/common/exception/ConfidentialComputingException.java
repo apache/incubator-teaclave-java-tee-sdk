@@ -19,7 +19,7 @@ package org.apache.teaclave.javasdk.common.exception;
 
 /**
  * ConfidentialComputingException {@link ConfidentialComputingException} is base exception in
- * Teaclave-java-tee-sdk. All exceptions thrown in Teaclave-java-tee-sdk will inherit this base exception.
+ * Teaclave Java TEE SDK. All exceptions thrown in Teaclave Java TEE SDK will inherit this base exception.
  * Programmers need to handle ConfidentialComputingException seriously.
  */
 public class ConfidentialComputingException extends Exception {

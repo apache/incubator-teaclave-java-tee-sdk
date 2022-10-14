@@ -53,12 +53,12 @@ verify_result_wrapper ecdsa_quote_verification_qvl(const uint8_t* quote, uint32_
     // Step one, get supplemental_data_size.
     dcap_ret = sgx_qv_get_quote_supplemental_data_size(&supplemental_data_size);
     if (dcap_ret != SGX_QL_SUCCESS) {
-        // printf("Teaclave-java-tee-sdk Remote Attestation Error: sgx_qv_get_quote_supplemental_data_size failed: 0x%04x\n", dcap_ret);
+        // printf("Teaclave Java TEE SDK Remote Attestation Error: sgx_qv_get_quote_supplemental_data_size failed: 0x%04x\n", dcap_ret);
         result.status = QUOTE_VERIFICATION_STATUS_GET_DATA_SIZE_FAILED;
         return result;
     }
     if (supplemental_data_size != sizeof(sgx_ql_qv_supplemental_t)) {
-        // printf("Teaclave-java-tee-sdk Remote Attestation Warning: sgx_qv_get_quote_supplemental_data_size returned size is not same with header definition in SGX SDK, please make sure you are using same version of SGX SDK and DCAP QVL.\n");
+        // printf("Teaclave Java TEE SDK Remote Attestation Warning: sgx_qv_get_quote_supplemental_data_size returned size is not same with header definition in SGX SDK, please make sure you are using same version of SGX SDK and DCAP QVL.\n");
         result.version_check = QUOTE_VERIFICATION_VERSION_CHECK_FAILED;
         return result;
     }

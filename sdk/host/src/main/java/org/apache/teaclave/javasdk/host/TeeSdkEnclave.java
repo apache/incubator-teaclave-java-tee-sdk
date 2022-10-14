@@ -37,7 +37,7 @@ final class TeeSdkEnclave extends AbstractEnclave {
     // enclaveHandle stores created enclave's handle id.
     private long enclaveHandle;
     // isolate stores svm created isolate instance.
-    // In Teaclave-java-tee-sdk only one isolateHandle instance will be created.
+    // In Teaclave Java TEE SDK only one isolateHandle instance will be created.
     private long isolateHandle;
     // isolateThreadHandle stores the first attached isolateThread Handle.
     private long isolateThreadHandle;
