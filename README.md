@@ -28,7 +28,7 @@ Teaclave Java TEE SDK provides seven components:
 <div  align="center">
 <img src="./docs/resources/JavaEnclave_Architecture.png" width = "400" height = "400" alt="Teaclave Java TEE SDK Architecture" align=center />
 </div>
-<center>Teaclave Java TEE SDK Architecture</center>
+<p align="center">Teaclave Java TEE SDK Architecture</p>
 <br />
 
 ## Confidential computing Java project structure based on Teaclave Java TEE SDK
@@ -39,19 +39,17 @@ A Java confidential computing application project based on Teaclave Java TEE SDK
 <div  align="center">
 <img src="./docs/resources/JavaEnclave_Application_Dependency.png" width = "400" height = "300" alt="Teaclave Java TEE SDK Application Dependency" align=center />
 </div>
-<center>Teaclave Java TEE SDK Application Dependency</center>
+<p align="center">Teaclave Java TEE SDK Application Dependency</p>
 <br />
 <div  align="center">
 <img src="./docs/resources/JavaEnclave_Project_Structure.png" width = "400" height = "400" alt="Teaclave Java TEE SDK Project Structure" align=center />
 </div>
-<center>Teaclave Java TEE SDK Project Structure</center>
+<p align="center">Teaclave Java TEE SDK Project Structure</p>
 <br />
 
-## Getting started
+## Environment preparation
 
-### Environment preparation
-
-#### 1. Is SGX2 supported?
+### 1. Is SGX2 supported?
 
 `apt install cpuid && cpuid -1 -l 0x12`
 
@@ -59,25 +57,51 @@ A Java confidential computing application project based on Teaclave Java TEE SDK
 
 if SGX2 is not supported, only MOCK_IN_JVM and MOCK_IN_SVM enclave modes in Teaclave Java TEE SDK could be run normally.
 
-#### 2. Is the SGX2 driver installed?
+### 2. Is the SGX2 driver installed?
 
 `cd /dev` and check whether `sgx_enclave sgx_provision` soft link files exist.
 
 if it is not, you need to install the sgx driver according to reference: https://github.com/intel/linux-sgx-driver.
 
-#### 3. enable_rdfsbase kernel module
+### 3. enable_rdfsbase kernel module
 
 if Linux kernel before 5.9, please install the enable_rdfsbase kernel module according to reference: https://github.com/occlum/enable_rdfsbase. enable_rdfsbase kernel module is needed if you create an enclave instance with EMBEDDED_LIB_OS mode defined in Teaclave Java TEE SDK.
 
-#### 4. Enter Teaclave Java TEE SDK docker
+## Run Samples/Test/Benchmark
 
-`docker run -it --privileged --network host -v /dev/sgx_enclave:/dev/sgx/enclave -v /dev/sgx_provision:/dev/sgx/provision teaclave-java-tee-sdk:v0.1.0-ubuntu18.04`
+### 1. Enter Teaclave Java TEE SDK docker
 
 Teaclave Java TEE SDK Docker provides a compilation and deployment environment for a java confidential computing application based on Teaclave Java TEE SDK.
 
-### HelloWorld sample instruction
+`docker run -it --privileged --network host -v /dev/sgx_enclave:/dev/sgx/enclave -v /dev/sgx_provision:/dev/sgx/provision teaclave/teaclave-java-tee-sdk:v0.1.0-ubuntu18.04`
 
-#### 1. Create a HelloWorld project structure
+### 2. Run samples
+
+`cd /opt/javaenclave/samples`
+
+run helloworld: `cd helloworld && ./run.sh`
+
+run springboot: `cd springboot && ./run.sh`
+
+### 3. Run test
+
+`cd /opt/javaenclave/test && ./run.sh`
+
+### 4. Run benchmark
+
+`cd /opt/javaenclave/benchmark`
+
+run guomi: `cd guomi && ./run.sh`
+
+run string: `cd string && ./run.sh`
+
+## HelloWorld demo instruction
+
+### 1. Enter Teaclave Java TEE SDK docker
+
+`docker run -it --privileged --network host -v /dev/sgx_enclave:/dev/sgx/enclave -v /dev/sgx_provision:/dev/sgx/provision teaclave/teaclave-java-tee-sdk:v0.1.0-ubuntu18.04`
+
+### 2. Create a HelloWorld project structure
 
 Teaclave Java TEE SDK provides a java confidential computing archetype project to help us create a basic project structure.
 
@@ -85,7 +109,7 @@ Teaclave Java TEE SDK provides a java confidential computing archetype project t
 
 archetype creates a maven project with three submodules, a host submodule enclave submodule, and a common submodule.
 
-#### 2. Define enclave service interface in the common submodule
+### 3. Define enclave service interface in the common submodule
 
 `cd helloworld/common/src/main/java/com/sample/` and create a common package in this submodule `mkdir -p helloworld/common`.
 
@@ -104,7 +128,7 @@ public interface Service {
 
 Note that we have to annotate this service interface with `@EnclaveService` which Teaclave Java TEE SDK provides.
 
-#### 3. Create enclave service interface provider in enclave submodule
+### 4. Create enclave service interface provider in enclave submodule
 
 `cd helloworld/enclave/src/main/java/com/sample/` and create an enclave package in this submodule `mkdir -p helloworld/enclave`.
 
@@ -127,7 +151,7 @@ public class ServiceImpl implements Service {
 
 Note that we have to annotate this class with the annotation `@AutoService(Interface. class)`.
 
-#### 4. Develop host submodule to create and invoke enclave service
+### 5. Develop host submodule to create and invoke enclave service
 
 `cd helloworld/host/src/main/java/com/sample/` and create an host package in this submodule `mkdir -p helloworld/host`.
 
@@ -162,7 +186,7 @@ public class Main {
 }
 ```
 
-#### 5. Build and run
+### 6. Build and run
 
 cd back to HelloWorld project top dir and build it: `mvn -Pnative clean package`.
 

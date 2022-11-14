@@ -157,6 +157,10 @@ function collect_javaenclave_release() {
   mkdir -p ${WORKDIR}/release/opt/javaenclave/jar/bouncycastle-native
   cp -r ${WORKDIR}/third-party-libs/bouncycastle-native/pom.xml ${WORKDIR}/release/opt/javaenclave/jar/bouncycastle-native
   cp -r ${WORKDIR}/third-party-libs/bouncycastle-native/target/*.jar ${WORKDIR}/release/opt/javaenclave/jar/bouncycastle-native
+  cp -r ${WORKDIR}/test ${WORKDIR}/release/opt/javaenclave/
+  cp -r ${WORKDIR}/samples ${WORKDIR}/release/opt/javaenclave/
+  cp -r ${WORKDIR}/coverage ${WORKDIR}/release/opt/javaenclave/
+  cp -r ${WORKDIR}/benchmark ${WORKDIR}/release/opt/javaenclave/
   build_release_image
 }
 
