@@ -20,7 +20,6 @@
 TEST_PATH=$1
 
 # Download jacoco agent from maven central repo.
-apt install unzip
 rm -rf jacoco && mkdir -p jacoco && rm -rf result && mkdir -p result/classes && rm -rf site
 pushd jacoco
 wget https://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.8.3/jacoco-0.8.3.zip -O temp.zip && unzip temp.zip && rm -rf temp.zip
