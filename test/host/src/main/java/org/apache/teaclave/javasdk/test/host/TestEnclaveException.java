@@ -25,6 +25,8 @@ import org.apache.teaclave.javasdk.host.exception.EnclaveDestroyingException;
 import org.apache.teaclave.javasdk.host.exception.ServicesLoadingException;
 import org.apache.teaclave.javasdk.test.common.EnclaveException;
 import org.apache.teaclave.javasdk.test.common.JavaEnclaveException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -43,6 +45,12 @@ public class TestEnclaveException {
         assertThrows(JavaEnclaveException.class, () -> service.enclaveException("Teaclave Java TEE SDK Exception"));
         enclave.destroy();
     }
+
+    @Before
+    public final void before() { System.out.println("enter test case: " + this.getClass().getName()); }
+
+    @After
+    public final void after() { System.out.println("exit test case: " + this.getClass().getName()); }
 
     @Test
     public void testJavaEnclaveException() throws Exception {
