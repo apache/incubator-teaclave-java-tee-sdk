@@ -21,6 +21,8 @@ import org.apache.teaclave.javasdk.host.Enclave;
 import org.apache.teaclave.javasdk.host.EnclaveFactory;
 import org.apache.teaclave.javasdk.host.EnclaveType;
 import org.apache.teaclave.javasdk.test.common.SHAService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -41,6 +43,12 @@ public class TestEnclaveSHA {
         }
         return hashText.toString();
     }
+
+    @Before
+    public final void before() { System.out.println("enter test case: " + this.getClass().getName()); }
+
+    @After
+    public final void after() { System.out.println("exit test case: " + this.getClass().getName()); }
 
     @Test
     public void testEnclaveSHA() throws Exception {
