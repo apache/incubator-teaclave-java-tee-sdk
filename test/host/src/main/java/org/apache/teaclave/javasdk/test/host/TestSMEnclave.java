@@ -26,6 +26,8 @@ import org.apache.teaclave.javasdk.test.common.SM4Service;
 import org.apache.teaclave.javasdk.test.common.SMSignAndVerify;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SM3Digest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -41,6 +43,12 @@ public class TestSMEnclave {
         md.doFinal(digest, 0);
         return digest;
     }
+
+    @Before
+    public final void before() { System.out.println("enter test case: " + this.getClass().getName()); }
+
+    @After
+    public final void after() { System.out.println("exit test case: " + this.getClass().getName()); }
 
     @Test
     public void testSM2Enclave() throws Exception {

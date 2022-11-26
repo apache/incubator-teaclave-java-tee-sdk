@@ -21,6 +21,8 @@ import org.apache.teaclave.javasdk.host.*;
 import org.apache.teaclave.javasdk.host.exception.EnclaveCreatingException;
 import org.apache.teaclave.javasdk.host.exception.EnclaveDestroyingException;
 import org.apache.teaclave.javasdk.host.exception.RemoteAttestationException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Random;
@@ -50,6 +52,12 @@ public class TestRemoteAttestation {
         }
 
     }
+
+    @Before
+    public final void before() { System.out.println("enter test case: " + this.getClass().getName()); }
+
+    @After
+    public final void after() { System.out.println("exit test case: " + this.getClass().getName()); }
 
     @Test
     public void testRemoteAttestation() throws Exception {
