@@ -18,6 +18,8 @@
 package org.apache.teaclave.javasdk.test.host;
 
 import org.apache.teaclave.javasdk.host.*;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.management.MBeanServer;
@@ -103,6 +105,12 @@ public class TestEnclaveInfoMXBean {
         enclaveTEE.destroy();
         enclaveLIBOS.destroy();
     }
+
+    @Before
+    public final void before() { System.out.println("enter test case: " + this.getClass().getName()); }
+
+    @After
+    public final void after() { System.out.println("exit test case: " + this.getClass().getName()); }
 
     @Test
     public void testEnclaveInfo() throws Exception {

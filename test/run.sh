@@ -17,6 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# Setting PCCS_URL for SGX Remote Attestation.
+echo "PCCS_URL=https://sgx-dcap-server.cn-beijing.aliyuncs.com/sgx/certification/v3/" > /etc/sgx_default_qcnl.conf
+echo "USE_SECURE_CERT=TRUE" >> /etc/sgx_default_qcnl.conf
+
 # Compile test project.
 mvn -Pnative clean package
 

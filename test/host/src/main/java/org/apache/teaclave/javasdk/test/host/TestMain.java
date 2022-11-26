@@ -17,6 +17,7 @@
 
 package org.apache.teaclave.javasdk.test.host;
 
+import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
@@ -45,7 +46,9 @@ class TestJavaEnclaveSuites {
 
 public class TestMain {
     public static void main(String[] args) {
-        Result result = JUnitCore.runClasses(TestJavaEnclaveSuites.class);
+        JUnitCore junit = new JUnitCore();
+        junit.addListener(new TextListener(System.out));
+        Result result = junit.run(TestJavaEnclaveSuites.class);
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }

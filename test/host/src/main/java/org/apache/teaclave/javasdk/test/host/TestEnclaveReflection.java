@@ -24,6 +24,8 @@ import org.apache.teaclave.javasdk.host.exception.EnclaveCreatingException;
 import org.apache.teaclave.javasdk.host.exception.EnclaveDestroyingException;
 import org.apache.teaclave.javasdk.host.exception.ServicesLoadingException;
 import org.apache.teaclave.javasdk.test.common.ReflectionCallService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -44,6 +46,12 @@ public class TestEnclaveReflection {
         assertEquals(-20, service.sub(2, 22));
         enclave.destroy();
     }
+
+    @Before
+    public final void before() { System.out.println("enter test case: " + this.getClass().getName()); }
+
+    @After
+    public final void after() { System.out.println("exit test case: " + this.getClass().getName()); }
 
     @Test
     public void testReflectionCallService() throws Exception {
