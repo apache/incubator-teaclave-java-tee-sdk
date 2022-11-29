@@ -14,6 +14,11 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>23</version>
+    </parent>
     <groupId>org.apache.teaclave.javasdk</groupId>
     <artifactId>javaenclave-archetype</artifactId>
     <version>0.1.0</version>
@@ -37,4 +42,54 @@
         </pluginManagement>
     </build>
     <url>http://maven.apache.org</url>
+    <inceptionYear>2022</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/apache/incubator-teaclave-java-tee-sdk</url>
+        <connection>scm:git:https://github.com/apache/incubator-teaclave-java-tee-sdk.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/incubator-teaclave-java-tee-sdk.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>Development List</name>
+            <subscribe>dev-subscribe@teaclave.apache.org</subscribe>
+            <unsubscribe>dev-unsubscribe@teaclave.apache.org</unsubscribe>
+            <post>dev@teaclave.apache.org</post>
+        </mailingList>
+        <mailingList>
+            <name>Commits List</name>
+            <subscribe>commits-subscribe@teaclave.apache.org</subscribe>
+            <unsubscribe>commits-unsubscribe@teaclave.apache.org</unsubscribe>
+            <post>commits@teaclave.apache.org</post>
+        </mailingList>
+        <mailingList>
+            <name>Issues List</name>
+            <subscribe>issues-subscribe@teaclave.apache.org</subscribe>
+            <unsubscribe>issues-unsubscribe@teaclave.apache.org</unsubscribe>
+            <post>issues@teaclave.apache.org</post>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <id>teaclave.java.tee.sdk</id>
+            <name>The Teaclave Project Contributors</name>
+            <email>dev-subscribe@teaclave.apache.org</email>
+            <url>https://teaclave.apache.org/</url>
+        </developer>
+    </developers>
+    <organization>
+        <name>The Apache Software Foundation</name>
+        <url>http://www.apache.org/</url>
+    </organization>
+    <issueManagement>
+        <system>Github Issues</system>
+        <url>https://github.com/apache/incubator-teaclave-java-tee-sdk/issues</url>
+    </issueManagement>
 </project>
