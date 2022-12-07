@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.Suite;
 
+// TestRemoteAttestation.class was removed becaused it's related to
+// execution environment. PCCS_URL should be set correctly.
 @RunWith(Suite.class)
 @org.junit.runners.Suite.SuiteClasses({
         TestEnclaveAES.class,
@@ -37,7 +39,6 @@ import org.junit.runners.Suite;
         TestEnclaveServiceGC.class,
         TestEnclaveSHA.class,
         TestHelloWorld.class,
-        TestRemoteAttestation.class,
         TestSMEnclave.class
 })
 class TestJavaEnclaveSuites {
