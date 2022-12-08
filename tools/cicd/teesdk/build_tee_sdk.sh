@@ -26,7 +26,7 @@ rm -rf linux-sgx
 
 git clone https://github.com/intel/linux-sgx.git
 
-pushd linux-sgx && git checkout stdc_ex
+pushd linux-sgx && git checkout stdc_ex_1.0
 
 make preparation && cp external/toolset/ubuntu18.04/* /usr/local/bin
 
