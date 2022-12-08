@@ -20,7 +20,7 @@
 # Setting PCCS_URL for SGX Remote Attestation.
 # PCCS_URL should be changed according to ECS location.
 # PCCS_URL=https://sgx-dcap-server.cn-hongkong.aliyuncs.com/sgx/certification/v3/
-echo "PCCS_URL=https://sgx-dcap-server.cn-beijing.aliyuncs.com/sgx/certification/v3/" > /etc/sgx_default_qcnl.conf
+echo "PCCS_URL=https://sgx-dcap-server.cn-hongkong.aliyuncs.com/sgx/certification/v3/" > /etc/sgx_default_qcnl.conf
 echo "USE_SECURE_CERT=TRUE" >> /etc/sgx_default_qcnl.conf
 
 # Compile test project.
