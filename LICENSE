@@ -210,9 +210,9 @@ BSD 2-Clause License
 -----------
 Intel SGX SDK(Branch: stdc_ex)
 
-GPL2.0 License
+GPLv2.0 License with the "Classpath" Exception
 -----------
-GraalVM SDK
+GraalVM Community SDK
 
 MIT License
 -----------
