@@ -217,3 +217,6 @@ will be compiled into a native image, and the host submodule run in a JVM enviro
 ## Teaclave Java TEE SDK configuration
 
 please refer to the link: [Configuration.md](./sdk/host/docs/Configuration.md)
+
+## Publications
+- *Xinyuan miao, Ziyi Lin, Shaojun Wang, Yu Lei, Sanhong Li, Zihan Wang, Pengbo Nie, Yuting Chen, Beijun Shen, He Jiang*. Lejacon: A Lightweight and Efficient Approach to Java Confidential Computing on SGX. ICSE 2023 (to appear).
