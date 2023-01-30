@@ -10,11 +10,11 @@ Occlum and Gramine libOS solutions run the entire Java application inside the en
 
 Teaclave Java TEE SDK provides seven components:
 
-- Teaclave Java TEE SDK Host.jar, provides API to create and destroy enclave instances, enclave service loading and unloading, remote attestation quote generation, and verification.
+- Teaclave Java TEE SDK Host Jar, provides API to create and destroy enclave instances, enclave service loading and unloading, remote attestation quote generation, and verification.
 
-- Teaclave Java TEE SDK Enclave.jar, makes java native image runs in sgx enclave environment, and provides a stub between host and enclave for their interaction.
+- Teaclave Java TEE SDK Enclave Jar, makes java native image runs in sgx enclave environment, and provides a stub between host and enclave for their interaction.
 
-- Teaclave Java TEE SDK Common.jar, provides an annotation for application, which helps to register user-defined interface parameters' type information for native image reflection. Also, it defines the interface between host and enclave for underlying interaction, and it's transparent for the application.
+- Teaclave Java TEE SDK Common Jar, provides an annotation for application, which helps to register user-defined interface parameters' type information for native image reflection. Also, it defines the interface between host and enclave for underlying interaction, and it's transparent for the application.
 
 - Teaclave Java TEE SDK, provides all kinds of underlying JNI .so and building toolchains.
 
@@ -26,7 +26,7 @@ Teaclave Java TEE SDK provides seven components:
 
 <br />
 <div  align="center">
-<img src="./docs/resources/JavaEnclave_Architecture.png" width = "400" height = "400" alt="Teaclave Java TEE SDK Architecture" align=center />
+<img src="./docs/resources/JavaEnclave_Architecture.png" width = "400" height = "450" alt="Teaclave Java TEE SDK Architecture" align=center />
 </div>
 <p align="center">Teaclave Java TEE SDK Architecture</p>
 <br />
@@ -37,12 +37,12 @@ A Java confidential computing application project based on Teaclave Java TEE SDK
 
 <br />
 <div  align="center">
-<img src="./docs/resources/JavaEnclave_Application_Dependency.png" width = "400" height = "300" alt="Teaclave Java TEE SDK Application Dependency" align=center />
+<img src="./docs/resources/JavaEnclave_Application_Dependency.png" width = "350" height = "240" alt="Teaclave Java TEE SDK Application Dependency" align=center />
 </div>
 <p align="center">Teaclave Java TEE SDK Application Dependency</p>
 <br />
 <div  align="center">
-<img src="./docs/resources/JavaEnclave_Project_Structure.png" width = "400" height = "400" alt="Teaclave Java TEE SDK Project Structure" align=center />
+<img src="./docs/resources/JavaEnclave_Project_Structure.png" width = "300" height = "350" alt="Teaclave Java TEE SDK Project Structure" align=center />
 </div>
 <p align="center">Teaclave Java TEE SDK Project Structure</p>
 <br />
@@ -196,12 +196,12 @@ then we could run this sample: `OCCLUM_RELEASE_ENCLAVE=true java -cp host/target
 
 ## Four enclave types in Teaclave Java TEE SDK
 
-### MOCK_IN_JVM mode
+#### MOCK_IN_JVM mode
 
 `MOCK_IN_JVM` mode in Teaclave Java TEE SDK is a simulated mode, it doesn't need SGX hardware support. The host module and enclave module run in the same JVM environment.
 In essence, it's an SPI mechanism between host and enclave parts.
 
-### MOCK_IN_SVM mode
+#### MOCK_IN_SVM mode
 
 `MOCK_IN_SVM` mode in Teaclave Java TEE SDK is also a simulated mode, it doesn't need SGX hardware support. Compare with `MOCK_IN_JVM` mode, the enclave submodule
 will be compiled into a native image, and the host submodule run in a JVM environment. host part will load, create and invoke service defined in enclave by JNI native call.
@@ -210,7 +210,7 @@ will be compiled into a native image, and the host submodule run in a JVM enviro
 
 `TEE_SDK` mode is a hardware mode, it must run on the platform with SGX2 hardware support. Compare with `MOCK_IN_SVM` mode, the enclave submodule also will be compiled into a native image, but it will be loaded and run in sgx enclave environment. The host part will run in a JVM environment, and both the host and enclave module will run in one process.
 
-### EMBEDDED_LIB_OS mode
+#### EMBEDDED_LIB_OS mode
 
 `EMBEDDED_LIB_OS` mode is also a hardware mode, it must run on the platform with SGX2 hardware support. Compare with `TEE_SDK` mode, the enclave submodule will be compiled into a jar file, and it will be loaded and run in an enclave with libOS Occlum, an inner alpine JVM runs based on this libOS. The host part runs in another JVM based on a normal environment. The two JVM instances co-existence and run in one process.
 
