@@ -62,8 +62,8 @@ function build_javaenclave() {
   docker run -i --rm --privileged --network host                    \
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${BASE_IMAGE}:${BASE_TAG} /bin/bash build.sh $1
 }
 
@@ -87,8 +87,8 @@ function test_javaenclave() {
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -e PCCS_URL=${PCCS_URL}                                           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
@@ -101,8 +101,8 @@ function collect_javaenclave_coverage() {
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -e PCCS_URL=${PCCS_URL}                                           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
@@ -115,8 +115,8 @@ function samples_javaenclave() {
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -e PCCS_URL=${PCCS_URL}                                           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
@@ -129,8 +129,8 @@ function benchmark_javaenclave() {
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -e PCCS_URL=${PCCS_URL}                                           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash build.sh $1
 }
 
@@ -172,8 +172,8 @@ function develop_javaenclave() {
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -e PCCS_URL=${PCCS_URL}                                           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${BASE_IMAGE}:${BASE_TAG} /bin/bash
 }
 
@@ -185,8 +185,8 @@ function develop_application() {
   -w "${WORKDIR}"                                                   \
   -v "${HOME}"/.m2:/root/.m2 -v "${WORKDIR}":"${WORKDIR}"           \
   -e PCCS_URL=${PCCS_URL}                                           \
-  -v /dev/sgx_enclave:/dev/sgx/enclave             \
-  -v /dev/sgx_provision:/dev/sgx/provision         \
+  -v /dev/sgx_enclave:/dev/sgx_enclave             \
+  -v /dev/sgx_provision:/dev/sgx_provision         \
   ${RELEASE_IMAGE}:${RELEASE_TAG} /bin/bash
 }
 
