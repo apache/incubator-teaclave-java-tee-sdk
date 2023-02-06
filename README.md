@@ -206,7 +206,7 @@ In essence, it's an SPI mechanism between host and enclave parts.
 `MOCK_IN_SVM` mode in Teaclave Java TEE SDK is also a simulated mode, it doesn't need SGX hardware support. Compare with `MOCK_IN_JVM` mode, the enclave submodule
 will be compiled into a native image, and the host submodule run in a JVM environment. host part will load, create and invoke service defined in enclave by JNI native call.
 
-### TEE_SDK mode
+#### TEE_SDK mode
 
 `TEE_SDK` mode is a hardware mode, it must run on the platform with SGX2 hardware support. Compare with `MOCK_IN_SVM` mode, the enclave submodule also will be compiled into a native image, but it will be loaded and run in sgx enclave environment. The host part will run in a JVM environment, and both the host and enclave module will run in one process.
 

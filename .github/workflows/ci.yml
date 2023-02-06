@@ -1,0 +1,31 @@
+name: Apache Teaclave Java Tee SDK CI
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push, pull_request, workflow_dispatch]
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: [self-hosted, linux]
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: ls ${{ github.workspace }}
+      - name: Build JavaEnclave
+        run: sudo ${{ github.workspace }}/tools/cicd/make.sh build
+      - name: Release JavaEnclave
+        run: sudo ${{ github.workspace }}/tools/cicd/make.sh release
+      - name: Test JavaEnclave
+        run: sudo ${{ github.workspace }}/tools/cicd/make.sh test
+      - name: Run JavaEnclave Samples
+        run: sudo ${{ github.workspace }}/tools/cicd/make.sh samples
+      - name: Run JavaEnclave Benchmark
+        run: sudo ${{ github.workspace }}/tools/cicd/make.sh benchmark
+      - run: echo "🍏 This job's status is ${{ job.status }}."

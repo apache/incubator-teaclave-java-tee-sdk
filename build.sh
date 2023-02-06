@@ -40,16 +40,28 @@ if [ ! "$STAGE" -o "build" = "$STAGE" ]; then
   # Install JavaEnclave archetype
   pushd "${WORKDIR}"/archetype && mvn clean install && popd
 elif [ ! "$STAGE" -o "test" = "$STAGE" ]; then
+  mkdir -p /dev/sgx
+  ln -s /dev/sgx_enclave /dev/sgx/enclave
+  ln -s /dev/sgx_provision /dev/sgx/provision
   # Test unit test cases in JavaEnclave
   pushd "${WORKDIR}"/test && ./run.sh && popd
 elif [ ! "$STAGE" -o "coverage" = "$STAGE" ]; then
+  mkdir -p /dev/sgx
+  ln -s /dev/sgx_enclave /dev/sgx/enclave
+  ln -s /dev/sgx_provision /dev/sgx/provision
   # collect and analysis JavaEnclave ut coverage
   pushd "${WORKDIR}"/coverage && ./run.sh "${WORKDIR}"/test && popd
 elif [ ! "$STAGE" -o "samples" = "$STAGE" ]; then
+  mkdir -p /dev/sgx
+  ln -s /dev/sgx_enclave /dev/sgx/enclave
+  ln -s /dev/sgx_provision /dev/sgx/provision
   # samples in JavaEnclave
   pushd "${WORKDIR}"/samples/helloworld && ./run.sh && popd
   pushd "${WORKDIR}"/samples/springboot && ./run.sh && popd
 elif [ ! "$STAGE" -o "benchmark" = "$STAGE" ]; then
+  mkdir -p /dev/sgx
+  ln -s /dev/sgx_enclave /dev/sgx/enclave
+  ln -s /dev/sgx_provision /dev/sgx/provision
   # benchmark in JavaEnclave
   pushd "${WORKDIR}"/benchmark/guomi && ./run.sh && popd
   pushd "${WORKDIR}"/benchmark/string && ./run.sh && popd
