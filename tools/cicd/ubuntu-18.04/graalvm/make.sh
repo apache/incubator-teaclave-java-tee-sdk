@@ -17,6 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-mvn -Pnative clean package
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+pushd "${SHELL_FOLDER}"
 
-OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -Dorg.apache.teaclave.javasdk.enclave.metric.enable=false -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar org.apache.teaclave.javasdk.benchmark.guomi.host.GuoMiBenchMark
+# download graalvm_22.2.0 and install native-image in docker ubuntu:18.04
+# shellcheck disable=SC2046
+docker run -i --rm --network host -v `pwd`:`pwd` ubuntu:18.04 /bin/bash "${SHELL_FOLDER}"/build_graalvm_jdk.sh
+
+popd

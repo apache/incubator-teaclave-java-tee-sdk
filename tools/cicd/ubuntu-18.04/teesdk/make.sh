@@ -20,7 +20,7 @@
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 pushd "${SHELL_FOLDER}"
 
-# download graalvm_22.2.0 and install native-image in docker ubuntu:18.04
-docker run -i --rm --network host -v `pwd`:`pwd` ubuntu:18.04 /bin/bash "${SHELL_FOLDER}"/build_graalvm_jdk.sh
+# download intel sgx sdk and build it in docker ubuntu18.04
+docker run -i --rm --network host -v `pwd`:`pwd` ubuntu:18.04 /bin/bash "${SHELL_FOLDER}"/build_tee_sdk.sh
 
 popd

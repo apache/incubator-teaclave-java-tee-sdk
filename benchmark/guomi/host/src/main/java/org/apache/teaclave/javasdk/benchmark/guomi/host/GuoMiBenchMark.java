@@ -42,7 +42,7 @@ public class GuoMiBenchMark {
 
     public final String sm3Context = "Hello World!";
 
-    @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK", "EMBEDDED_LIB_OS"})
+    @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK"})
     private String enclaveServiceInstance;
     @Param(value = {"SM2", "SM3", "SM4"})
     private String smAlgo;
@@ -55,8 +55,6 @@ public class GuoMiBenchMark {
         private SMService mockSVMService = null;
         private Enclave teeSDKEnclave = null;
         private SMService teeSDKService = null;
-        private Enclave embeddedLibOSEnclave = null;
-        private SMService embeddedLibOSService = null;
 
         @Setup
         public void createEnclave() throws Exception {
@@ -66,8 +64,6 @@ public class GuoMiBenchMark {
             mockSVMService = mockSVMEnclave.load(SMService.class).next();
             teeSDKEnclave = EnclaveFactory.create(EnclaveType.TEE_SDK);
             teeSDKService = teeSDKEnclave.load(SMService.class).next();
-            embeddedLibOSEnclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
-            embeddedLibOSService = embeddedLibOSEnclave.load(SMService.class).next();
         }
 
         @TearDown
@@ -75,7 +71,6 @@ public class GuoMiBenchMark {
             mockJVMEnclave.destroy();
             mockSVMEnclave.destroy();
             teeSDKEnclave.destroy();
-            embeddedLibOSEnclave.destroy();
         }
 
         public SMService getMockJVMServiceInstance() {
@@ -88,10 +83,6 @@ public class GuoMiBenchMark {
 
         public SMService getTeeSDKServiceInstance() {
             return teeSDKService;
-        }
-
-        public SMService getEmbeddedLibOSServiceInstance() {
-            return embeddedLibOSService;
         }
     }
 
@@ -106,9 +97,6 @@ public class GuoMiBenchMark {
                 break;
             case "TEE_SDK":
                 service = enclave.getTeeSDKServiceInstance();
-                break;
-            case "EMBEDDED_LIB_OS":
-                service = enclave.getEmbeddedLibOSServiceInstance();
                 break;
         }
 

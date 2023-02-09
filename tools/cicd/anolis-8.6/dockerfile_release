@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-mvn -Pnative clean package
+FROM java_enclave_build_anolis8.6:v0.1.0 as java_enclave_release_anolis_8_6
 
-OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -Dorg.apache.teaclave.javasdk.enclave.metric.enable=false -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar org.apache.teaclave.javasdk.benchmark.guomi.host.GuoMiBenchMark
+LABEL maintainer="Junshao Wang"
+
+# Install Teaclave Java TEE SDK
+WORKDIR /opt
+ADD ["javaenclave.tar.gz", "."]

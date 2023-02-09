@@ -27,4 +27,4 @@ echo "USE_SECURE_CERT=TRUE" >> /etc/sgx_default_qcnl.conf
 mvn -Pnative clean package
 
 # Start Teaclave java sdk test.
-OCCLUM_RELEASE_ENCLAVE=true java -cp host/target/host-0.1.0-jar-with-dependencies.jar:enclave/target/enclave-0.1.0-jar-with-dependencies.jar org.apache.teaclave.javasdk.test.host.TestMain
+OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -cp host/target/host-0.1.0-jar-with-dependencies.jar:enclave/target/enclave-0.1.0-jar-with-dependencies.jar org.apache.teaclave.javasdk.test.host.TestMain

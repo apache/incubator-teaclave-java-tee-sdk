@@ -61,14 +61,5 @@ public class TestEnclaveInfo {
         assertEquals(enclaveInfo.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
         assertEquals(enclaveInfo.getEnclaveMaxThreadsNumber(), 50);
         enclave.destroy();
-
-        // it's related to config file in test project.
-        enclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
-        enclaveInfo = enclave.getEnclaveInfo();
-        assertEquals(enclaveInfo.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
-        assertFalse(enclaveInfo.isEnclaveDebuggable());
-        assertEquals(enclaveInfo.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
-        assertEquals(enclaveInfo.getEnclaveMaxThreadsNumber(), 50);
-        enclave.destroy();
     }
 }

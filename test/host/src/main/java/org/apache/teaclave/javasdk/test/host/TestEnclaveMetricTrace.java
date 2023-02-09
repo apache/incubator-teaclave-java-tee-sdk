@@ -57,8 +57,7 @@ public class TestEnclaveMetricTrace {
         EnclaveType[] types = new EnclaveType[] {
                 EnclaveType.MOCK_IN_JVM,
                 EnclaveType.MOCK_IN_SVM,
-                EnclaveType.TEE_SDK,
-                EnclaveType.EMBEDDED_LIB_OS};
+                EnclaveType.TEE_SDK};
         for (EnclaveType type : types) {
             Enclave enclave = EnclaveFactory.create(type);
             assertNotNull(enclave);
@@ -86,7 +85,7 @@ public class TestEnclaveMetricTrace {
         assertTrue(str.contains("enclave_destroying_cost"));
         assertTrue(str.contains("enclave_service_loading"));
         assertTrue(str.contains("TEE_SDK"));
-        assertTrue(str.contains("EMBEDDED_LIB_OS"));
+        // assertTrue(str.contains("EMBEDDED_LIB_OS"));
         assertTrue(file.delete());
     }
 }

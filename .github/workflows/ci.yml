@@ -15,17 +15,31 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner in ubuntu18.04 container."
       - name: List files in the repository
         run: ls ${{ github.workspace }}
       - name: Build JavaEnclave
-        run: sudo ${{ github.workspace }}/tools/cicd/make.sh build
+        run: ${{ github.workspace }}/tools/cicd/ubuntu-18.04/make.sh build
       - name: Release JavaEnclave
-        run: sudo ${{ github.workspace }}/tools/cicd/make.sh release
+        run: ${{ github.workspace }}/tools/cicd/ubuntu-18.04/make.sh release
       - name: Test JavaEnclave
-        run: sudo ${{ github.workspace }}/tools/cicd/make.sh test
+        run: ${{ github.workspace }}/tools/cicd/ubuntu-18.04/make.sh test
       - name: Run JavaEnclave Samples
-        run: sudo ${{ github.workspace }}/tools/cicd/make.sh samples
+        run: ${{ github.workspace }}/tools/cicd/ubuntu-18.04/make.sh samples
       - name: Run JavaEnclave Benchmark
-        run: sudo ${{ github.workspace }}/tools/cicd/make.sh benchmark
+        run: ${{ github.workspace }}/tools/cicd/ubuntu-18.04/make.sh benchmark
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner in anolis8.6 container."
+      - name: List files in the repository
+        run: ls ${{ github.workspace }}
+      - name: Build JavaEnclave
+        run: ${{ github.workspace }}/tools/cicd/anolis-8.6/make.sh build
+      - name: Release JavaEnclave
+        run: ${{ github.workspace }}/tools/cicd/anolis-8.6/make.sh release
+      - name: Test JavaEnclave
+        run: ${{ github.workspace }}/tools/cicd/anolis-8.6/make.sh test
+      - name: Run JavaEnclave Samples
+        run: ${{ github.workspace }}/tools/cicd/anolis-8.6/make.sh samples
+      - name: Run JavaEnclave Benchmark
+        run: ${{ github.workspace }}/tools/cicd/anolis-8.6/make.sh benchmark
       - run: echo "🍏 This job's status is ${{ job.status }}."

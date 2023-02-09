@@ -58,6 +58,6 @@ public class TestEnclaveReflection {
         reflectionCallService(EnclaveType.MOCK_IN_JVM);
         reflectionCallService(EnclaveType.MOCK_IN_SVM);
         reflectionCallService(EnclaveType.TEE_SDK);
-        reflectionCallService(EnclaveType.EMBEDDED_LIB_OS);
+        // reflectionCallService(EnclaveType.EMBEDDED_LIB_OS);
     }
 }

@@ -20,7 +20,15 @@
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 pushd "${SHELL_FOLDER}"
 
-# download intel sgx sdk and build it in docker ubuntu:18.04
-docker run -i --rm --network host -v `pwd`:`pwd` ubuntu:18.04 /bin/bash "${SHELL_FOLDER}"/build_tee_sdk.sh
+dnf clean all && rm -r /var/cache/dnf && dnf --enablerepo=PowerTools install -y wget
+
+# Download GraalVM_22.2.0 JDK from github
+wget -c -q https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/graalvm-ce-java11-linux-amd64-22.2.0.tar.gz -O - | tar -xz
+
+# cd graalvm-ce-java11-22.2.0 and gu install native-image
+pushd graalvm-ce-java11-22.2.0 && ./bin/gu install native-image && popd
+
+# archive graalvm-ce-java11-22.2.0 which installed native-image
+tar -zcvf graalvm-ce-java11-22.2.0.tar.gz graalvm-ce-java11-22.2.0 && rm -rf graalvm-ce-java11-22.2.0
 
 popd

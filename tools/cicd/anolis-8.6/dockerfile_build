@@ -1,0 +1,40 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+FROM openanolis/anolisos:8.6-x86_64 as java_enclave_build_anolis_8_6
+
+LABEL maintainer="Junshao Wang"
+
+ENV GRAALVM_HOME="/root/tools/graalvm-ce-java11-22.2.0"
+ENV JAVA_HOME="/root/tools/graalvm-ce-java11-22.2.0"
+ENV PATH="$PATH:/root/tools/x86_64-linux-musl-native/bin"
+
+ADD ["tmpDownloadDir/graalvm-ce-java11-22.2.0.tar.gz", "/root/tools/"]
+ADD ["tmpDownloadDir/sgx_linux_x64_sdk_2.17.101.1.bin", "/root/tools/"]
+ADD ["tmpDownloadDir/x86_64-linux-musl-native.tgz", "/root/tools"]
+ADD ["tmpDownloadDir/zlib-1.2.11.tar.gz", "/root/tools/"]
+
+# install necessary tools.
+RUN dnf clean all && rm -r /var/cache/dnf && \
+    dnf --enablerepo=PowerTools install -y make cmake autoconf libtool gcc gcc-c++ openssl-devel libcurl-devel dnf-utils patch maven gdb gnupg wget tzdata jq unzip && \
+    wget https://download.01.org/intel-sgx/latest/linux-latest/distro/Anolis86/sgx_rpm_local_repo.tgz && \
+    tar zxvf sgx_rpm_local_repo.tgz && \
+    dnf config-manager --add-repo sgx_rpm_local_repo && \
+    dnf makecache && rm -rf sgx_rpm_local_repo.tgz && \
+    dnf install --nogpgcheck -y libsgx-headers libsgx-dcap-quote-verify-devel libsgx-dcap-ql-devel && \
+    cd /root/tools/zlib-1.2.11 && ./configure --prefix=/root/tools/x86_64-linux-musl-native && CC=/root/tools/x86_64-linux-musl-native/bin/gcc make && make install && \
+    cd /root/tools && chmod 777 sgx_linux_x64_sdk_2.17.101.1.bin && echo -e 'no\n/opt/teesdk\n' | ./sgx_linux_x64_sdk_2.17.101.1.bin

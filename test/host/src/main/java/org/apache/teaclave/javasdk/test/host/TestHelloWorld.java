@@ -59,6 +59,6 @@ public class TestHelloWorld {
         assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_JVM, "Hello World"));
         assertEquals("Hello World", sayHelloService(EnclaveType.MOCK_IN_SVM, "Hello World"));
         assertEquals("Hello World", sayHelloService(EnclaveType.TEE_SDK, "Hello World"));
-        assertEquals("Hello World", sayHelloService(EnclaveType.EMBEDDED_LIB_OS, "Hello World"));
+        // assertEquals("Hello World", sayHelloService(EnclaveType.EMBEDDED_LIB_OS, "Hello World"));
     }
 }

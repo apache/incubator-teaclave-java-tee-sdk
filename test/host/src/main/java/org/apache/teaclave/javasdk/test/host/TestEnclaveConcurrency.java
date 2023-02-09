@@ -106,7 +106,6 @@ public class TestEnclaveConcurrency {
         enclaveConcurrency(EnclaveType.MOCK_IN_JVM);
         enclaveConcurrency(EnclaveType.MOCK_IN_SVM);
         enclaveConcurrency(EnclaveType.TEE_SDK);
-        enclaveConcurrency(EnclaveType.EMBEDDED_LIB_OS);
     }
 
     @Test
@@ -114,6 +113,5 @@ public class TestEnclaveConcurrency {
         enclaveConcurrencySync(EnclaveType.MOCK_IN_JVM);
         enclaveConcurrencySync(EnclaveType.MOCK_IN_SVM);
         enclaveConcurrencySync(EnclaveType.TEE_SDK);
-        enclaveConcurrencySync(EnclaveType.EMBEDDED_LIB_OS);
     }
 }

@@ -57,6 +57,5 @@ public class TestEnclaveException {
         javaEnclaveException(EnclaveType.MOCK_IN_JVM);
         javaEnclaveException(EnclaveType.MOCK_IN_SVM);
         javaEnclaveException(EnclaveType.TEE_SDK);
-        javaEnclaveException(EnclaveType.EMBEDDED_LIB_OS);
     }
 }

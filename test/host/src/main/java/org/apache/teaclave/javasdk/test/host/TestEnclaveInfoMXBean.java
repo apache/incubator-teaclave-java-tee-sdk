@@ -78,14 +78,6 @@ public class TestEnclaveInfoMXBean {
         assertEquals(enclaveInfoTEE.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
         assertEquals(enclaveInfoTEE.getEnclaveMaxThreadsNumber(), 50);
 
-        // it's related to config file in test project.
-        Enclave enclaveLIBOS = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
-        EnclaveInfo enclaveInfoLIBOS = enclaveLIBOS.getEnclaveInfo();
-        assertEquals(enclaveInfoLIBOS.getEnclaveType(), EnclaveType.EMBEDDED_LIB_OS);
-        assertFalse(enclaveInfoLIBOS.isEnclaveDebuggable());
-        assertEquals(enclaveInfoLIBOS.getEnclaveEPCMemorySizeBytes(), 1500 * 1024 * 1024);
-        assertEquals(enclaveInfoLIBOS.getEnclaveMaxThreadsNumber(), 50);
-
         enclaveInfoMXBeanStub = new ObjectName(DOMAIN_NAME + ":name=" + ENCLAVE_MX_BEAN_STUB);
         MBeanServer mxBeanService = ManagementFactory.getPlatformMBeanServer();
         mxBeanService.registerMBean(
@@ -103,7 +95,6 @@ public class TestEnclaveInfoMXBean {
         enclaveJVM.destroy();
         enclaveSVM.destroy();
         enclaveTEE.destroy();
-        enclaveLIBOS.destroy();
     }
 
     @Before
@@ -129,9 +120,9 @@ public class TestEnclaveInfoMXBean {
         JMXConnector jmxClient = JMXConnectorFactory.connect(url);
         MBeanServerConnection mbsClient = jmxClient.getMBeanServerConnection();
         ObjectName mBeanName = new ObjectName(DOMAIN_NAME + ":name=" + ENCLAVE_MX_BEAN_STUB);
-        assertEquals(4, mbsClient.getAttribute(mBeanName, "EnclaveInstanceNumber"));
+        assertEquals(3, mbsClient.getAttribute(mBeanName, "EnclaveInstanceNumber"));
         CompositeData[] enclaveInfos = (CompositeData[]) mbsClient.getAttribute(mBeanName, "EnclaveInstancesInfo");
-        assertEquals(4, enclaveInfos.length);
+        assertEquals(3, enclaveInfos.length);
         for (CompositeData enclaveInfo : enclaveInfos) {
             String enclaveType = (String) enclaveInfo.get("enclaveType");
             switch (enclaveType) {
