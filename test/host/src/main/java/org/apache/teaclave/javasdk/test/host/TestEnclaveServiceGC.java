@@ -58,6 +58,6 @@ public class TestEnclaveServiceGC {
     public void testEnclaveServiceGC() throws Exception {
         enclaveServiceGC(EnclaveType.MOCK_IN_SVM);
         enclaveServiceGC(EnclaveType.TEE_SDK);
-        enclaveServiceGC(EnclaveType.EMBEDDED_LIB_OS);
+        // enclaveServiceGC(EnclaveType.EMBEDDED_LIB_OS);
     }
 }

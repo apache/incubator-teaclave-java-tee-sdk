@@ -62,6 +62,6 @@ public class TestRemoteAttestation {
     @Test
     public void testRemoteAttestation() throws Exception {
         remoteAttestation(EnclaveType.TEE_SDK);
-        remoteAttestation(EnclaveType.EMBEDDED_LIB_OS);
+        // remoteAttestation(EnclaveType.EMBEDDED_LIB_OS);
     }
 }

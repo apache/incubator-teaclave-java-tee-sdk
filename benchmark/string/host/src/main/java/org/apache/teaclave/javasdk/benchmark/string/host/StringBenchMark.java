@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class StringBenchMark {
 
-    @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK", "EMBEDDED_LIB_OS"})
+    @Param(value = {"MOCK_IN_JVM", "MOCK_IN_SVM", "TEE_SDK"})
     private String enclaveServiceInstance;
     @Param(value = {"regex", "concat", "split"})
     private String stringOpt;
@@ -47,8 +47,6 @@ public class StringBenchMark {
             mockSVMService = mockSVMEnclave.load(StringOperationMetric.class).next();
             teeSDKEnclave = EnclaveFactory.create(EnclaveType.TEE_SDK);
             teeSDKService = teeSDKEnclave.load(StringOperationMetric.class).next();
-            embeddedLibOSEnclave = EnclaveFactory.create(EnclaveType.EMBEDDED_LIB_OS);
-            embeddedLibOSService = embeddedLibOSEnclave.load(StringOperationMetric.class).next();
         }
 
         @TearDown
@@ -56,7 +54,6 @@ public class StringBenchMark {
             mockJVMEnclave.destroy();
             mockSVMEnclave.destroy();
             teeSDKEnclave.destroy();
-            embeddedLibOSEnclave.destroy();
         }
 
         public StringOperationMetric getMockJVMServiceInstance() {
@@ -69,10 +66,6 @@ public class StringBenchMark {
 
         public StringOperationMetric getTeeSDKServiceInstance() {
             return teeSDKService;
-        }
-
-        public StringOperationMetric getEmbeddedLibOSServiceInstance() {
-            return embeddedLibOSService;
         }
     }
 
@@ -87,9 +80,6 @@ public class StringBenchMark {
                 break;
             case "TEE_SDK":
                 service = enclave.getTeeSDKServiceInstance();
-                break;
-            case "EMBEDDED_LIB_OS":
-                service = enclave.getEmbeddedLibOSServiceInstance();
                 break;
         }
 

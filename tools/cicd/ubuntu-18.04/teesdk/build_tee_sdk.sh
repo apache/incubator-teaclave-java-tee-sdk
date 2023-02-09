@@ -17,6 +17,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
-mvn -Pnative clean package
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+pushd "${SHELL_FOLDER}"
 
-OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -Dorg.apache.teaclave.javasdk.enclave.metric.enable=false -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar org.apache.teaclave.javasdk.benchmark.guomi.host.GuoMiBenchMark
+apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential ocaml ocamlbuild automake autoconf libtool wget python libssl-dev git cmake perl unzip
+
+rm -rf linux-sgx
+
+git clone https://github.com/intel/linux-sgx.git
+
+pushd linux-sgx && git checkout stdc_ex_1.0
+
+make preparation && cp external/toolset/ubuntu18.04/* /usr/local/bin && which ar as ld objcopy objdump ranlib
+
+make sdk && make sdk_install_pkg && popd
+
+cp linux-sgx/linux/installer/bin/sgx_linux_x64_sdk_*.bin ./
+
+rm -rf linux-sgx
+
+popd

@@ -17,6 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-mvn -Pnative clean package
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+pushd "${SHELL_FOLDER}"
 
-OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -Dorg.apache.teaclave.javasdk.enclave.metric.enable=false -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar org.apache.teaclave.javasdk.benchmark.guomi.host.GuoMiBenchMark
+# download intel sgx sdk and build it in docker anolis8.6
+docker run -i --rm --network host -v `pwd`:`pwd` openanolis/anolisos:8.6-x86_64 /bin/bash "${SHELL_FOLDER}"/build_tee_sdk.sh
+
+popd

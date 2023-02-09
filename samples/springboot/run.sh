@@ -21,7 +21,7 @@
 mvn -Pnative clean package
 
 # step2: startup springboot application service.
-OCCLUM_RELEASE_ENCLAVE=true java -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar org.apache.teaclave.javasdk.samples.springboot.host.Application &
+OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -cp host/target/host-1.0-SNAPSHOT-jar-with-dependencies.jar:enclave/target/enclave-1.0-SNAPSHOT-jar-with-dependencies.jar org.apache.teaclave.javasdk.samples.springboot.host.Application &
 sleep 5
 # shellcheck disable=SC2006
 # shellcheck disable=SC2009

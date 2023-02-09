@@ -30,7 +30,7 @@ wget https://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.8.3/jac
 popd
 
 # Generate Teaclave java sdk test coverage data.
-OCCLUM_RELEASE_ENCLAVE=true java -javaagent:jacoco/lib/jacocoagent.jar=destfile=./result/jacoco.exec,append=true,classdumpdir=result/classes,includes=org.apache.teaclave.javasdk.host.*:org.apache.teaclave.javasdk.common.*:org.apache.teaclave.javasdk.enclave.*,output=file -cp ${TEST_PATH}/host/target/host-0.1.0-jar-with-dependencies.jar:${TEST_PATH}enclave/target/enclave-0.1.0-jar-with-dependencies.jar org.apache.teaclave.javasdk.test.host.TestMain
+OCCLUM_RELEASE_ENCLAVE=true $JAVA_HOME/bin/java -javaagent:jacoco/lib/jacocoagent.jar=destfile=./result/jacoco.exec,append=true,classdumpdir=result/classes,includes=org.apache.teaclave.javasdk.host.*:org.apache.teaclave.javasdk.common.*:org.apache.teaclave.javasdk.enclave.*,output=file -cp ${TEST_PATH}/host/target/host-0.1.0-jar-with-dependencies.jar:${TEST_PATH}enclave/target/enclave-0.1.0-jar-with-dependencies.jar org.apache.teaclave.javasdk.test.host.TestMain
 
 # Generate Teaclave java sdk test coverage report.
-java -jar jacoco/lib/jacococli.jar report result/jacoco.exec --classfiles result/classes --html site
+$JAVA_HOME/bin/java -jar jacoco/lib/jacococli.jar report result/jacoco.exec --classfiles result/classes --html site

@@ -29,8 +29,7 @@ public class Main {
         EnclaveType[] enclaveTypes = {
                 EnclaveType.MOCK_IN_JVM,
                 EnclaveType.MOCK_IN_SVM,
-                EnclaveType.TEE_SDK,
-                EnclaveType.EMBEDDED_LIB_OS};
+                EnclaveType.TEE_SDK};
 
         for (EnclaveType enclaveType : enclaveTypes) {
             Enclave enclave = EnclaveFactory.create(enclaveType);

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM ubuntu:18.04 as javaenclave_base
+FROM ubuntu:18.04 as java_enclave_build_ubuntu18_04
 
 LABEL maintainer="Junshao Wang"
 

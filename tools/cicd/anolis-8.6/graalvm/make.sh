@@ -20,20 +20,8 @@
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 pushd "${SHELL_FOLDER}"
 
-apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential ocaml ocamlbuild automake autoconf libtool wget python libssl-dev git cmake perl unzip
-
-rm -rf linux-sgx
-
-git clone https://github.com/intel/linux-sgx.git
-
-pushd linux-sgx && git checkout stdc_ex_1.0
-
-make preparation && cp external/toolset/ubuntu18.04/* /usr/local/bin
-
-make sdk && make sdk_install_pkg && popd
-
-cp linux-sgx/linux/installer/bin/sgx_linux_x64_sdk_*.bin ./
-
-rm -rf linux-sgx
+# download graalvm_22.2.0 and install native-image in docker anolis8.6
+# shellcheck disable=SC2046
+docker run -i --rm --network host -v `pwd`:`pwd` openanolis/anolisos:8.6-x86_64 /bin/bash "${SHELL_FOLDER}"/build_graalvm_jdk.sh
 
 popd
