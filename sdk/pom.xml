@@ -154,6 +154,7 @@
         <module>common</module>
         <module>enclave</module>
         <module>host</module>
+        <module>optimizationDetector</module>
     </modules>
     <build>
         <pluginManagement>
